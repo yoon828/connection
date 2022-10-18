@@ -16,15 +16,15 @@ public class UserDto {
 
     private String name;
 
+    private String githubId;
+
+    private String backjoonId;
+
     private String email;
 
     private String imageUrl;
 
-    private Boolean emailVerified = false;
-
-    private String wallet;
-
-    private long mira;
+    //private Boolean emailVerified = false;
 
     private String password;
 
@@ -32,7 +32,7 @@ public class UserDto {
 
     private Role role;
 
-    private String providerId;
+    //private String providerId;
 
     public static UserDto of(User userEntity) {
         UserDto userDto = ModelMapperUtils.getModelMapper().map(userEntity, UserDto.class);

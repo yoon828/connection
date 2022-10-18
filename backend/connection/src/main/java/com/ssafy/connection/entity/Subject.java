@@ -1,6 +1,5 @@
 package com.ssafy.connection.entity;
 
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,13 @@ public class Subject {
     private LocalDateTime deadline; // 제출 기한
 
     /* 연관관계 매핑 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problemId")
+    private Problem problem;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studyId")
+    private Study study;
     ////////////////////////////////////////
 
     public static Subject of(SubjectDto subjectDto) {
