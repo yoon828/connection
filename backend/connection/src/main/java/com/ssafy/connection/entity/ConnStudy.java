@@ -1,7 +1,7 @@
 package com.ssafy.connection.entity;
 
 import com.ssafy.connection.dto.ConnStudyDto;
-import com.ssafy.connection.dto.ProblemDto;
+import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +23,13 @@ public class ConnStudy {
     private long connStudyId;
 
     /* 연관관계 매핑 */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studyId")
+    private Study study;
     ////////////////////////////////////////
 
     public static ConnStudy of(ConnStudyDto connStudyDto) {

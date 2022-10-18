@@ -23,27 +23,26 @@ import java.util.List;
 @Table(name = "User")
 public class User extends DefaultTime {
     @Id
-    @Column(name = "user_idx")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userIdx;
+    private long userId;
 
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "github_id")
+    private String githubId;
+
+    @Column(name = "backjoon_id")
+    private String backjoonId;
     @Email
     @Column(nullable = false)
     private String email;
 
     private String imageUrl;
 
-    @Column(nullable = false)
-    private Boolean emailVerified = false;
-
-    @Column(nullable = true)
-    private String wallet;
-
-    @Column(nullable = true)
-    private long mira;
+    //@Column(nullable = false)
+    //private Boolean emailVerified = false;
 
     @JsonIgnore
     private String password;
@@ -55,7 +54,7 @@ public class User extends DefaultTime {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String providerId;
+    //private String providerId;
 
     @Builder
     public User(String name, String email, String password, Role role, Provider provider, String providerId, String imageUrl){
@@ -75,8 +74,12 @@ public class User extends DefaultTime {
     }
 
     /* 연관관계 매핑 */
+    @OneToOne(mappedBy = "user")
+    private ConnStudy connStudy;
 
-    //////////////////////////////////////////////////
+    @OneToMany(mappedBy = "user")
+    List<Solve> solve = new ArrayList<>();
+    ////////////////////////////////////////
 
     public static User of(UserDto userDto) {
         User userEntity = ModelMapperUtils.getModelMapper().map(userDto, User.class);

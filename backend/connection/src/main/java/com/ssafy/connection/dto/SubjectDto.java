@@ -1,6 +1,5 @@
 package com.ssafy.connection.dto;
 
-import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.util.ModelMapperUtils;
 

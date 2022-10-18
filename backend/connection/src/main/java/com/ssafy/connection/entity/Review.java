@@ -1,6 +1,5 @@
 package com.ssafy.connection.entity;
 
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ReviewDto;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,9 @@ public class Review {
     private LocalDateTime time; // 소요 시간
 
     /* 연관관계 매핑 */
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problemId")
+    private Problem problem;
     ////////////////////////////////////////
 
     public static Review of(ReviewDto reviewDto) {

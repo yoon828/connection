@@ -1,7 +1,6 @@
 package com.ssafy.connection.dto;
 
 import com.ssafy.connection.entity.ConnWorkbook;
-import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.util.ModelMapperUtils;
 
 public class ConnWorkbookDto {
