@@ -22,9 +22,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long tagId;
 
-    private String key;  // 영어 이름
+    private String en;  // 영어 이름
 
-    private String name; // 한글 이름
+    private String ko; // 한글 이름
 
     /* 연관관계 매핑 */
 

@@ -18,18 +18,17 @@ import javax.persistence.*;
 public class Problem {
     @Id
     @Column(name = "problem_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long problemId;
 
     private String title;
 
     private boolean solvable; // 채점 가능 여부
 
-    private int accepted; // 맞은 사람 수
+    private long accepted; // 맞은 사람 수
 
-    private int level; // 난이도
+    private long level; // 난이도
 
-    private int tries; // 평균 시도 횟수
+    private String tries; // 평균 시도 횟수
 
 
 
