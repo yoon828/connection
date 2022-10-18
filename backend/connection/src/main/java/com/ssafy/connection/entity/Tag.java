@@ -1,6 +1,5 @@
 package com.ssafy.connection.entity;
 
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.TagDto;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
@@ -27,7 +26,9 @@ public class Tag {
     private String name; // 한글 이름
 
     /* 연관관계 매핑 */
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problemId")
+    private Problem problem;
     ////////////////////////////////////////
 
     public static Tag of(TagDto tagDto) {

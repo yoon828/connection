@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +36,20 @@ public class Problem {
 
 
     /* 연관관계 매핑 */
+    @OneToMany(mappedBy = "problem")
+    List<Tag> tag = new ArrayList<>();
 
+    @OneToMany(mappedBy = "problem")
+    List<Review> review = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problem")
+    List<Solve> solve = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problem")
+    List<ConnWorkbook> connWorkbooks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "problem")
+    List<Subject> subject = new ArrayList<>();
     ////////////////////////////////////////
 
     public static Problem of(ProblemDto problemDto) {

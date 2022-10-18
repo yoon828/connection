@@ -1,7 +1,6 @@
 package com.ssafy.connection.entity;
 
 import com.ssafy.connection.dto.ConnWorkbookDto;
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,13 @@ public class ConnWorkbook {
     private long connId;
 
     /* 연관관계 매핑 */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problemId")
+    private Problem problem;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workbookId")
+    private Workbook workbook;
     ////////////////////////////////////////
 
     public static ConnWorkbook of(ConnWorkbookDto connWorkbookDto) {

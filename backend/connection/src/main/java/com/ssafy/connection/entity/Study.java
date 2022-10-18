@@ -1,6 +1,5 @@
 package com.ssafy.connection.entity;
 
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +30,14 @@ public class Study {
     private String studyName;
 
     /* 연관관계 매핑 */
+    @OneToOne(mappedBy = "study")
+    private Workbook workbook;
 
+    @OneToMany(mappedBy = "study")
+    List<Subject> subject = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study")
+    List<ConnStudy> connStudy = new ArrayList<>();
     ////////////////////////////////////////
 
     public static Study of(StudyDto studyDto) {
