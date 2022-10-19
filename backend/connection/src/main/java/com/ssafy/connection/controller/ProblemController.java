@@ -15,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/problem")
@@ -36,11 +38,12 @@ public class ProblemController {
         String baseUrl = "https://solved.ac/api/v3/search/problem?query=";
         try{
             int count = 255;
-            for(int i = 1000; i <= 25848; i++) {
+            for(int i = 20703; i <= 25848; i++) {
                 // 문제 데이터 255개 받아올때마다 16분 대기
                 if(count == 0) {
                     System.out.println("solved.ac API 호출 횟수 제한 대기 중......");
                     Thread.sleep(1000 * 60 * 16);
+                    count = 255;
                 } else {
                     count--;
                 }
@@ -63,6 +66,13 @@ public class ProblemController {
                 // items에 들어있는 문제 데이터 중 첫번째 데이터만 문제 번호에 맞는 데이터
                 JSONArray jsonArray = (JSONArray) jsonObject.get("items");
                 jsonObject = (JSONObject) jsonArray.get(0);
+
+                Pattern rex = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]");
+                Matcher rexMatcher = rex.matcher((String) jsonObject.get("titleKo"));
+                // 이모티콘 검사
+                if(rexMatcher.find()){
+                    continue;
+                }
 
                 Problem problem = new Problem();
                 problem.setProblemId((long) jsonObject.get("problemId"));
