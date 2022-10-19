@@ -30,13 +30,13 @@ public class User extends DefaultTime {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "github_id")
+    @Column(name = "github_id", nullable = false)
     private String githubId;
 
     @Column(name = "backjoon_id")
     private String backjoonId;
     @Email
-    @Column(nullable = false)
+    @Column
     private String email;
 
     private String imageUrl;
@@ -57,12 +57,13 @@ public class User extends DefaultTime {
     //private String providerId;
 
     @Builder
-    public User(String name, String email, String password, Role role, Provider provider, String providerId, String imageUrl){
+    public User(String name, String email, String password, Role role, Provider provider, String providerId, String imageUrl, String githubId){
         this.email = email;
         this.password = password;
         this.name = name;
         this.provider = provider;
         this.role = role;
+        this.githubId = githubId;
     }
 
     public void updateName(String name){

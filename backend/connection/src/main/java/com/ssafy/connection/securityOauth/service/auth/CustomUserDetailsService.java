@@ -20,9 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService{
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String githubId) throws UsernameNotFoundException {
         
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("유저 정보를 찾을 수 없습니다.")
         );

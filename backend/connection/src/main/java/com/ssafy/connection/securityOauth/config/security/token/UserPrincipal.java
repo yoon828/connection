@@ -15,15 +15,17 @@ public class UserPrincipal implements OAuth2User, UserDetails{
     
     private Long id;
     private String email;
+    private String githubId;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities, String githubId) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.githubId = githubId;
     }
 
     public static UserPrincipal create(User user) {
@@ -32,7 +34,8 @@ public class UserPrincipal implements OAuth2User, UserDetails{
                 user.getUserId(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities
+                authorities,
+                user.getGithubId()
         );
     }
 
@@ -52,6 +55,9 @@ public class UserPrincipal implements OAuth2User, UserDetails{
 
     public String getEmail() {
         return email;
+    }
+    public String getGithubId() {
+        return githubId;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class UserPrincipal implements OAuth2User, UserDetails{
 
     @Override
     public String getUsername() {
-        return email;
+        return githubId;
     }
 
     @Override

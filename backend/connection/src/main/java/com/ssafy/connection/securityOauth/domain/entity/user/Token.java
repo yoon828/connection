@@ -15,8 +15,8 @@ import javax.persistence.Table;
 public class Token extends DefaultTime {
 
     @Id
-    @Column(name = "user_email", length = 1024 , nullable = false)
-    private String userEmail;
+    @Column(name = "github_id", length = 1024 , nullable = false)
+    private String githubId;
 
     @Column(name = "refresh_token", length = 1024 , nullable = false)
     private String refreshToken;
@@ -29,8 +29,8 @@ public class Token extends DefaultTime {
     }
 
     @Builder
-    public Token(String userEmail, String refreshToken) {
-        this.userEmail = userEmail;
+    public Token(String githubId, String refreshToken) {
+        this.githubId = githubId;
         this.refreshToken = refreshToken;
     }
 }

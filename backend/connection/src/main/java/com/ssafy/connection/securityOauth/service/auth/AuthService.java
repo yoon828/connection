@@ -52,7 +52,7 @@ public class AuthService {
         Optional<User> user = userRepository.findById(userPrincipal.getId());
         DefaultAssert.isTrue(user.isPresent(), "유저가 올바르지 않습니다.");
 
-        Optional<Token> token = tokenRepository.findByUserEmail(user.get().getEmail());
+        Optional<Token> token = tokenRepository.findByGithubId(user.get().getGithubId());
         DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
 
         userRepository.delete(user.get());
@@ -90,7 +90,7 @@ public class AuthService {
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
         Token token = Token.builder()
                             .refreshToken(tokenMapping.getRefreshToken())
-                            .userEmail(tokenMapping.getUserEmail())
+                            .githubId(tokenMapping.getGithubId())
                             .build();
         tokenRepository.save(token);
         AuthResponse authResponse = AuthResponse.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(token.getRefreshToken()).build();
@@ -125,7 +125,7 @@ public class AuthService {
         DefaultAssert.isAuthentication(checkValid);
 
         Optional<Token> token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken());
-        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getUserEmail());
+        Authentication authentication = customTokenProviderService.getAuthenticationByGithubId(token.get().getGithubId());
 
         //4. refresh token 정보 값을 업데이트 한다.
         //시간 유효성 확인
@@ -169,8 +169,8 @@ public class AuthService {
         DefaultAssert.isTrue(token.isPresent(), "탈퇴 처리된 회원입니다.");
 
         //3. email 값을 통해 인증값을 불러온다
-        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getUserEmail());
-        DefaultAssert.isTrue(token.get().getUserEmail().equals(authentication.getName()), "사용자 인증에 실패하였습니다.");
+        Authentication authentication = customTokenProviderService.getAuthenticationByGithubId(token.get().getGithubId());
+        DefaultAssert.isTrue(token.get().getGithubId().equals(authentication.getName()), "사용자 인증에 실패하였습니다.");//dd이게맞아???????????????????????????????????????
 
         return true;
     }

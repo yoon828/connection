@@ -44,7 +44,7 @@ public class CustomTokenProviderService {
                                 .compact();
 
         return TokenMapping.builder()
-                        .userEmail(userPrincipal.getEmail())
+                        .githubId(userPrincipal.getGithubId())
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
@@ -76,7 +76,7 @@ public class CustomTokenProviderService {
                                 .compact();
 
         return TokenMapping.builder()
-                    .userEmail(userPrincipal.getEmail())
+                    .githubId(userPrincipal.getGithubId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();
@@ -99,8 +99,8 @@ public class CustomTokenProviderService {
         return authentication;
     }
 
-    public UsernamePasswordAuthenticationToken getAuthenticationByEmail(String email){
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+    public UsernamePasswordAuthenticationToken getAuthenticationByGithubId(String githubId){
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(githubId);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         return authentication;
     }
