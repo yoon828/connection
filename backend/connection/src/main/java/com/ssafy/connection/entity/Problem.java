@@ -49,7 +49,9 @@ public class Problem {
 
     @OneToMany(mappedBy = "problem")
     List<Subject> subject = new ArrayList<>();
-    ////////////////////////////////////////
+
+    public Problem(long problemId, String title, boolean solvable, long accepted, long level, String tries) {
+    }
 
     public static Problem of(ProblemDto problemDto) {
         Problem problemEntity = ModelMapperUtils.getModelMapper().map(problemDto, Problem.class);

@@ -86,4 +86,5 @@ public class User extends DefaultTime {
 
         return userEntity;
     }
+
 }
