@@ -4,10 +4,7 @@ import {
   Route,
   Routes as ReactRouterRoutes
 } from "react-router-dom";
-
-function Header() {
-  return <div>header</div>;
-}
+import Header from "./Header";
 
 export default function Routes() {
   return (
