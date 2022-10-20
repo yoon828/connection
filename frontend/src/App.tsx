@@ -1,24 +1,27 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import { Box, Button, useColorMode } from "@chakra-ui/react";
 
 function App() {
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button onClick={toggleColorMode} bg="dep_1">
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
+      <Button onClick={toggleColorMode} bg="dep_2">
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
+      <Button onClick={toggleColorMode} bg="dep_3">
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
+      <Button onClick={toggleColorMode} bg="gra">
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
+      <Button onClick={toggleColorMode} bg="lighter_lin">
+        Toggle {colorMode === "light" ? "Dark" : "Light"}
+      </Button>
     </div>
   );
 }
