@@ -1,8 +1,7 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.ProblemDto;
-import com.ssafy.connection.dto.ProblemTagDto;
-import com.ssafy.connection.dto.TagDto;
+import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Tag;
 import com.ssafy.connection.repository.ProblemRepository;
@@ -11,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -33,15 +33,20 @@ public class ProblemServiceImpl implements ProblemService{
         this.tagRepository = tagRepository;
     }
 
+    @Transactional
+    public ProblemDto getProblem(long problemId) {
+        return ProblemDto.of(problemRepository.getById(problemId));
+    }
 
     @Override
-    public List<ProblemTagDto> getProblemList() {
+    @Transactional
+    public List<ProblemReturnDto> getProblemList() {
         List<Problem> problemEntityList = problemRepository.findAll();
         List<ProblemDto> problemDtoList = problemEntityList.stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
-        List<ProblemTagDto> returnList = new ArrayList<>();
+        List<ProblemReturnDto> returnList = new ArrayList<>();
 
         for(ProblemDto problemDto : problemDtoList){
-            returnList.add(new ProblemTagDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
         }
 
         return returnList;

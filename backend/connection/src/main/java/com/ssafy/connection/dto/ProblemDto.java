@@ -29,7 +29,6 @@ public class ProblemDto {
 
     public static ProblemDto of(Problem problemEntity) {
         ProblemDto problemDto = ModelMapperUtils.getModelMapper().map(problemEntity, ProblemDto.class);
-
         return problemDto;
     }
 }
