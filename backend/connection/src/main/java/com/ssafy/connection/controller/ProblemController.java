@@ -31,17 +31,16 @@ public class ProblemController {
         this.tagService = tagService;
     }
 
-    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지, 최소 ")
+    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지)")
     @GetMapping("/api/load")
     public void loadJsonFromApi(){
         StringBuffer result = new StringBuffer();
         String baseUrl = "https://solved.ac/api/v3/search/problem?query=";
         try{
             int count = 255;
-            for(int i = 20703; i <= 25848; i++) {
+            for(int i = 1; i <= 25848; i++) {
                 // 문제 데이터 255개 받아올때마다 16분 대기
                 if(count == 0) {
-                    System.out.println("solved.ac API 호출 횟수 제한 대기 중......");
                     Thread.sleep(1000 * 60 * 16);
                     count = 255;
                 } else {
@@ -67,13 +66,14 @@ public class ProblemController {
                 JSONArray jsonArray = (JSONArray) jsonObject.get("items");
                 jsonObject = (JSONObject) jsonArray.get(0);
 
+                // 이모티콘 검사
                 Pattern rex = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]");
                 Matcher rexMatcher = rex.matcher((String) jsonObject.get("titleKo"));
-                // 이모티콘 검사
                 if(rexMatcher.find()){
                     continue;
                 }
 
+                // 문제 엔티티 DB에 저장
                 Problem problem = new Problem();
                 problem.setProblemId((long) jsonObject.get("problemId"));
                 problem.setTitle((String) jsonObject.get("titleKo"));
@@ -81,8 +81,7 @@ public class ProblemController {
                 problem.setLevel((long) jsonObject.get("level"));
                 problem.setTries(String.valueOf(jsonObject.get("averageTries")));
                 problem.setAccepted((long) jsonObject.get("acceptedUserCount"));
-
-                problemService.save(problem);   // 문제 엔티티 DB에 저장
+                problemService.save(problem);
 
                 // tags에 들어있는 여러 개의 태그 데이터 저장
                 jsonArray = (JSONArray) jsonObject.get("tags");
