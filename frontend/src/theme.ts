@@ -29,19 +29,19 @@ const semanticTokens = {
       _dark: "linear-gradient(180deg, #88BFFF, #1581FF)"
     },
     lighter_lin: {
-      _light: "linear-gradient(180deg, #E1EFFF, #BBDBFF)"
+      default: "linear-gradient(180deg, #E1EFFF, #BBDBFF)"
     },
     white_lin: {
-      _light: "linear-gradient(180deg, #B2D6FF, #F7F8F9)"
+      default: "linear-gradient(180deg, #B2D6FF, #F7F8F9)"
     },
     main: {
-      _light: "#1581FF"
+      defualt: "#1581FF"
     },
     sub: {
-      _light: "#B2D6FF"
+      defualt: "#B2D6FF"
     },
     dark_bg: {
-      _light: "#121212"
+      defualt: "#121212"
     }
   }
 };
