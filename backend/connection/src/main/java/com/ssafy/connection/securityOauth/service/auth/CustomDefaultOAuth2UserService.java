@@ -36,9 +36,9 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        DefaultAssert.isAuthentication(!oAuth2UserInfo.getEmail().isEmpty());
+        DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
         
-        Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+        Optional<User> userOptional = userRepository.findByGithubId(oAuth2UserInfo.getId());
         User user;
         if(userOptional.isPresent()) {
             user = userOptional.get();
@@ -58,6 +58,7 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                     .name(oAuth2UserInfo.getName())
                     .email(oAuth2UserInfo.getEmail())
                     .imageUrl(oAuth2UserInfo.getImageUrl())
+                    .githubId(oAuth2UserInfo.getId())
                     .role(Role.USER)
                     .build();
         

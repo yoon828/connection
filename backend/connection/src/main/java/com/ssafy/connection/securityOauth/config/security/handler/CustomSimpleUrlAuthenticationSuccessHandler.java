@@ -68,7 +68,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         response.addCookie(accessToken);
 
         Token token = Token.builder()
-                            .userEmail(tokenMapping.getUserEmail())
+                            .githubId(tokenMapping.getGithubId())
                             .refreshToken(tokenMapping.getRefreshToken())
                             .build();
         tokenRepository.save(token);
