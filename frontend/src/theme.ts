@@ -45,16 +45,21 @@ const semanticTokens = {
       default: "linear-gradient(180deg, #E1EFFF, #BBDBFF)"
     },
     white_lin: {
-      default: "linear-gradient(180deg, #B2D6FF, #F7F8F9)"
+      _light: "linear-gradient(180deg, #B2D6FF, #F7F8F9)",
+      _dark: "linear-gradient(180deg, #88BFFF, #1581FF)"
     },
     main: {
       default: "#1581FF"
     },
     sub: {
-      default: "#B2D6FF"
+      _light: "#B2D6FF",
+      _dark: "linear-gradient(180deg, #88BFFF, #1581FF)"
     },
     dark_bg: {
       default: "#121212"
+    },
+    border_gray: {
+      default: "#d1d1d1"
     }
   }
 };
