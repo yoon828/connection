@@ -1,5 +1,18 @@
 import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 
+const styles = {
+  global: {
+    body: {
+      _light: {
+        bg: "white"
+      },
+      _dark: {
+        bg: "#121212"
+      }
+    }
+  }
+};
+
 const semanticTokens = {
   colors: {
     light: {
@@ -51,5 +64,5 @@ const config: ThemeConfig = {
   useSystemColorMode: true
 };
 
-const customTheme = extendTheme({ semanticTokens, config });
+const customTheme = extendTheme({ semanticTokens, config, styles });
 export default customTheme;
