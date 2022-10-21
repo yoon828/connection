@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
-  Box,
   Button,
   Center,
   Flex,
@@ -32,14 +31,16 @@ function Header() {
   return (
     <Flex boxShadow="lg">
       <Center p="14px">
-        <Image
-          src={colorMode === "light" ? LogoLight : LogoDark}
-          alt="logo"
-          w="180px"
-        />
+        <Link as={ReactLink} to="/">
+          <Image
+            src={colorMode === "light" ? LogoLight : LogoDark}
+            alt="logo"
+            w="180px"
+          />
+        </Link>
       </Center>
       <Spacer />
-      <Center p="14px">
+      <Center p="14px" w="540px" justifyContent="left">
         {menus.map(memu => {
           return (
             <Link as={ReactLink} to="/" mr="50px" key={v4()}>
