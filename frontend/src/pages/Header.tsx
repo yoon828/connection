@@ -5,14 +5,18 @@ import {
   Flex,
   Image,
   Link,
+  Modal,
+  ModalOverlay,
   Spacer,
-  useColorMode
+  useColorMode,
+  useDisclosure
 } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
 import LogoLight from "../asset/img/logo_light.png";
 import LogoDark from "../asset/img/logo_dark.png";
+import JoinModal from "../components/join/JoinModal";
 
 interface menuType {
   title: string;
@@ -21,6 +25,7 @@ interface menuType {
 
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/" },
@@ -54,7 +59,11 @@ function Header() {
         <Button mr="14px" onClick={toggleColorMode}>
           <MoonIcon />
         </Button>
-        <Button>회원가입</Button>
+        <Button onClick={onOpen}>회원가입</Button>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <JoinModal />
+        </Modal>
       </Center>
     </Flex>
   );
