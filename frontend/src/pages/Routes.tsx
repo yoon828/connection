@@ -12,6 +12,7 @@ import StudyWith from "./StudyWith";
 import Collection from "./study/Collecetion";
 import StudyTotal from "./study/StudyTotal";
 import Assignment from "./study/Assignment";
+import Management from "./study/Management";
 
 export default function Routes() {
   return (
@@ -24,6 +25,7 @@ export default function Routes() {
           <Route path="join" element={<StudyJoin />} />
           <Route path="collection" element={<Collection />} />
           <Route path="assignment" element={<Assignment />} />
+          <Route path="management" element={<Management />} />
         </Route>
         <Route path="/study-with" element={<StudyWith />} />
       </ReactRouterRoutes>
