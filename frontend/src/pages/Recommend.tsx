@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { v4 as uuid } from "uuid";
-import { Box, Grid, Icon, Text } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 
-import { AiOutlinePlus } from "react-icons/ai";
 import ProblemCard from "../components/common/ProblemCard";
 import StudyLayout from "../components/layout/StudyLayout";
 import SideComponent from "../components/recommend/SideComponent";
@@ -25,17 +23,45 @@ const TABS = [
   }
 ];
 
+const dumpProblemList = [
+  {
+    id: 123,
+    title: "징검다리 건너기",
+    difficulty: "골드 3",
+    elapsedTime: "1:10:23",
+    link: "http://asasfasf.com",
+    tags: [{ id: 0, title: "#dfs" }]
+  },
+  {
+    id: 12,
+    title: "징검다리 건너기",
+    difficulty: "골드 3",
+    elapsedTime: "1:10:23",
+    link: "http://asasfasf.com",
+    tags: [{ id: 0, title: "#dfs" }]
+  },
+  {
+    id: 3,
+    title: "징검다리 건너기",
+    difficulty: "골드 3",
+    elapsedTime: "1:10:23",
+    link: "http://asasfasf.com",
+    tags: [{ id: 0, title: "#dfs" }]
+  }
+];
 export interface Tab {
   id: number;
   label: string;
 }
 
-function PlusButton() {
-  return <Icon as={AiOutlinePlus} w="9" h="9" cursor="pointer" />;
-}
-
 function Recommend() {
+  const [problemList, setProblemList] = useState(dumpProblemList);
   const [selectedTap, setSelectedTap] = useState(0);
+
+  const addProblem = (problemId: number) => {
+    // todo : 문제집에 넣을지 확인하고 문제집에 넣을 로직 구현 필요
+    console.log(problemId);
+  };
 
   const onTabClick: React.MouseEventHandler<HTMLDivElement> = e => {
     if (e.target instanceof HTMLDivElement && e.target.dataset.id) {
@@ -53,28 +79,20 @@ function Recommend() {
           onTabClick={onTabClick}
         />
       }
+      title={TABS[selectedTap].label}
+      description={TABS[selectedTap].msg}
     >
-      <Box mb="40px">
-        <Text fontSize="3xl" fontWeight="bold" mt="20px" mb="20px">
-          {TABS[selectedTap].label}
-        </Text>
-        {TABS[selectedTap].msg.split("/").map(text => (
-          <Text key={uuid()} mt="10px" mb="10px">
-            {text}
-          </Text>
-        ))}
-      </Box>
       <Grid templateColumns="repeat(2,1fr)" gap="32px">
-        <ProblemCard
-          problem={{
-            title: "징검다리 건너기",
-            difficulty: "골드 3",
-            elapsedTime: "1:10:23",
-            link: "http://asasfasf.com",
-            tags: [{ id: 0, title: "#dfs" }]
-          }}
-          button={<PlusButton />}
-        />
+        {problemList.map(problem => (
+          <ProblemCard
+            key={problem.id}
+            problem={problem}
+            btnType="add"
+            onBtnClick={() => {
+              addProblem(problem.id);
+            }}
+          />
+        ))}
       </Grid>
     </StudyLayout>
   );
