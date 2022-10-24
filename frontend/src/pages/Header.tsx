@@ -23,7 +23,7 @@ function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const menus: menuType[] = [
-    { title: "문제 추천", link: "/" },
+    { title: "문제 추천", link: "/recommend" },
     { title: "스터디", link: "/" },
     { title: "문제 풀기", link: "/" }
   ];
@@ -41,10 +41,10 @@ function Header() {
       </Center>
       <Spacer />
       <Center p="14px" w="540px" justifyContent="left">
-        {menus.map(memu => {
+        {menus.map(menu => {
           return (
-            <Link as={ReactLink} to="/" mr="50px" key={v4()}>
-              {memu.title}
+            <Link as={ReactLink} to={menu.link} mr="50px" key={v4()}>
+              {menu.title}
             </Link>
           );
         })}
