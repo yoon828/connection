@@ -10,6 +10,7 @@ import StudyJoin from "./StudyJoin";
 import Header from "./Header";
 import StudyWith from "./StudyWith";
 import Collection from "./study/Collecetion";
+import StudyTotal from "./study/StudyTotal";
 import Assignment from "./study/Assignment";
 
 export default function Routes() {
@@ -19,7 +20,7 @@ export default function Routes() {
       <ReactRouterRoutes>
         <Route path="/" element={<div>main</div>} />
         <Route path="/recommend" element={<Recommend />} />
-        <Route path="/study">
+        <Route path="/study" element={<StudyTotal />}>
           <Route path="join" element={<StudyJoin />} />
           <Route path="collection" element={<Collection />} />
           <Route path="assignment" element={<Assignment />} />
