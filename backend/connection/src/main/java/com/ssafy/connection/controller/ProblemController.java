@@ -38,7 +38,7 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
-    @ApiOperation(value = "백준 전체 문제 데이터 반환(사용안함)")
+    @ApiOperation(value = "백준 전체 문제 데이터 반환(사용 안함)")
     @GetMapping("/all")
     public ResponseEntity<List<ProblemReturnDto>> getProblemList(){
         List<ProblemReturnDto> returnList = problemService.getProblemList();
