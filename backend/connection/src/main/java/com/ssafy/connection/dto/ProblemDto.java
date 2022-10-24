@@ -4,6 +4,8 @@ import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Getter
 @Setter
@@ -27,7 +29,6 @@ public class ProblemDto {
 
     public static ProblemDto of(Problem problemEntity) {
         ProblemDto problemDto = ModelMapperUtils.getModelMapper().map(problemEntity, ProblemDto.class);
-
         return problemDto;
     }
 }
