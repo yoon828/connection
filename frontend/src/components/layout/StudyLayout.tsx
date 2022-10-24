@@ -7,12 +7,14 @@ interface StudyLayoutProps {
   children: ReactNode;
   title: string;
   description: string;
+  bg?: string;
 }
 
 function StudyLayout({
   sideComponent,
   title,
   description,
+  bg,
   children
 }: StudyLayoutProps) {
   return (
@@ -27,7 +29,7 @@ function StudyLayout({
         >
           {sideComponent}
         </Flex>
-        <Box borderRadius="20px" bg="white_lin" w="100%" p="20px" zIndex={1}>
+        <Box borderRadius="20px" bg={bg} w="100%" p="20px" zIndex={1}>
           <Box mb="40px">
             <Text fontSize="3xl" fontWeight="bold" mt="20px" mb="20px">
               {title}
@@ -44,5 +46,9 @@ function StudyLayout({
     </Container>
   );
 }
+
+StudyLayout.defaultProps = {
+  bg: "white_lin"
+};
 
 export default StudyLayout;
