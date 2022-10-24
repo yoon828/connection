@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @PropertySource(value = { "classpath:database/database.properties" })
-@PropertySource(value = { "classpath:oauth2/oauth2.properties" })
 @PropertySource(value = { "classpath:swagger/springdoc.properties" })
 @SpringBootApplication
 public class StudyroomApplication {
