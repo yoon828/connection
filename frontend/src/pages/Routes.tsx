@@ -8,6 +8,7 @@ import {
 import Recommend from "./Recommend";
 import StudyJoin from "./StudyJoin";
 import Header from "./Header";
+import StudyWith from "./StudyWith";
 import Collection from "./study/Collecetion";
 
 export default function Routes() {
@@ -21,6 +22,7 @@ export default function Routes() {
           <Route path="join" element={<StudyJoin />} />
           <Route path="collection" element={<Collection />} />
         </Route>
+        <Route path="/study-with" element={<StudyWith />} />
       </ReactRouterRoutes>
     </BrowserRouter>
   );
