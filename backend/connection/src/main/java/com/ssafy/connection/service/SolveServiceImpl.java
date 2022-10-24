@@ -8,7 +8,10 @@ import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Optional;
 
@@ -28,16 +31,27 @@ public class SolveServiceImpl implements SolveService{
     @Override
     @Transactional
     public boolean isSolved(long problemId, long userId) {
-        try{
             StringBuffer result = new StringBuffer();
             User user = userRepository.getById(userId);
-            URL url = new URL("https://solved.ac/api/v3/search/problem?query=solved_by%3" + user.getBackjoonId());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Content-type", "application/json");
-        } catch (Exception e){
-            throw new Exception(e);
+        URL url = null;
+        try {
+            url = new URL("https://solved.ac/api/v3/search/problem?query=solved_by%3" + user.getBackjoonId());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            urlConnection.setRequestMethod("GET");
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+        urlConnection.setRequestProperty("Content-type", "application/json");
+
 
         Optional<Solve> solve = solveRepository.findByUserAndProblem(userRepository.getById(userId), problemRepository.getById(problemId));
         if(solve.isPresent()){

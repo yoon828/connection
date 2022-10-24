@@ -1,6 +1,6 @@
-package com.ssafy.connection.webSocket.config;
+package com.ssafy.studyroom.webSocket.config;
 
-import com.ssafy.connection.webSocket.handler.StudyHandler;
+import com.ssafy.studyroom.webSocket.handler.StudyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
