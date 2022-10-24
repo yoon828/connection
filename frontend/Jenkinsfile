@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    stages {
+        stage("build"){
+            steps {
+                script{
+                    try {
+                        sh 'docker stop frontend'
+                        sh 'docker rm frontend'
+                        sh 'docker rmi wlsgh97/coalla-frontend'
+                    } catch (e) {
+                        sh 'echo "fail to stop and remove container"'
+                    }
+                }
+                sh 'docker build -t wlsgh97/coalla-frontend ./frontend'
+                sh 'echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin'
+                echo 'Build image...'
+                sh "docker push wlsgh97/coalla-frontend"
+                sh "docker run -d -p 3000:3000 --name frontend wlsgh97/coalla-frontend"
+            }
+        }    
+    }    
+}
