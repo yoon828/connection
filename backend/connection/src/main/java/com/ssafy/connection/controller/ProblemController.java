@@ -1,18 +1,24 @@
 package com.ssafy.connection.controller;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
+import com.ssafy.connection.entity.Problem;
+import com.ssafy.connection.entity.Tag;
 import com.ssafy.connection.service.ProblemService;
 import com.ssafy.connection.service.SolveService;
 import com.ssafy.connection.service.TagService;
 import io.swagger.annotations.ApiOperation;
+import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/problem")
@@ -52,7 +58,7 @@ public class ProblemController {
         String baseUrl = "https://solved.ac/api/v3/search/problem?query=";
         try{
             int count = 255;
-            for(int i = 20703; i <= 25848; i++) {
+            for(int i = 1000; i <= 25848; i++) {
                 // 문제 데이터 255개 받아올때마다 16분 대기
                 if(count == 0) {
                     System.out.println("solved.ac API 호출 횟수 제한 대기 중......");

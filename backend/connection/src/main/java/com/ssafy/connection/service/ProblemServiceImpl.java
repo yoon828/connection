@@ -39,6 +39,11 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
+    public void save(Problem problem) {
+        problemRepository.save(problem);
+    }
+
+    @Override
     @Transactional
     public List<ProblemReturnDto> getProblemList() {
         List<Problem> problemEntityList = problemRepository.findAll();

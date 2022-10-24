@@ -1,4 +1,4 @@
-package com.ssafy.connection.webSocket.handler;
+package com.ssafy.studyroom.webSocket.handler;
 
 import java.util.*;
 import lombok.extern.log4j.Log4j2;
