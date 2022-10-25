@@ -15,4 +15,14 @@ public interface ProblemService {
     ProblemDto getProblem(long problemId);
 
     void save(Problem problem);
+
+    List<ProblemReturnDto> getSolvedProblemList(String baekjoonId);
+
+    Object getPopularProblemList(long level, String tag);
+
+    Object getWorkBookProblemList(long level, String tag);
+
+    Object getPopularProblemList(String tag);
+
+    Object getPopularProblemList(Long level);
 }
