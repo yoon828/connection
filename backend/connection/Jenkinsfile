@@ -12,7 +12,9 @@ pipeline {
                         sh 'echo "fail to stop and remove container"'
                     }
                 }
-                sh 'docker build -t backend-image ./backend/connection'
+                sh 'cd ./backend/connection'
+                sh 'mvn clean package'
+                sh 'docker build -t backend-image .'
                 echo 'Build image...'
                 sh 'docker run -d -p 8080:8080 --restart="always" --name backend backend-image'
                 echo 'docker run complete'
