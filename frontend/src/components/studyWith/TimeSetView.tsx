@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
 import React, { useEffect, useMemo, useState } from "react";
+import getTime from "../../utils/getTime";
 
 type ProblemContainerProps = {
   id: number;
@@ -106,9 +107,7 @@ function TimeSetView({ onBtnClick }: TimeSetViewProps) {
     times.forEach(time => {
       total += time;
     });
-    return `${`${Math.floor(total / 60)}`.padStart(2, "0")} : ${`${
-      total % 60
-    }`.padStart(2, "0")} : 00`;
+    return getTime(total * 60);
   }, [times]);
 
   useEffect(() => {
