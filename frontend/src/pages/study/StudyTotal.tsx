@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
-  Alert,
-  AlertIcon,
   Box,
   Button,
   Center,

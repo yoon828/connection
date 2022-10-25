@@ -13,13 +13,14 @@ import Collection from "./study/Collecetion";
 import StudyTotal from "./study/StudyTotal";
 import Assignment from "./study/Assignment";
 import Management from "./study/Management";
+import Main from "./Main";
 
 export default function Routes() {
   return (
     <BrowserRouter>
       <Header />
       <ReactRouterRoutes>
-        <Route path="/" element={<div>main</div>} />
+        <Route path="/" element={<Main />} />
         <Route path="/recommend" element={<Recommend />} />
         <Route path="/study" element={<StudyTotal />}>
           <Route path="join" element={<StudyJoin />} />
