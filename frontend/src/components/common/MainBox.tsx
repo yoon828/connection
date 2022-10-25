@@ -11,7 +11,7 @@ interface MainBoxProps {
 
 function MainBox({ dir, data }: MainBoxProps) {
   return (
-    <Flex my="60px" w="100%" flexDir={dir === "right" ? "row" : "row-reverse"}>
+    <Flex my="100px" w="100%" flexDir={dir === "right" ? "row" : "row-reverse"}>
       <Box w="50%">
         <Image src={TMP} alt="info_img" w="380px" />
       </Box>
