@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk
+FROM maven:3.8-jdk-11
 VOLUME /tmp
 ADD target/connection-0.0.1-SNAPSHOT.jar app.jar
 ENV TZ=Asia/Seoul
