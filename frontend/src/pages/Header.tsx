@@ -40,7 +40,7 @@ function Header() {
           <Image
             src={colorMode === "light" ? LogoLight : LogoDark}
             alt="logo"
-            w="180px"
+            w="130px"
           />
         </Link>
       </Center>
