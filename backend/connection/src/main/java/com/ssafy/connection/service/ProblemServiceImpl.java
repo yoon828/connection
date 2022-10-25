@@ -87,6 +87,21 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
+    public Object getPopularProblemList() {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(ProblemDto problemDto : problemDtoList){
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            if(returnList.size() == recommendSize){
+                break;
+            }
+        }
+        return returnList;
+    }
+
+    @Override
     public Object getPopularProblemList(long level, String tag) {
         List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();

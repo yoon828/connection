@@ -25,4 +25,6 @@ public interface ProblemService {
     Object getPopularProblemList(String tag);
 
     Object getPopularProblemList(Long level);
+
+    Object getPopularProblemList();
 }

@@ -48,7 +48,7 @@ public class ProblemController {
         } else if(level != null && !(tag == null || tag.isEmpty())){    // tag, level 모두 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(level, tag));
         } else {    // 아무값도 입력되지 않았을 경우
-
+            returnMap.put("popular", problemService.getPopularProblemList());
         }
         if(tag == null || tag.isEmpty()) {
             System.out.println("tag is null");
