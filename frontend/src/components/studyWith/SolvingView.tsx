@@ -1,5 +1,6 @@
 import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
+import getTime from "../../utils/getTime";
 
 function ProblemBar() {
   type problemState = "waiting" | "success" | "fail";
@@ -79,10 +80,7 @@ function Timer({ initTime }: TimerProps) {
 
   return (
     <Text fontSize="100px" mt="60px" textAlign="center">
-      {`${`${Math.floor(time / 60 / 60)}`.padStart(2, "0")} :
-      ${`${Math.floor(time / 60)}`.padStart(2, "0")} : ${`${
-        time % 60
-      }`.padStart(2, "0")}`}
+      {getTime(time)}
     </Text>
   );
 }
