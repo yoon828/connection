@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage("build"){
+            steps {
+                script{
+                    try {
+                        sh 'docker stop backend'
+                        sh 'docker rm backend'
+                        sh 'docker rmi backend-image'
+                    } catch (e) {
+                        sh 'echo "fail to stop and remove container"'
+                    }
+                }
+                docker build -t backend-image .
+                echo 'Build image...'
+                docker run -d -p 8080:8080 --restart="always" --name backend backend-image
+                echo 'docker run complete'
+            }
+        }    
+    }    
+}
