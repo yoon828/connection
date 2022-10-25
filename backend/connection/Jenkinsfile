@@ -12,9 +12,9 @@ pipeline {
                         sh 'echo "fail to stop and remove container"'
                     }
                 }
-                docker build -t backend-image .
+                sh 'docker build -t backend-image .'
                 echo 'Build image...'
-                docker run -d -p 8080:8080 --restart="always" --name backend backend-image
+                sh 'docker run -d -p 8080:8080 --restart="always" --name backend backend-image'
                 echo 'docker run complete'
             }
         }    
