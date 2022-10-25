@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Center,
@@ -11,7 +11,7 @@ import {
   useColorMode,
   useDisclosure
 } from "@chakra-ui/react";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
 import LogoLight from "../asset/img/logo_light.png";
@@ -26,6 +26,7 @@ interface menuType {
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const location = useLocation();
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
@@ -34,36 +35,50 @@ function Header() {
   ];
 
   return (
-    <Flex boxShadow="lg">
-      <Center p="14px">
-        <Link as={ReactLink} to="/">
-          <Image
-            src={colorMode === "light" ? LogoLight : LogoDark}
-            alt="logo"
-            w="130px"
-          />
-        </Link>
-      </Center>
-      <Spacer />
-      <Center p="14px" w="540px" justifyContent="left">
-        {menus.map(menu => {
-          return (
-            <Link as={ReactLink} to={menu.link} mr="50px" key={v4()}>
-              {menu.title}
-            </Link>
-          );
-        })}
-      </Center>
-      <Spacer />
-      <Center p="14px">
-        <Button mr="14px" onClick={toggleColorMode}>
-          <MoonIcon />
-        </Button>
-        <Button onClick={onOpen}>회원가입</Button>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <JoinModal />
-        </Modal>
+    <Flex
+      boxShadow="md"
+      position="sticky"
+      top="0px"
+      bg={colorMode === "light" ? "white" : "#121212"}
+    >
+      <Center maxW="1200px" m="0 auto" w="100%">
+        <Center p="14px">
+          <Link as={ReactLink} to="/">
+            <Image
+              src={colorMode === "light" ? LogoLight : LogoDark}
+              alt="logo"
+              w="130px"
+            />
+          </Link>
+        </Center>
+        <Spacer />
+        <Center p="14px" w="540px" justifyContent="left">
+          {menus.map(menu => {
+            return (
+              <Link
+                as={ReactLink}
+                to={menu.link}
+                mr="50px"
+                key={v4()}
+                color={location.pathname === menu.link ? "main" : ""}
+                _hover={{}}
+              >
+                {menu.title}
+              </Link>
+            );
+          })}
+        </Center>
+        <Spacer />
+        <Center p="14px">
+          <Button mr="14px" onClick={toggleColorMode}>
+            <MoonIcon />
+          </Button>
+          <Button onClick={onOpen}>회원가입</Button>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <JoinModal />
+          </Modal>
+        </Center>
       </Center>
     </Flex>
   );

@@ -79,7 +79,7 @@ function Main() {
           })}
         </Center>
       </Center>
-      <Box as="section" bg="dep_1" py="50px">
+      <Box as="section" bg="#fbfbfb" _dark={{ bg: "#1b1b1b" }} py="50px">
         <Center maxW="800px" m="0 auto" flexDir="column">
           <Box w="100%">
             <Box
@@ -129,7 +129,6 @@ function Main() {
       </Box>
       <Box as="section" py="50px">
         <Center maxW="800px" m="0 auto" flexDir="column">
-          {" "}
           <Box w="100%">
             <Box
               bg="gra"
@@ -163,12 +162,23 @@ function Main() {
           })}
         </Center>
       </Box>
-      <Box
+      <Center
         as="section"
         py="50px"
-        bg=" linear-gradient(180deg, #FFFFFF 0%, #88BFFF 100%);"
+        h="250px"
+        bg={
+          colorMode === "light"
+            ? "linear-gradient(180deg, #FFFFFF 0%, #88BFFF 100%)"
+            : "linear-gradient(180deg, #121212 0%, #1581FF 100%)"
+        }
       >
-        <Center maxW="800px" m="0 auto" flexDir="column" h="80px">
+        <Center
+          maxW="800px"
+          m="0 auto"
+          flexDir="column"
+          h="100%"
+          justifyContent="space-evenly"
+        >
           <Text>
             더 이상 혼자가 아닌 스터디원들과 같이 알고리즘 문제를 푸세요
           </Text>
@@ -182,28 +192,25 @@ function Main() {
             와 함께라면 더 높은 곳 까지 갈 수 있어요
           </Text>
         </Center>
-      </Box>
-      <Box
-        as="footer"
-        h="300px"
-        display="flex"
-        justifyContent="flex-end"
-        alignItems="flex-end"
-      >
-        <Box
-          display="flex"
-          flexDir="column"
-          justifyContent="flex-end"
-          alignItems="flex-end"
-          mr="20px"
-        >
-          <Text>Coalla by 우건이와 아이들</Text>
-          <Text color="dep_3" mb="60px">
-            김우건 김윤민 김준우 염진호 이기영 최진합
-          </Text>
-          <Text color="dep_3" mb="30px">
-            © 2022 Coalla All Rights Reserved
-          </Text>
+      </Center>
+      <Box as="footer" h="300px" display="flex">
+        <Box maxW="800px" w="100%" m="0 auto">
+          <Box
+            display="flex"
+            flexDir="column"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+            mr="20px"
+            h="100%"
+          >
+            <Text>Coalla by 우건이와 아이들</Text>
+            <Text color="dep_3" mb="60px">
+              김우건 김윤민 김준우 염진호 이기영 최진합
+            </Text>
+            <Text color="dep_3" mb="30px">
+              © 2022 Coalla All Rights Reserved
+            </Text>
+          </Box>
         </Box>
       </Box>
     </Box>
