@@ -8,16 +8,19 @@ import {
   Flex,
   Heading,
   Link,
-  Text
+  Text,
+  useClipboard
 } from "@chakra-ui/react";
 import TotalLayout from "../../components/layout/TotalLayout";
 import Homework from "../../components/study/Homework";
 import Ranking from "../../components/study/Ranking";
 
 function StudyTotal() {
-  function onCopy() {
-    navigator.clipboard.writeText("초대코드");
-    alert("스터디 코드가 복사되었습니다!");
+  const { onCopy } = useClipboard("스터디코드");
+
+  function onCopyEvent() {
+    onCopy();
+    alert("코드가 복사되었습니다!");
   }
 
   return (
@@ -41,18 +44,18 @@ function StudyTotal() {
             초대 코드 : SDFWVS
             <ExternalLinkIcon
               mx="3px"
-              onClick={() => onCopy()}
+              onClick={() => onCopyEvent()}
               cursor="pointer"
             />
           </Text>
         </Flex>
         <Flex dir="row">
-          <Link as={ReactLink} to="/study/list">
+          <Link as={ReactLink} to="/study/collection">
             <Button bg="gra" mr="20px" _hover={{}}>
               문제집
             </Button>
           </Link>
-          <Link as={ReactLink} to="/study/manage">
+          <Link as={ReactLink} to="/study/management">
             <Button bg="gra" mr="20px" _hover={{}}>
               스터디 관리
             </Button>

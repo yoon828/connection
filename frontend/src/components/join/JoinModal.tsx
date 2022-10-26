@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   ModalHeader,
   Text
 } from "@chakra-ui/react";
+import axios from "axios";
 
 function JoinModal() {
   return (

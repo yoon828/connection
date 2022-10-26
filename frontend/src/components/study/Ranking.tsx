@@ -30,6 +30,7 @@ function Ranking() {
             p="8px 16px"
             m="3px 0"
             w="200px"
+            _dark={id === data.id ? {} : { bg: "dep_3" }}
           >
             <Text w="40px">{data.rank}</Text>
             <Text>{data.name}</Text>

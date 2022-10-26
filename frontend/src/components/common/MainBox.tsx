@@ -24,13 +24,15 @@ function MainBox({ dir, data }: MainBoxProps) {
         <Text color="main" fontSize="16px" fontWeight="bold">
           {data.category}
         </Text>
-        {data.title.map(line => {
-          return (
-            <Text fontSize="24px" fontWeight="bold" key={v4()}>
-              {line}
-            </Text>
-          );
-        })}
+        <Box>
+          {data.title.map(line => {
+            return (
+              <Text fontSize="24px" fontWeight="bold" key={v4()}>
+                {line}
+              </Text>
+            );
+          })}
+        </Box>
         <Box>
           {data.content.map(line => {
             return (

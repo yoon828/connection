@@ -40,6 +40,7 @@ function Header() {
       position="sticky"
       top="0px"
       bg={colorMode === "light" ? "white" : "#121212"}
+      zIndex="5"
     >
       <Center maxW="1200px" m="0 auto" w="100%">
         <Center p="14px">
@@ -47,7 +48,7 @@ function Header() {
             <Image
               src={colorMode === "light" ? LogoLight : LogoDark}
               alt="logo"
-              w="130px"
+              w="160px"
             />
           </Link>
         </Center>

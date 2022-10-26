@@ -22,7 +22,8 @@ export default function Routes() {
       <ReactRouterRoutes>
         <Route path="/" element={<Main />} />
         <Route path="/recommend" element={<Recommend />} />
-        <Route path="/study" element={<StudyTotal />}>
+        <Route path="/study">
+          <Route index element={<StudyTotal />} />
           <Route path="join" element={<StudyJoin />} />
           <Route path="collection" element={<Collection />} />
           <Route path="assignment" element={<Assignment />} />
