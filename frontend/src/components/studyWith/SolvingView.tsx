@@ -1,6 +1,8 @@
 import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import getTime from "../../utils/getTime";
+import NextBtn from "./NextBtn";
+import ViewTitle from "./ViewTitle";
 
 function ProblemBar() {
   type problemState = "waiting" | "success" | "fail";
@@ -93,27 +95,18 @@ function SolvingView({ onBtnClick }: SolvingViewProps) {
   return (
     <Center w="1200px" m="auto" flexDir="column">
       <Timer initTime={300} />
-      <Text fontSize="40px" fontWeight="700" mt="12px" mb="32px">
-        문제 풀이
-      </Text>
-      <Text mb="60px" fontSize="20px">
-        문제를 풀었으면 확인버튼을 눌러주세요.{" "}
-      </Text>
+      <ViewTitle
+        main="문제 풀이"
+        des="문제를 풀었으면 확인버튼을 눌러주세요."
+        highLight=""
+        mt={12}
+        mb={60}
+        desSize={20}
+      />
       <ProblemBar />
       <ProblemBar />
       <ProblemBar />
-      <Button
-        w="160px"
-        h="48px"
-        borderRadius="16px"
-        fontSize="24px"
-        mt="24px"
-        bg="gra"
-        _hover={{ opacity: 0.6 }}
-        onClick={onBtnClick}
-      >
-        다음
-      </Button>
+      <NextBtn text="다음" mt={20} onBtnClick={onBtnClick} />
     </Center>
   );
 }

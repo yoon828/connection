@@ -13,6 +13,8 @@ import {
 import { v4 } from "uuid";
 import React, { useEffect, useMemo, useState } from "react";
 import getTime from "../../utils/getTime";
+import ViewTitle from "./ViewTitle";
+import NextBtn from "./NextBtn";
 
 type ProblemContainerProps = {
   id: number;
@@ -120,24 +122,13 @@ function TimeSetView({ onBtnClick }: TimeSetViewProps) {
 
   return (
     <Center w="1200px" m="auto" flexDir="column">
-      <Text fontSize="48px" fontWeight="700" mt="60px" mb="32px">
-        문제 풀이 시간
-      </Text>
-      <Text mb="60px" fontSize="16px">
-        <Highlight
-          query="우건이와 아이들"
-          styles={{
-            px: "2",
-            py: "1",
-            rounded: "full",
-            fontWeight: 600,
-            bg: "gra",
-            color: "chakra-body-text"
-          }}
-        >
-          우건이와 아이들 과 함께 문제를 풀 제한 시간을 설정해주세요
-        </Highlight>
-      </Text>
+      <ViewTitle
+        main="문제 풀이 시간"
+        mt={60}
+        mb={60}
+        des="우건이와 아이들 과 함께 문제를 풀 제한 시간을 설정해주세요"
+        highLight="우건이와 아이들"
+      />
       {times &&
         problemDummy.map(problem => (
           <ProblemContainer
@@ -154,17 +145,7 @@ function TimeSetView({ onBtnClick }: TimeSetViewProps) {
       <Text fontSize="60px" mb="12px">
         {totalTime}
       </Text>
-      <Button
-        w="160px"
-        h="48px"
-        borderRadius="16px"
-        fontSize="24px"
-        bg="gra"
-        _hover={{ opacity: 0.6 }}
-        onClick={onBtnClick}
-      >
-        다음
-      </Button>
+      <NextBtn text="다음" mt={0} onBtnClick={onBtnClick} />
     </Center>
   );
 }

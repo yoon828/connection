@@ -2,6 +2,8 @@ import { Search2Icon } from "@chakra-ui/icons";
 import { Box, Button, Center, Highlight, Text } from "@chakra-ui/react";
 import React from "react";
 import ProblemSelect from "../common/ProblemSelect/ProblemSelect";
+import NextBtn from "./NextBtn";
+import ViewTitle from "./ViewTitle";
 
 type ProblemSetViewProps = {
   onBtnClick: () => void;
@@ -10,24 +12,13 @@ type ProblemSetViewProps = {
 function ProblemSetView({ onBtnClick }: ProblemSetViewProps) {
   return (
     <Center w="1200px" m="auto" flexDir="column">
-      <Text fontSize="48px" fontWeight="700" mt="40px" mb="12px">
-        문제 선택
-      </Text>
-      <Text fontSize="16px">
-        <Highlight
-          query="우건이와 아이들"
-          styles={{
-            px: "2",
-            py: "1",
-            rounded: "full",
-            fontWeight: 600,
-            bg: "gra",
-            color: "chakra-body-text"
-          }}
-        >
-          우건이와 아이들 과 함께 풀이할 문제를 선택해주세요.
-        </Highlight>
-      </Text>
+      <ViewTitle
+        main="문제 선택"
+        mt={40}
+        mb={0}
+        des="우건이와 아이들 과 함께 풀이할 문제를 선택해주세요."
+        highLight="우건이와 아이들"
+      />
       <Box w="880px">
         <Center mb="12px">
           <Button bg="dep_2" ml="auto" borderRadius="12px" p="4px">
@@ -68,19 +59,7 @@ function ProblemSetView({ onBtnClick }: ProblemSetViewProps) {
           ]}
         />
       </Box>
-      <Button
-        w="160px"
-        h="48px"
-        borderRadius="16px"
-        fontSize="24px"
-        bg="gra"
-        _hover={{ opacity: 0.6 }}
-        _active={{ opacity: 1 }}
-        onClick={onBtnClick}
-        mt="20px"
-      >
-        다음
-      </Button>
+      <NextBtn mt={20} onBtnClick={onBtnClick} text="다음" />
     </Center>
   );
 }
