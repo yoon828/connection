@@ -12,10 +12,6 @@ public interface ProblemService {
 
     void loadAllProblemFromApi();
 
-    ProblemDto getProblem(long problemId);
-
-    void save(Problem problem);
-
     List<ProblemReturnDto> getSolvedProblemList(String baekjoonId);
 
     Object getPopularProblemList(long level, String tag);
@@ -27,4 +23,8 @@ public interface ProblemService {
     Object getPopularProblemList(Long level);
 
     Object getPopularProblemList();
+
+    List<ProblemReturnDto> getProblem(String title);
+
+    List<ProblemReturnDto> getProblem(long problemId);
 }

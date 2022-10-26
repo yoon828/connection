@@ -12,4 +12,7 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
     @Query(value = "SELECT *  FROM problem WHERE accepted > 10000 AND level > 2", nativeQuery = true)
     List<Problem> findPopularProblemList();
+
+    @Query(value = "SELECT * FROM problem WHERE upper(title) like %:title%", nativeQuery = true)
+    List<Problem> findAllByTitle(String title);
 }
