@@ -16,7 +16,7 @@ function TotalLayout({ title, children, flex, height, mr }: TotalLayoutProps) {
       w="100%"
       h="300px"
       bg="dep_2"
-      borderRadius="20px"
+      borderRadius="10px"
       boxShadow="md"
       flex={flex}
       height={height}

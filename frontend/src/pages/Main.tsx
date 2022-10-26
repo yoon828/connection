@@ -1,9 +1,11 @@
 import React from "react";
+import { Link as ReactLink } from "react-router-dom";
 import {
   Box,
   Button,
   Center,
   Image,
+  Link,
   Text,
   useColorMode
 } from "@chakra-ui/react";
@@ -45,31 +47,29 @@ function Main() {
       <Center as="section" flexDir="column" py="50px">
         <Center flexDir="column" my="50px">
           <Center fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
-            스터디원들과 함께
             <Text>
               <Text as="span" color="main">
-                코
+                Co
               </Text>
-              딩 &nbsp;
+              de로 우리 스터디원과
+              <br /> Co
               <Text as="span" color="main">
-                알
+                nnection
               </Text>
-              고리즘&nbsp;
-              <Text as="span" color="main">
-                라
-              </Text>
-              이브
+              할 수 있는
             </Text>
           </Center>
           <Image
             src={colorMode === "light" ? LogoLight : LogoDark}
             alt="logo"
-            w="300px"
+            w="350px"
             mb="40px"
           />
-          <Button bg="gra" width="200px" mb="60px">
-            시작하기
-          </Button>
+          <Link as={ReactLink} to="/recommend" mb="60px" _hover={{}}>
+            <Button bg="gra" width="200px" _hover={{}}>
+              시작하기
+            </Button>
+          </Link>
         </Center>
         <Center maxW="800px">
           {imgs.map(img => {
@@ -182,11 +182,11 @@ function Main() {
           <Text>
             더 이상 혼자가 아닌 스터디원들과 같이 알고리즘 문제를 푸세요
           </Text>
-          <Text display="flex">
+          <Text display="flex" alignItems="center">
             <Image
               src={colorMode === "light" ? LogoLight : LogoDark}
               alt="logo"
-              w="130px"
+              w="150px"
               mx="10px"
             />
             와 함께라면 더 높은 곳 까지 갈 수 있어요
@@ -208,7 +208,7 @@ function Main() {
               김우건 김윤민 김준우 염진호 이기영 최진합
             </Text>
             <Text color="dep_3" mb="30px">
-              © 2022 Coalla All Rights Reserved
+              © 2022 connection All Rights Reserved
             </Text>
           </Box>
         </Box>
