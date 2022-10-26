@@ -1,6 +1,8 @@
 import { Box, Button, Center, Flex, Select, Text } from "@chakra-ui/react";
 
 import React, { useState } from "react";
+import NextBtn from "./NextBtn";
+import ViewTitle from "./ViewTitle";
 
 type ReviewBarProps = {
   name: string;
@@ -52,12 +54,14 @@ function ReviewView({ onBtnClick }: ReviewViewProps) {
 
   return (
     <Center w="1200px" m="auto" flexDir="column">
-      <Text fontSize="40px" fontWeight="700" mt="40px" mb="32px">
-        문제 리뷰
-      </Text>
-      <Text mb="60px" fontSize="20px">
-        문제에 대한 리뷰 및 평가를 입력해주세요
-      </Text>
+      <ViewTitle
+        main="문제 리뷰"
+        des="문제에 대한 리뷰 및 평가를 입력해주세요"
+        mt={40}
+        mb={32}
+        highLight=""
+        desSize={20}
+      />
       {dummy &&
         dummy.map((d, ind) => (
           <ReviewBar
@@ -69,19 +73,7 @@ function ReviewView({ onBtnClick }: ReviewViewProps) {
             }
           />
         ))}
-
-      <Button
-        w="160px"
-        h="48px"
-        borderRadius="16px"
-        fontSize="24px"
-        bg="gra"
-        mt="40px"
-        _hover={{ opacity: 0.6 }}
-        onClick={onBtnClick}
-      >
-        다음
-      </Button>
+      <NextBtn text="다음" mt={40} onBtnClick={onBtnClick} />
     </Center>
   );
 }

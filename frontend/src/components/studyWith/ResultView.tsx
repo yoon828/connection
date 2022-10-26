@@ -2,6 +2,8 @@ import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
 
 import React from "react";
 import getTime from "../../utils/getTime";
+import NextBtn from "./NextBtn";
+import ViewTitle from "./ViewTitle";
 
 type ResultBarProps = {
   name: string;
@@ -57,9 +59,7 @@ function ResultView({ onBtnClick }: ResultViewProps) {
 
   return (
     <Center w="1200px" m="auto" flexDir="column">
-      <Text fontSize="48px" fontWeight="700" mt="48px" mb="24px">
-        풀이 결과
-      </Text>
+      <ViewTitle main="풀이 결과" mt={48} mb={0} des="" highLight="" />
       {dummy &&
         dummy.map((d, ind) => (
           <ResultBar
@@ -72,17 +72,7 @@ function ResultView({ onBtnClick }: ResultViewProps) {
           />
         ))}
 
-      <Button
-        w="160px"
-        h="48px"
-        borderRadius="16px"
-        fontSize="24px"
-        bg="gra"
-        _hover={{ opacity: 0.6 }}
-        onClick={onBtnClick}
-      >
-        다음
-      </Button>
+      <NextBtn text="다음" mt={0} onBtnClick={onBtnClick} />
     </Center>
   );
 }
