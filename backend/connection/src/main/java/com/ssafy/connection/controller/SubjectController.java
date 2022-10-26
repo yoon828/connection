@@ -14,6 +14,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
@@ -38,13 +40,15 @@ public class SubjectController {
 
     @ApiOperation(value = "문제제출")
     @PostMapping("/")
-    public void makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        int result = 0;
         try{
             Long userId = userPrincipal.getId();
-            subjectService.makeSubject(subjectDto, userId);
+            result = subjectService.makeSubject(subjectDto, userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @ApiOperation(value = "진행중인 과제현황")

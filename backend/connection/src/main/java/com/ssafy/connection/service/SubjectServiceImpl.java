@@ -28,12 +28,12 @@ public class SubjectServiceImpl implements SubjectService{
 //        subjectRepository.save(subject);
 //    }
     @Override
-    public void makeSubject(SubjectDto subjectDto, Long userId){
+    public int makeSubject(SubjectDto subjectDto, Long userId){
         studyRepository.getById(subjectDto.getStudyId());
 
         List<Subject> list = new ArrayList<>();
         List<Long> problemList = subjectDto.getProblemList();
-        for(int i = 0; i<subjectDto.getProblemList().size(); i++){
+        for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
             subject.setDeadline(subjectDto.getDeadline());
             subject.setStudy(studyRepository.getById(subjectDto.getStudyId()));
@@ -41,6 +41,8 @@ public class SubjectServiceImpl implements SubjectService{
             list.add(subject);
         }
         subjectRepository.saveAll(list);
+
+        return problemList.size();
     }
 
     @Override
