@@ -2,6 +2,7 @@ package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
+import com.ssafy.connection.dto.TagDto;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Tag;
 import com.ssafy.connection.repository.ProblemRepository;
@@ -16,8 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -33,28 +33,135 @@ public class ProblemServiceImpl implements ProblemService{
         this.tagRepository = tagRepository;
     }
 
-    @Transactional
-    public ProblemDto getProblem(long problemId) {
-        return ProblemDto.of(problemRepository.getById(problemId));
+    private static int recommendSize = 4;
+
+    @Override
+    public Object getPopularProblemList(String tag) {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(ProblemDto problemDto : problemDtoList){
+            ArrayList<TagDto> tagList = (ArrayList<TagDto>) tagRepository.findAllByProblem(Problem.of(problemDto));
+            for(TagDto tagDto : tagList){
+                if(tagDto.getKo().equals(tag)){
+                    returnList.add(new ProblemReturnDto(problemDto, tagList));
+                    break;
+                }
+            }
+            if(returnList.size() == recommendSize){
+                break;
+            }
+        }
+        return returnList;
     }
 
     @Override
-    public void save(Problem problem) {
-        problemRepository.save(problem);
+    public Object getPopularProblemList(long level, String tag) {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(ProblemDto problemDto : problemDtoList){
+            if(problemDto.getLevel() == level){
+                ArrayList<TagDto> tagList = (ArrayList<TagDto>) tagRepository.findAllByProblem(Problem.of(problemDto));
+                for(TagDto tagDto : tagList){
+                    if(tagDto.getKo().equals(tag)){
+                        returnList.add(new ProblemReturnDto(problemDto, tagList));
+                        break;
+                    }
+                }
+            }
+            if(returnList.size() == recommendSize){
+                break;
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    public Object getPopularProblemList(Long level) {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(ProblemDto problemDto : problemDtoList){
+            if(problemDto.getLevel() == level){
+                returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            }
+            if(returnList.size() == recommendSize){
+                break;
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    public Object getPopularProblemList() {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(ProblemDto problemDto : problemDtoList){
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            if(returnList.size() == recommendSize){
+                break;
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    @Transactional
+    public List<ProblemReturnDto> getProblem(long problemId) {
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        ProblemDto problemDto = ProblemDto.of(problemRepository.getById(problemId));
+        returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+        return returnList;
+    }
+
+
+    @Override
+    @Transactional
+    public List<ProblemReturnDto> getProblem(String title) {
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<ProblemDto> problemDtoList = problemRepository.findAllByTitle(title).stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+
+        for(ProblemDto problemDto : problemDtoList){
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+        }
+        return returnList;
     }
 
     @Override
     @Transactional
     public List<ProblemReturnDto> getProblemList() {
-        List<Problem> problemEntityList = problemRepository.findAll();
-        List<ProblemDto> problemDtoList = problemEntityList.stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemDto> problemDtoList = problemRepository.findAll().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
-        for(ProblemDto problemDto : problemDtoList){
-            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+        for(int i = 0; i < recommendSize; i++){
+            returnList.add(new ProblemReturnDto(problemDtoList.get(i), tagRepository.findAllByProblem(Problem.of(problemDtoList.get(i)))));
         }
 
         return returnList;
+    }
+
+    @Override
+    public Object getWorkBookProblemList(long level, String tag) {
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+
+        Collections.shuffle(problemDtoList);
+        for(int i = 0; i < recommendSize; i++){
+            returnList.add(new ProblemReturnDto(problemDtoList.get(i), tagRepository.findAllByProblem(Problem.of(problemDtoList.get(i)))));
+        }
+
+        return returnList;
+    }
+
+    @Override
+    public List<ProblemReturnDto> getSolvedProblemList(String baekjoonId) {
+        return null;
     }
 
     @Override

@@ -1,24 +1,16 @@
 package com.ssafy.connection.controller;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
-import com.ssafy.connection.entity.Problem;
-import com.ssafy.connection.entity.Tag;
 import com.ssafy.connection.service.ProblemService;
 import com.ssafy.connection.service.SolveService;
 import com.ssafy.connection.service.TagService;
 import io.swagger.annotations.ApiOperation;
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/problem")
@@ -35,103 +27,58 @@ public class ProblemController {
         this.solveService = solveService;
     }
 
-    @ApiOperation(value = "문제에 대한 데이터와 풀이 여부 반환")
-    @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getProblem(@RequestParam("problemId") long problemId, @RequestParam("userId") long userId){
+    @ApiOperation(value = "문제 추천 (임시 로직 적용), 체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
+    @GetMapping("/recommend")
+    public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level,
+                                                                       @RequestParam(value = "tag", required = false) String tag) {
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("problem", problemService.getProblem(problemId));
-        returnMap.put("isSolved", solveService.isSolved(problemId, userId));
+
+        if(level == null && !(tag == null || tag.isEmpty())) {          // tag만 입력되었을 경우
+            returnMap.put("popular", problemService.getPopularProblemList(tag));
+        } else if(level != null && (tag == null || tag.isEmpty())){     // level만 입력되었을 경우
+            returnMap.put("popular", problemService.getPopularProblemList(level));
+        } else if(level != null && !(tag == null || tag.isEmpty())){    // tag, level 모두 입력되었을 경우
+            returnMap.put("popular", problemService.getPopularProblemList(level, tag));
+        } else {    // 아무값도 입력되지 않았을 경우
+            returnMap.put("popular", problemService.getPopularProblemList());
+        }
+//        문제집에 많이 담겨있는 문제 추가 예정
+//        returnMap.put("workbook", problemService.getWorkBookProblemList(level, tag));
+        returnMap.put("workbook", problemService.getProblemList());
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
+    }
+
+    @ApiOperation(value = "문제 검색 (제목은 포함, 문제번호는 일치)")
+    @GetMapping("/")
+    public ResponseEntity<List<ProblemReturnDto>> getProblem(@RequestParam(value = "problemId", required = false) Long problemId,
+                                                       @RequestParam(value = "title", required = false) String title){
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        if(problemId == null && !(title == null || title.isEmpty())) {      // title이 입력되었을 경우
+            returnList = problemService.getProblem(title);
+        } else if(problemId != null && (title == null || title.isEmpty())){ // problemId가 입력되었을 경우
+            returnList = problemService.getProblem(problemId);
+        } else {    // 아무값도 입력되지 않았을 경우
+            returnList = problemService.getProblemList();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnList);
+    }
+
+    @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")
+    @GetMapping("/test")
+    public ResponseEntity<List<ProblemReturnDto>> getSolvedProblemList(@RequestParam("baekjoonId") String baekjoonId){
+        return ResponseEntity.status(HttpStatus.OK).body(problemService.getSolvedProblemList(baekjoonId));
     }
 
     @ApiOperation(value = "백준 전체 문제 데이터 반환(사용 안함)")
     @GetMapping("/all")
     public ResponseEntity<List<ProblemReturnDto>> getProblemList(){
-        List<ProblemReturnDto> returnList = problemService.getProblemList();
-        return ResponseEntity.status(HttpStatus.OK).body(returnList);
+        return ResponseEntity.status(HttpStatus.OK).body(problemService.getProblemList());
     }
 
-    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지, 최소 ")
+    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지)")
     @GetMapping("/api/load")
-    public void loadJsonFromApi(){
-        StringBuffer result = new StringBuffer();
-        String baseUrl = "https://solved.ac/api/v3/search/problem?query=";
-        try{
-            int count = 255;
-            for(int i = 1000; i <= 25848; i++) {
-                // 문제 데이터 255개 받아올때마다 16분 대기
-                if(count == 0) {
-                    System.out.println("solved.ac API 호출 횟수 제한 대기 중......");
-                    Thread.sleep(1000 * 60 * 16);
-                    count = 255;
-                } else {
-                    count--;
-                }
-                result.delete(0, result.length());  // StringBuffer 초기화
-                URL url = new URL(baseUrl + i); // URL 설정
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Content-type", "application/json");
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-                result.append(reader.readLine());
-                JSONParser jsonParser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) jsonParser.parse(result.toString());
-
-                // 읽어온 문제 데이터에서 count 값이 0일 경우, 해당 번호의 문제가 없음
-                if((long) jsonObject.get("count") == 0){
-                    continue;
-                }
-
-                // items에 들어있는 문제 데이터 중 첫번째 데이터만 문제 번호에 맞는 데이터
-                JSONArray jsonArray = (JSONArray) jsonObject.get("items");
-                jsonObject = (JSONObject) jsonArray.get(0);
-
-                Pattern rex = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]");
-                Matcher rexMatcher = rex.matcher((String) jsonObject.get("titleKo"));
-                // 이모티콘 검사
-                if(rexMatcher.find()){
-                    continue;
-                }
-
-                Problem problem = new Problem();
-                problem.setProblemId((long) jsonObject.get("problemId"));
-                problem.setTitle((String) jsonObject.get("titleKo"));
-                problem.setSolvable((boolean) jsonObject.get("isSolvable"));
-                problem.setLevel((long) jsonObject.get("level"));
-                problem.setTries(String.valueOf(jsonObject.get("averageTries")));
-                problem.setAccepted((long) jsonObject.get("acceptedUserCount"));
-
-                problemService.save(problem);   // 문제 엔티티 DB에 저장
-
-                // tags에 들어있는 여러 개의 태그 데이터 저장
-                jsonArray = (JSONArray) jsonObject.get("tags");
-                JSONArray languageJsonArray;
-                int tagSize = jsonArray.size();
-                for(int j = 0; j < tagSize; j++){
-                    Tag tag = new Tag();
-                    jsonObject = (JSONObject) jsonArray.get(j);
-                    // displayNames에 태그 이름 데이터 저장되어있음
-                    languageJsonArray = (JSONArray) jsonObject.get("displayNames");
-                    // 한국어, 영어 태그 이름 모두 저장
-                    for(int k = 0; k < languageJsonArray.size(); k++) {
-                        jsonObject = (JSONObject) languageJsonArray.get(k);
-                        String language = (String) jsonObject.get("language");
-                        switch(language){
-                            case "ko":
-                                tag.setKo((String) jsonObject.get("short"));
-                                break;
-                            case "en":
-                                tag.setEn((String) jsonObject.get("short"));
-                                break;
-                        }
-                    }
-                    tag.setProblem(problem);
-                    tagService.save(tag);   // 태그 엔티티 DB에 저장
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void loadAllProblemFromApi(){
+        problemService.loadAllProblemFromApi();
     }
 }
