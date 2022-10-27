@@ -92,7 +92,7 @@ public class CustomTokenProviderService {
         return Long.parseLong(claims.getSubject());
     }
 
-    public UsernamePasswordAuthenticationToken getAuthenticationById(String token){
+    public UsernamePasswordAuthenticationToken ;(String token){
         Long userId = getUserIdFromToken(token);
         UserDetails userDetails = customUserDetailsService.loadUserById(userId);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
