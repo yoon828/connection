@@ -1,5 +1,9 @@
 import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 
+const fonts = {
+  body: "NotoSans"
+};
+
 const styles = {
   global: {
     body: {
@@ -73,5 +77,5 @@ const config: ThemeConfig = {
   useSystemColorMode: true
 };
 
-const customTheme = extendTheme({ semanticTokens, config, styles });
+const customTheme = extendTheme({ semanticTokens, config, styles, fonts });
 export default customTheme;
