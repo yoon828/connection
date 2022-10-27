@@ -27,6 +27,7 @@ public class Solve {
 
     private LocalDateTime time; // 문제 푼 시각
 
+
     /* 연관관계 매핑 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
