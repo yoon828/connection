@@ -34,7 +34,7 @@ function ReviewBar({ id, name, setTiers }: ReviewBarProps) {
         <Text>{name}</Text>
       </Center>
       <Center>
-        <Select w="120px" bg="dep_2" borderRadius="12px">
+        <Select w="120px" bg="dep_2" borderRadius="12px" cursor="pointer">
           <option value="브">브</option>
           <option value="실">실</option>
           <option value="골">골</option>

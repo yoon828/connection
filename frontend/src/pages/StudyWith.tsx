@@ -9,17 +9,21 @@ import SolvingView from "../components/studyWith/SolvingView";
 import TimeSetView from "../components/studyWith/TimeSetView";
 
 function StudyWith() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
 
   const bossView: React.FunctionComponentElement<undefined>[] = [
     <NumberSetView key={v4()} onBtnClick={() => setStep(1)} />,
     <ProblemSetView key={v4()} onBtnClick={() => setStep(2)} />,
-    <TimeSetView key={v4()} onBtnClick={() => setStep(3)} />,
+    <TimeSetView
+      key={v4()}
+      onBtnClick={() => setStep(3)}
+      onPrevBtnClick={() => setStep(1)}
+    />,
     <SolvingView key={v4()} onBtnClick={() => setStep(4)} />,
     <ResultView key={v4()} onBtnClick={() => setStep(5)} />,
-    <ReviewView key={v4()} onBtnClick={() => setStep(0)} />
+    <ReviewView key={v4()} onBtnClick={() => setStep(1)} />
   ];
 
   return (
