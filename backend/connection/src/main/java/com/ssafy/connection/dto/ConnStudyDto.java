@@ -6,6 +6,9 @@ import com.ssafy.connection.util.ModelMapperUtils;
 public class ConnStudyDto {
     private long connStudyId;
 
+    private String role;
+
+
     public static ConnStudyDto of(ConnStudy connStudyEntity) {
         ConnStudyDto connStudyDto = ModelMapperUtils.getModelMapper().map(connStudyEntity, ConnStudyDto.class);
 

@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ConnStudyRepository extends JpaRepository<ConnStudy, Long> {
-    Optional<ConnStudy> findByStudy_studyId(long studyId);
+    Optional<ConnStudy> findByStudy_StudyId(long studyId);
+    Optional<ConnStudy> findByUser_UserId(long userId);
 }

@@ -9,4 +9,6 @@ public interface StudyService {
     StudyDto getStudy(String studyCode);
 
     void joinStudy(long userId,String studyCode);
+
+    void quitStudy(long userId, Long quitUserId);
 }

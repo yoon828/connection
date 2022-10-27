@@ -22,6 +22,8 @@ public class ConnStudy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long connStudyId;
 
+    private String role;
+
     /* 연관관계 매핑 */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

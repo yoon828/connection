@@ -117,6 +117,7 @@ public class StudyServiceImpl implements StudyService {
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
 
             ConnStudy connStudy = new ConnStudy();
+            connStudy.setRole("LEADER");
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
             connStudyRepository.save(connStudy);
@@ -140,7 +141,7 @@ public class StudyServiceImpl implements StudyService {
         try {
             User userEntity = userRepository.findById(userId).get();
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
-            ConnStudy connStudyEntity = connStudyRepository.findByStudy_studyId(studyEntity.getStudyId()).get();
+            ConnStudy connStudyEntity = connStudyRepository.findByStudy_StudyId(studyEntity.getStudyId()).get();
             User studyLeaderEntity = connStudyEntity.getUser();
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
 
@@ -151,6 +152,49 @@ public class StudyServiceImpl implements StudyService {
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
+
+            ConnStudy connStudy = new ConnStudy();
+            connStudy.setRole("MEMBER");
+            connStudy.setStudy(studyEntity);
+            connStudy.setUser(userEntity);
+            connStudyRepository.save(connStudy);
+            studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()+1);
+            studyRepository.save(studyEntity);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void quitStudy(long userId, Long quitUserId) {
+        try {
+            User userEntity = userRepository.findById(userId).get(); // quitUserId 없을 때, 스터디장인지 여부 확인 추가 구현
+            User quitUserEntity = null;
+            ConnStudy connStudyEntity = null;
+            Study studyEntity = null;
+            
+            if (quitUserId == null) {
+                quitUserEntity = userRepository.findById(userId).get();
+                connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
+            } else {
+                quitUserEntity = userRepository.findById(quitUserId).get();
+                connStudyEntity = connStudyRepository.findByUser_UserId(quitUserId).get();
+            }
+            
+            studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
+
+            webClient.delete()
+                    .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "co-nnection", studyEntity.getStudyRepository().substring(31), quitUserEntity.getGithubId())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+
+            studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()-1);
+            connStudyRepository.delete(connStudyEntity);
+            studyRepository.save(studyEntity);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
