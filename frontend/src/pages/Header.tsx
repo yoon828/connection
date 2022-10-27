@@ -14,9 +14,9 @@ import {
 import { Link as ReactLink, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
-import LogoLight from "../asset/img/logo_light.png";
-import LogoDark from "../asset/img/logo_dark.png";
 import JoinModal from "../components/join/JoinModal";
+import LogoLight from "../asset/img/logo_light.svg";
+import LogoDark from "../asset/img/logo_dark.svg";
 
 interface menuType {
   title: string;
@@ -41,6 +41,7 @@ function Header() {
       top="0px"
       bg={colorMode === "light" ? "white" : "#121212"}
       zIndex="5"
+      h="65px"
     >
       <Center maxW="1200px" m="0 auto" w="100%">
         <Center p="14px">
@@ -48,7 +49,7 @@ function Header() {
             <Image
               src={colorMode === "light" ? LogoLight : LogoDark}
               alt="logo"
-              w="160px"
+              w="150px"
             />
           </Link>
         </Center>
@@ -63,6 +64,7 @@ function Header() {
                 key={v4()}
                 color={location.pathname === menu.link ? "main" : ""}
                 _hover={{}}
+                fontWeight="bold"
               >
                 {menu.title}
               </Link>

@@ -19,7 +19,7 @@ function JoinModal() {
   return (
     <ModalContent bg="dep_1" maxW={650}>
       <ModalHeader />
-      <ModalCloseButton size="10px" />
+      <ModalCloseButton size="lg" p="10px" />
       <ModalBody px="50px">
         <Text fontSize="30px" fontStyle="bold">
           회원가입

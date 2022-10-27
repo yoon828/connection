@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Center, Flex, Image, Text } from "@chakra-ui/react";
-import { v4 } from "uuid";
+import { Center, Image, Text } from "@chakra-ui/react";
 
 interface MainSquareProps {
   data: {
@@ -13,8 +12,8 @@ interface MainSquareProps {
 function MainSquare({ data }: MainSquareProps) {
   return (
     <Center
-      w="260px"
-      h="200px"
+      w="280px"
+      h="220px"
       bg="gra"
       borderRadius="15px"
       flexDir="column"
@@ -24,7 +23,7 @@ function MainSquare({ data }: MainSquareProps) {
       <Text fontSize="20px" fontWeight="bold">
         {data.title}
       </Text>
-      <Text fontSize="14px" textAlign="center">
+      <Text fontSize="14px" textAlign="center" p="14px">
         {data.content}
       </Text>
     </Center>

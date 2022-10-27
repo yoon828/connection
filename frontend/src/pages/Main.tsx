@@ -1,17 +1,21 @@
 import React from "react";
-import { Link as ReactLink } from "react-router-dom";
+import {
+  Link as ReactLink,
+  Navigate,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
 import {
   Box,
   Button,
   Center,
+  Flex,
   Image,
   Link,
   Text,
   useColorMode
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
-import LogoLight from "../asset/img/logo_light.png";
-import LogoDark from "../asset/img/logo_dark.png";
 import C from "../asset/img/c.png";
 import Java from "../asset/img/java.png";
 import JS from "../asset/img/js.png";
@@ -22,10 +26,17 @@ import Homework from "../asset/img/homework.png";
 import MainBox from "../components/common/MainBox";
 import { studyInfos, etcInfos } from "../asset/data/main";
 import MainSquare from "../components/common/MainSquare";
+import LogoLight from "../asset/img/logo_light.svg";
+import LogoDark from "../asset/img/logo_dark.svg";
+import Codebox from "../asset/img/codebox.png";
+import Notebook from "../asset/img/notebook.png";
+import Wave from "../asset/img/wave.png";
+import MainImg from "../asset/img/main_img.png";
 
 function Main() {
   const { colorMode } = useColorMode();
 
+  const navigate = useNavigate();
   const imgs = [C, Java, JS, Python, Kotlin];
 
   const squares = [
@@ -43,34 +54,44 @@ function Main() {
   ];
 
   return (
-    <Box>
-      <Center as="section" flexDir="column" py="50px">
-        <Center flexDir="column" my="50px">
-          <Center fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
-            <Text>
-              <Text as="span" color="main">
-                Co
+    <Box position="relative">
+      <Center as="section" flexDir="column" position="relative" py="60px">
+        <Flex w="100%" maxW="800px" my="60px">
+          <Center flexDir="column" flex="1" alignItems="">
+            <Box fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
+              <Text>
+                <Text as="span" color="main">
+                  Co
+                </Text>
+                de로 스터디원과
+                <br /> Co
+                <Text as="span" color="main">
+                  nnection
+                </Text>
+                할 수 있는
               </Text>
-              de로 우리 스터디원과
-              <br /> Co
-              <Text as="span" color="main">
-                nnection
-              </Text>
-              할 수 있는
-            </Text>
-          </Center>
-          <Image
-            src={colorMode === "light" ? LogoLight : LogoDark}
-            alt="logo"
-            w="350px"
-            mb="40px"
-          />
-          <Link as={ReactLink} to="/recommend" mb="60px" _hover={{}}>
-            <Button bg="gra" width="200px" _hover={{}}>
+            </Box>
+            <Image
+              src={colorMode === "light" ? LogoLight : LogoDark}
+              alt="logo"
+              w="300px"
+              mb="40px"
+            />
+            <Button
+              bg="gra"
+              width="200px"
+              _hover={{}}
+              _active={{}}
+              onClick={() => navigate("/recommend")}
+            >
               시작하기
             </Button>
-          </Link>
-        </Center>
+          </Center>
+          <Box flex="1">
+            <Image src={MainImg} alt="main" w="430px" />
+          </Box>
+        </Flex>
+
         <Center maxW="800px">
           {imgs.map(img => {
             return (
@@ -78,10 +99,19 @@ function Main() {
             );
           })}
         </Center>
+        <Image
+          src={Wave}
+          alt="wave"
+          position="absolute"
+          bottom="0px"
+          zIndex="-1"
+          w="100%"
+          h="40%"
+        />
       </Center>
       <Box as="section" bg="#fbfbfb" _dark={{ bg: "#1b1b1b" }} py="50px">
         <Center maxW="800px" m="0 auto" flexDir="column">
-          <Box w="100%">
+          <Box w="100%" display="flex" alignItems="center">
             <Box
               bg="gra"
               w="500px"
@@ -101,6 +131,7 @@ function Main() {
               알고리즘 공부, 이제 그만 ✋ <br />
               같이하면 즐거움이 두 배
             </Box>
+            <Image src={Codebox} alt="code" w="200px" ml="50px" />
           </Box>
           {studyInfos.slice(0, 3).map((info, idx) => {
             return (
@@ -129,7 +160,13 @@ function Main() {
       </Box>
       <Box as="section" py="50px">
         <Center maxW="800px" m="0 auto" flexDir="column">
-          <Box w="100%">
+          <Box
+            w="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Image src={Notebook} alt="code" w="200px" mr="50px" />
             <Box
               bg="gra"
               w="500px"
@@ -179,15 +216,13 @@ function Main() {
           h="100%"
           justifyContent="space-evenly"
         >
-          <Text>
-            더 이상 혼자가 아닌 스터디원들과 같이 알고리즘 문제를 푸세요
-          </Text>
+          <Text>더 이상 혼자가 아닌 스터디원들과 같이 알고리즘 공부하세요</Text>
           <Text display="flex" alignItems="center">
             <Image
               src={colorMode === "light" ? LogoLight : LogoDark}
               alt="logo"
               w="150px"
-              mx="10px"
+              mr="5px"
             />
             와 함께라면 더 높은 곳 까지 갈 수 있어요
           </Text>
@@ -202,8 +237,9 @@ function Main() {
             alignItems="flex-end"
             mr="20px"
             h="100%"
+            fontSize="12px"
           >
-            <Text>Coalla by 우건이와 아이들</Text>
+            <Text>connection by 우건공주와 다섯난쟁이</Text>
             <Text color="dep_3" mb="60px">
               김우건 김윤민 김준우 염진호 이기영 최진합
             </Text>
