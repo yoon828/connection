@@ -46,4 +46,5 @@ public class StudyController {
         studyService.joinStudy(userId, studyCode);
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
+
 }
