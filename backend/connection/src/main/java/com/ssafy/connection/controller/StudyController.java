@@ -38,4 +38,12 @@ public class StudyController {
 
         return ResponseEntity.status(HttpStatus.OK).body(studyDto);
     }
+
+    @ApiOperation(value = "스터디 참가")
+    @PostMapping("/join/{study_code}")
+    public ResponseEntity<String> joinStudy(@PathVariable("study_code") String studyCode, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        studyService.joinStudy(userId, studyCode);
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
 }

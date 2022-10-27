@@ -41,7 +41,6 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public void createStudy(long userId, StudyDto studyDto) {
-
         try {
             User userEntity = userRepository.findById(userId).get();
             String studyName = studyDto.getStudyName();
@@ -129,10 +128,31 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public StudyDto getStudy(String studyCode) {
-
         Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
         StudyDto studyDto = StudyDto.of(studyEntity);
 
         return studyDto;
+    }
+
+    @Override
+    @Transactional
+    public void joinStudy(long userId, String studyCode) {
+        try {
+            User userEntity = userRepository.findById(userId).get();
+            Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
+            ConnStudy connStudyEntity = connStudyRepository.findByStudy_studyId(studyEntity.getStudyId()).get();
+            User studyLeaderEntity = connStudyEntity.getUser();
+            String inviteUserRequest = "{\"role\":\"maintainer\"}";
+
+            webClient.put()
+                    .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "co-nnection", studyLeaderEntity.getGithubId(), userEntity.getGithubId())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(inviteUserRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
