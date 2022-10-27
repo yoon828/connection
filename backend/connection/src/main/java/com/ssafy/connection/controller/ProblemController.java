@@ -64,6 +64,13 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.OK).body(returnList);
     }
 
+    @ApiOperation(value = "문제 검색v2 (통합검색)")
+    @GetMapping("/search")
+    public ResponseEntity<List<ProblemReturnDto>> searchProblem(@RequestParam(value = "keyword") String keyword){
+        List<ProblemReturnDto> returnList = problemService.searchProblem(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(returnList);
+    }
+
     @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")
     @GetMapping("/test")
     public ResponseEntity<List<ProblemReturnDto>> getSolvedProblemList(@RequestParam("baekjoonId") String baekjoonId){
