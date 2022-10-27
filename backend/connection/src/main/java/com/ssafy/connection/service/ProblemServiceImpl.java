@@ -115,7 +115,12 @@ public class ProblemServiceImpl implements ProblemService{
     @Transactional
     public List<ProblemReturnDto> getProblem(long problemId) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-        ProblemDto problemDto = ProblemDto.of(problemRepository.getById(problemId));
+        Optional<Problem> problem = problemRepository.findById(problemId);
+        ProblemDto problemDto = new ProblemDto();
+        if(problem.isPresent()){
+            problemDto = ProblemDto.of(problem.get());
+        }
+        System.out.println(problemDto.toString());
         returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
         return returnList;
     }
@@ -153,7 +158,8 @@ public class ProblemServiceImpl implements ProblemService{
         final String REGEX = "[0-9]+";
         if(keyword.matches(REGEX)) {
             // 숫자만 있으면 문제 ID로 검색
-            for(ProblemReturnDto dto : this.getProblem(Integer.parseInt(keyword))){
+            List<ProblemReturnDto> temp = this.getProblem(Long.parseLong(keyword));
+            for(ProblemReturnDto dto : temp){
                 returnList.add(dto);
             }
         } else {
