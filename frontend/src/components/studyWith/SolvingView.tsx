@@ -48,9 +48,9 @@ function ProblemBar() {
         <Button
           bg="transparent"
           _hover={{ background: "transparent" }}
-          p="0 16px"
+          m="0 8px"
         >
-          확인
+          제출 확인
         </Button>
       </Center>
 
