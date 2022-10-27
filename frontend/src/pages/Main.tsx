@@ -1,17 +1,11 @@
-import React from "react";
-import {
-  Link as ReactLink,
-  Navigate,
-  useLocation,
-  useNavigate
-} from "react-router-dom";
+import React, { useRef } from "react";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
   Center,
   Flex,
   Image,
-  Link,
   Text,
   useColorMode
 } from "@chakra-ui/react";
@@ -32,12 +26,18 @@ import Codebox from "../asset/img/codebox.png";
 import Notebook from "../asset/img/notebook.png";
 import Wave from "../asset/img/wave.png";
 import MainImg from "../asset/img/main_img.png";
+import DownArrow from "../asset/img/downarrow.gif";
 
 function Main() {
   const { colorMode } = useColorMode();
 
   const navigate = useNavigate();
+  const mainRef = useRef<HTMLDivElement>(null);
   const imgs = [C, Java, JS, Python, Kotlin];
+
+  function onDown() {
+    mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   const squares = [
     {
@@ -55,8 +55,14 @@ function Main() {
 
   return (
     <Box position="relative">
-      <Center as="section" flexDir="column" position="relative" py="60px">
-        <Flex w="100%" maxW="800px" my="60px">
+      <Center
+        as="section"
+        flexDir="column"
+        position="relative"
+        h="calc(100vh - 68px)"
+        justifyContent="space-around"
+      >
+        <Flex w="100%" maxW="800px">
           <Center flexDir="column" flex="1" alignItems="">
             <Box fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
               <Text>
@@ -91,13 +97,23 @@ function Main() {
             <Image src={MainImg} alt="main" w="430px" />
           </Box>
         </Flex>
-
-        <Center maxW="800px">
-          {imgs.map(img => {
-            return (
-              <Image src={img} alt="language" key={v4()} w="80px" mx="20px" />
-            );
-          })}
+        <Center flexDir="column">
+          <Center maxW="800px" mb="10px">
+            {imgs.map(img => {
+              return (
+                <Image src={img} alt="language" key={v4()} w="80px" mx="20px" />
+              );
+            })}
+          </Center>
+          <Button
+            mt="20px"
+            onClick={() => onDown()}
+            bg=""
+            _hover={{}}
+            _active={{}}
+          >
+            <Image src={DownArrow} w="50px" />
+          </Button>
         </Center>
         <Image
           src={Wave}
@@ -109,7 +125,8 @@ function Main() {
           h="40%"
         />
       </Center>
-      <Box as="section" bg="#fbfbfb" _dark={{ bg: "#1b1b1b" }} py="50px">
+      <Box h="68px" id="main" bg="#fbfbfb" ref={mainRef} />
+      <Box as="section" bg="#fbfbfb" _dark={{ bg: "#1b1b1b" }} p="100px 0 0">
         <Center maxW="800px" m="0 auto" flexDir="column">
           <Box w="100%" display="flex" alignItems="center">
             <Box
@@ -158,7 +175,7 @@ function Main() {
           })}
         </Center>
       </Box>
-      <Box as="section" py="50px">
+      <Box as="section" p="100px 0 0">
         <Center maxW="800px" m="0 auto" flexDir="column">
           <Box
             w="100%"
@@ -201,7 +218,7 @@ function Main() {
       </Box>
       <Center
         as="section"
-        py="50px"
+        p="100px 0 0"
         h="250px"
         bg={
           colorMode === "light"
