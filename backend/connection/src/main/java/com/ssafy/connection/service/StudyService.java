@@ -7,4 +7,6 @@ public interface StudyService {
     void createStudy(long userId, StudyDto studyDto);
 
     StudyDto getStudy(String studyCode);
+
+    void joinStudy(long userId,String studyCode);
 }
