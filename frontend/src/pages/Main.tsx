@@ -125,9 +125,14 @@ function Main() {
           h="40%"
         />
       </Center>
-      <Box h="68px" id="main" bg="#fbfbfb" ref={mainRef} />
-      <Box as="section" bg="#fbfbfb" _dark={{ bg: "#1b1b1b" }} p="100px 0 0">
-        <Center maxW="800px" m="0 auto" flexDir="column">
+      <Box
+        ref={mainRef}
+        as="section"
+        bg="#fbfbfb"
+        _dark={{ bg: "#1b1b1b" }}
+        p="100px 0 0"
+      >
+        <Center maxW="800px" m="0 auto" flexDir="column" pt="30px">
           <Box w="100%" display="flex" alignItems="center">
             <Box
               bg="gra"
