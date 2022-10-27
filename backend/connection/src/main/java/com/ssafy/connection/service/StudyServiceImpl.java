@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.ConnStudyDto;
 import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.Study;
@@ -19,8 +20,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -198,5 +201,26 @@ public class StudyServiceImpl implements StudyService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void deleteStudy(long userId) {
+        User userEntity = userRepository.findById(userId).get();
+        // 스터디장일때만 삭제 처리 추가
+        webClient.delete()
+                .uri("/orgs/{org}/teams/{team_slug}", "co-nnection", userEntity.getGithubId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+
+        ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
+        Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
+        List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(connStudyEntity.getStudy().getStudyId());
+
+        for (ConnStudy connStudy : connStudyList) {
+            connStudyRepository.delete(connStudy);
+        }
+        studyRepository.delete(studyEntity);
     }
 }

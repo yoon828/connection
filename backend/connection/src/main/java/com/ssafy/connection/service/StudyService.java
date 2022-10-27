@@ -11,4 +11,6 @@ public interface StudyService {
     void joinStudy(long userId,String studyCode);
 
     void quitStudy(long userId, Long quitUserId);
+
+    void deleteStudy(long userId);
 }

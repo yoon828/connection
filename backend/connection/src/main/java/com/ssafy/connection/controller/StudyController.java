@@ -31,6 +31,15 @@ public class StudyController {
         return new ResponseEntity<String>("success",HttpStatus.OK);
     }
 
+    @ApiOperation(value = "스터디 해체")
+    @DeleteMapping
+    public ResponseEntity<String> deleteStudy(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        studyService.deleteStudy(userId);
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
     @ApiOperation(value = "스터디 조희")
     @GetMapping("/join/{study_code}")
     public ResponseEntity<StudyDto> getStudy(@PathVariable("study_code") String studyCode){
@@ -49,7 +58,7 @@ public class StudyController {
     }
 
     @ApiOperation(value = "스터디 탈퇴 및 추방")
-    @DeleteMapping("/study/quit")
+    @DeleteMapping("/quit")
     public ResponseEntity<String> quitStudy(@RequestParam(value = "user_id", required = false) Long quitUserId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
         studyService.quitStudy(userId, quitUserId);
