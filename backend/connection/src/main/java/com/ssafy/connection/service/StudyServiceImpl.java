@@ -140,7 +140,7 @@ public class StudyServiceImpl implements StudyService {
         try {
             User userEntity = userRepository.findById(userId).get();
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
-            ConnStudy connStudyEntity = connStudyRepository.findByStudy_studyId(studyEntity.getStudyId()).get();
+            ConnStudy connStudyEntity = connStudyRepository.findByStudy_StudyId(studyEntity.getStudyId()).get();
             User studyLeaderEntity = connStudyEntity.getUser();
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
 

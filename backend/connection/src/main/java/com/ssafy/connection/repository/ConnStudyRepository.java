@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ConnStudyRepository extends JpaRepository<ConnStudy, Long> {
     ConnStudy findByUser(User userEntity);
+    Optional<ConnStudy> findByStudy_StudyId(long studyId);
 }
