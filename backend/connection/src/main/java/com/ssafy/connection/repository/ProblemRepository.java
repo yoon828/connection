@@ -1,5 +1,6 @@
 package com.ssafy.connection.repository;
 
+import com.ssafy.connection.entity.ConnWorkbook;
 import com.ssafy.connection.entity.Problem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

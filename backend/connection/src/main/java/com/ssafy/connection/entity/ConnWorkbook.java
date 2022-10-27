@@ -29,7 +29,13 @@ public class ConnWorkbook {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workbookId")
     private Workbook workbook;
+
+    public ConnWorkbook(Problem problemEntity, Workbook workbookEnity) {
+        this.problem = problemEntity;
+        this.workbook = workbookEnity;
+    }
     ////////////////////////////////////////
+
 
     public static ConnWorkbook of(ConnWorkbookDto connWorkbookDto) {
         ConnWorkbook connWorkbookEntity = ModelMapperUtils.getModelMapper().map(connWorkbookDto, ConnWorkbook.class);
