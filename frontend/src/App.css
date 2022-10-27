@@ -37,8 +37,13 @@
   }
 }
 
+body {
+  overflow-y: scroll;
+  overflow-y: overlay;
+}
 body::-webkit-scrollbar,
 div::-webkit-scrollbar {
+  position: absolute;
   width: 10px;
 }
 body::-webkit-scrollbar-thumb,

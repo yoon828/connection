@@ -55,7 +55,7 @@ function Collection() {
           borderRadius="20px"
           w="200px"
           p="3"
-          bg="dep_2"
+          bg="dep_1"
           ml="auto"
           mb="6"
           cursor="pointer"
