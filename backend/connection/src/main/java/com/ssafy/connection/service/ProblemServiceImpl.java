@@ -115,11 +115,15 @@ public class ProblemServiceImpl implements ProblemService{
     @Transactional
     public List<ProblemReturnDto> getProblem(long problemId) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-        ProblemDto problemDto = ProblemDto.of(problemRepository.getById(problemId));
+        Optional<Problem> problem = problemRepository.findById(problemId);
+        ProblemDto problemDto = new ProblemDto();
+        if(problem.isPresent()){
+            problemDto = ProblemDto.of(problem.get());
+        }
+        System.out.println(problemDto.toString());
         returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
         return returnList;
     }
-
 
     @Override
     @Transactional
@@ -132,6 +136,41 @@ public class ProblemServiceImpl implements ProblemService{
         }
         return returnList;
     }
+
+    @Override
+    @Transactional
+    public List<ProblemReturnDto> getProblemByTag(String ko) {
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<ProblemDto> problemDtoList = problemRepository.findAllByTag(ko).stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+
+        for(ProblemDto problemDto : problemDtoList){
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<ProblemReturnDto> searchProblem(String keyword) {
+        // 우선 제목으로 검색
+        List<ProblemReturnDto> returnList = this.getProblem(keyword);
+
+        // 검색어에 숫자만 있는지 검증
+        final String REGEX = "[0-9]+";
+        if(keyword.matches(REGEX)) {
+            // 숫자만 있으면 문제 ID로 검색
+            List<ProblemReturnDto> temp = this.getProblem(Long.parseLong(keyword));
+            for(ProblemReturnDto dto : temp){
+                returnList.add(dto);
+            }
+        } else {
+            for(ProblemReturnDto dto : this.getProblemByTag(keyword)){
+                returnList.add(dto);
+            }
+        }
+
+        return returnList;
+    }
+
 
     @Override
     @Transactional

@@ -1,8 +1,6 @@
 package com.ssafy.connection.service;
 
-import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
-import com.ssafy.connection.entity.Problem;
 
 import java.util.List;
 
@@ -27,4 +25,8 @@ public interface ProblemService {
     List<ProblemReturnDto> getProblem(String title);
 
     List<ProblemReturnDto> getProblem(long problemId);
+
+    List<ProblemReturnDto> getProblemByTag(String ko);
+
+    List<ProblemReturnDto> searchProblem(String keyword);
 }
