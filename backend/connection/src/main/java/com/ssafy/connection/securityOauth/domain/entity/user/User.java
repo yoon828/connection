@@ -41,6 +41,8 @@ public class User extends DefaultTime {
 
     private String imageUrl;
 
+    private int tier;
+
     //@Column(nullable = false)
     //private Boolean emailVerified = false;
 

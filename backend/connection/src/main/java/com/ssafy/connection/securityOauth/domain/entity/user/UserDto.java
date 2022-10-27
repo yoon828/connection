@@ -24,6 +24,8 @@ public class UserDto {
 
     private String imageUrl;
 
+    private int tier;
+
     //private Boolean emailVerified = false;
 
     private String password;
