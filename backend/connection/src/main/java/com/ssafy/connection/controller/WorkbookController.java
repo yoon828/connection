@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/workbook")
@@ -37,6 +40,11 @@ public class WorkbookController {
         workbookService.deleteProblem(problemId, userPrincipal.getId());
         return ResponseEntity.status(HttpStatus.OK).body("success");
     }
-    
+
+    @ApiOperation(value = "문제집에 담긴 문제 조회")
+    @GetMapping("/")
+    public ResponseEntity<List<ProblemReturnDto>> getProblem(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        return ResponseEntity.status(HttpStatus.OK).body(workbookService.getProblem(userPrincipal.getId()));
+    }
 
 }
