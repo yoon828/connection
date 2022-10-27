@@ -128,7 +128,6 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public StudyDto getStudy(String studyCode) {
-
         Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
         StudyDto studyDto = StudyDto.of(studyEntity);
 
