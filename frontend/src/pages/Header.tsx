@@ -41,7 +41,6 @@ function Header() {
       top="0px"
       bg={colorMode === "light" ? "white" : "#121212"}
       zIndex="5"
-      h="65px"
     >
       <Center maxW="1200px" m="0 auto" w="100%">
         <Center p="14px">

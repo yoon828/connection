@@ -7,7 +7,6 @@ import {
   Center,
   Flex,
   Heading,
-  Image,
   Link,
   Text,
   useClipboard
@@ -44,7 +43,7 @@ function StudyTotal() {
               우건이와 아이들
             </Heading>
             <Box>
-              <Github width="20px" />
+              <Github width="20px" height="20px" />
             </Box>
           </Center>
           <Text fontSize="14px" display="flex" alignItems="center">
