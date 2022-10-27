@@ -66,8 +66,11 @@ const semanticTokens = {
       default: "linear-gradient(180deg, #FF4848 0%, #B93B3B 100%)"
     },
     border_gray: {
-      _light: "#717171",
-      _dark: "#d1d1d1"
+      _light: "#d1d1d1",
+      _dark: "#717171"
+    },
+    custom_red: {
+      default: "#ff6464"
     }
   }
 };
