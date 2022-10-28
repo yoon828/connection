@@ -3,8 +3,10 @@ package com.ssafy.connection.service;
 import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.dto.TagDto;
+import com.ssafy.connection.dto.WorkbookProblemInterface;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Tag;
+import com.ssafy.connection.repository.ConnWorkbookRepository;
 import com.ssafy.connection.repository.ProblemRepository;
 import com.ssafy.connection.repository.TagRepository;
 import org.json.simple.JSONArray;
@@ -27,13 +29,16 @@ public class ProblemServiceImpl implements ProblemService{
 
     private final ProblemRepository problemRepository;
     private final TagRepository tagRepository;
+    private final ConnWorkbookRepository connWorkbookRepository;
 
-    public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository){
+    public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository){
         this.problemRepository = problemRepository;
         this.tagRepository = tagRepository;
+        this.connWorkbookRepository = connWorkbookRepository;
     }
 
     private static int recommendSize = 4;
+    private static int recommendWorkbookCount = 2;
 
     @Override
     public Object getPopularProblemList(String tag) {
@@ -120,7 +125,6 @@ public class ProblemServiceImpl implements ProblemService{
         if(problem.isPresent()){
             problemDto = ProblemDto.of(problem.get());
         }
-        System.out.println(problemDto.toString());
         returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
         return returnList;
     }
@@ -186,15 +190,20 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Object getWorkBookProblemList(long level, String tag) {
-        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+    public Object getWorkBookProblemList() {
         List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<WorkbookProblemInterface> countList = connWorkbookRepository.findGroupByProblem();
+        Collections.shuffle(countList);
 
-        Collections.shuffle(problemDtoList);
-        for(int i = 0; i < recommendSize; i++){
-            returnList.add(new ProblemReturnDto(problemDtoList.get(i), tagRepository.findAllByProblem(Problem.of(problemDtoList.get(i)))));
+        for(WorkbookProblemInterface object : countList){
+            System.out.println(object.getProblemId() + " " + object.getCount());
+            if(object.getCount() >= recommendWorkbookCount){
+                returnList.add(this.getProblem(object.getProblemId()).get(0));
+            }
+            if(returnList.size() == recommendSize){
+                break;
+            }
         }
-
         return returnList;
     }
 

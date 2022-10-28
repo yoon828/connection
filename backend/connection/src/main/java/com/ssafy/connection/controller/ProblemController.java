@@ -29,35 +29,34 @@ public class ProblemController {
 
     @ApiOperation(value = "문제 추천 (임시 로직 적용), 체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
     @GetMapping("/recommend")
-    public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level,
-                                                                       @RequestParam(value = "tag", required = false) String tag) {
+    public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level, @RequestParam(value = "tag", required = false) String tag) {
         Map<String, Object> returnMap = new HashMap<>();
 
+        // 유저가 많이 푼 문제 추천
         if(level == null && !(tag == null || tag.isEmpty())) {          // tag만 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(tag));
         } else if(level != null && (tag == null || tag.isEmpty())){     // level만 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(level));
         } else if(level != null && !(tag == null || tag.isEmpty())){    // tag, level 모두 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(level, tag));
-        } else {    // 아무값도 입력되지 않았을 경우
+        } else {                                                        // 아무값도 입력되지 않았을 경우
             returnMap.put("popular", problemService.getPopularProblemList());
         }
-//        문제집에 많이 담겨있는 문제 추가 예정
-//        returnMap.put("workbook", problemService.getWorkBookProblemList(level, tag));
-        returnMap.put("workbook", problemService.getProblemList());
+
+        // 스터디 문제집에 많이 담긴 문제 추천
+        returnMap.put("workbook", problemService.getWorkBookProblemList());
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
     @ApiOperation(value = "문제 검색 (제목은 포함, 문제번호는 일치)")
     @GetMapping("/")
-    public ResponseEntity<List<ProblemReturnDto>> getProblem(@RequestParam(value = "problemId", required = false) Long problemId,
-                                                       @RequestParam(value = "title", required = false) String title){
+    public ResponseEntity<List<ProblemReturnDto>> getProblem(@RequestParam(value = "problemId", required = false) Long problemId, @RequestParam(value = "title", required = false) String title){
         List<ProblemReturnDto> returnList = new ArrayList<>();
         if(problemId == null && !(title == null || title.isEmpty())) {      // title이 입력되었을 경우
             returnList = problemService.getProblem(title);
         } else if(problemId != null && (title == null || title.isEmpty())){ // problemId가 입력되었을 경우
             returnList = problemService.getProblem(problemId);
-        } else {    // 아무값도 입력되지 않았을 경우
+        } else {                                                            // 아무값도 입력되지 않았을 경우
             returnList = problemService.getProblemList();
         }
 
@@ -68,7 +67,11 @@ public class ProblemController {
     @GetMapping("/search")
     public ResponseEntity<List<ProblemReturnDto>> searchProblem(@RequestParam(value = "keyword") String keyword){
         List<ProblemReturnDto> returnList = problemService.searchProblem(keyword);
-        return ResponseEntity.status(HttpStatus.OK).body(returnList);
+        if(returnList.size() > 0){
+            return ResponseEntity.status(HttpStatus.OK).body(returnList);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(returnList);
+        }
     }
 
     @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")

@@ -5,7 +5,6 @@ import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
 import com.ssafy.connection.service.WorkbookService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +29,36 @@ public class WorkbookController {
     @ApiOperation(value = "문제집에 문제 추가")
     @PostMapping("/")
     public ResponseEntity<String> addProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        workbookService.addProblem(problemId, userPrincipal.getId());
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        switch(workbookService.addProblem(problemId, userPrincipal.getId())){
+            case 1:
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("success");
+            case 0:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already exist");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }
 
     @ApiOperation(value = "문제집에 문제 삭제")
     @DeleteMapping("/")
     public ResponseEntity<String> deleteProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        workbookService.deleteProblem(problemId, userPrincipal.getId());
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        switch(workbookService.deleteProblem(problemId, userPrincipal.getId())){
+            case 1:
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("success");
+            case 0:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already deleted");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }
 
     @ApiOperation(value = "문제집에 담긴 문제 조회")
     @GetMapping("/")
     public ResponseEntity<List<ProblemReturnDto>> getProblem(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        return ResponseEntity.status(HttpStatus.OK).body(workbookService.getProblem(userPrincipal.getId()));
+        List<ProblemReturnDto> list = workbookService.getProblem(userPrincipal.getId());
+        if(list.size() > 0){
+            return ResponseEntity.status(HttpStatus.OK).body(list);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(list);
+        }
     }
 
 }
