@@ -51,7 +51,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
 
         Cookie refreshToken = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-        Cookie accessToken = new Cookie("accessToken", tokenMapping.getAccessToken());
+//        Cookie accessToken = new Cookie("accessToken", tokenMapping.getAccessToken());
         refreshToken.setMaxAge(30 * 24 * 60 * 60);
 
         // optional properties
@@ -59,13 +59,13 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
 
-        accessToken.setSecure(true);
-        accessToken.setHttpOnly(true);
-        accessToken.setPath("/");
+//        accessToken.setSecure(true);
+//        accessToken.setHttpOnly(true);
+//        accessToken.setPath("/");
 
         // add cookie to response
         response.addCookie(refreshToken);
-        response.addCookie(accessToken);
+//        response.addCookie(accessToken);
 
         Token token = Token.builder()
                             .githubId(tokenMapping.getGithubId())
