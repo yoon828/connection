@@ -7,16 +7,20 @@ import {
   Center,
   Flex,
   Heading,
+  Image,
   Link,
   Text,
-  useClipboard
+  useClipboard,
+  useColorMode
 } from "@chakra-ui/react";
 import TotalLayout from "../../components/layout/TotalLayout";
 import Homework from "../../components/study/Homework";
 import Ranking from "../../components/study/Ranking";
-import { ReactComponent as Github } from "../../asset/img/github.svg";
+import GithubL from "../../asset/img/githubL.svg";
+import GithubD from "../../asset/img/githubD.svg";
 
 function StudyTotal() {
+  const { colorMode } = useColorMode();
   const { onCopy } = useClipboard("스터디코드");
 
   function onCopyEvent() {
@@ -43,7 +47,7 @@ function StudyTotal() {
               우건이와 아이들
             </Heading>
             <Box>
-              <Github width="20px" height="20px" />
+              <Image src={colorMode === "light" ? GithubL : GithubD} w="20px" />
             </Box>
           </Center>
           <Text fontSize="14px" display="flex" alignItems="center">

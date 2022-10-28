@@ -14,6 +14,7 @@ import {
 import { Link as ReactLink, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
+import axios from "axios";
 import JoinModal from "../components/join/JoinModal";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
@@ -27,6 +28,19 @@ function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
+
+  function getAPI(e: any) {
+    e.preventDefault();
+    // 깃허브 로그인
+    axios
+      .get("https://www.coalla.co.kr/api/auth")
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
@@ -75,7 +89,13 @@ function Header() {
           <Button mr="14px" onClick={toggleColorMode}>
             <MoonIcon />
           </Button>
-          <Button onClick={onOpen}>회원가입</Button>
+          <Link
+            href={`${process.env.REACT_APP_API_BASE_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
+            _hover={{}}
+          >
+            <Button>로그인</Button>
+            <Button onClick={e => getAPI(e)}>test</Button>
+          </Link>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <JoinModal />
