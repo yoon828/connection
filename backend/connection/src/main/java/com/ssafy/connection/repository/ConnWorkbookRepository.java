@@ -10,7 +10,9 @@ import java.util.List;
 
 @Repository
 public interface ConnWorkbookRepository extends JpaRepository<ConnWorkbook, Long> {
-    void deleteByWorkbookAndProblem(Workbook workbookEnity, Problem problemEntity);
+    int deleteByWorkbookAndProblem(Workbook workbookEnity, Problem problemEntity);
 
     List<ConnWorkbook> findAllByWorkbook(Workbook workbookEnity);
+
+    List<ConnWorkbook> findAllByWorkbookAndProblem(Workbook workbookEnity, Problem problemEntity);
 }

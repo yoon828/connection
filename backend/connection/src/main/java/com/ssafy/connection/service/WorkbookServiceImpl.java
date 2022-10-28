@@ -38,24 +38,30 @@ public class WorkbookServiceImpl implements WorkbookService{
 
     @Override
     @Transactional
-    public void addProblem(Long problemId, Long userId) {
+    public int addProblem(Long problemId, Long userId) {
         Problem problemEntity = problemRepository.getById(problemId);
         Workbook workbookEnity = workbookRepository.findByStudy(
                                     studyRepository.findByConnStudy(
                                          connStudyRepository.findByUser(
                                             userRepository.getById(userId))));
-        connWorkbookRepository.save(new ConnWorkbook(problemEntity, workbookEnity));
+        List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbookAndProblem(workbookEnity, problemEntity);
+        if(connWorkbookList.size() == 0){
+            connWorkbookRepository.save(new ConnWorkbook(problemEntity, workbookEnity));
+        } else {
+            return 0;
+        }
+        return 1;
     }
 
     @Override
     @Transactional
-    public void deleteProblem(Long problemId, Long userId) {
+    public int deleteProblem(Long problemId, Long userId) {
         Problem problemEntity = problemRepository.getById(problemId);
         Workbook workbookEnity = workbookRepository.findByStudy(
                                     studyRepository.findByConnStudy(
                                         connStudyRepository.findByUser(
                                             userRepository.getById(userId))));
-        connWorkbookRepository.deleteByWorkbookAndProblem(workbookEnity, problemEntity);
+        return connWorkbookRepository.deleteByWorkbookAndProblem(workbookEnity, problemEntity);
     }
 
     @Override

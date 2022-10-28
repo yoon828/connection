@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface WorkbookService {
 
-    void addProblem(Long problemId, Long userId);
+    int addProblem(Long problemId, Long userId);
 
-    void deleteProblem(Long problemId, Long userId);
+    int deleteProblem(Long problemId, Long userId);
 
     List<ProblemReturnDto> getProblem(Long userId);
 }
