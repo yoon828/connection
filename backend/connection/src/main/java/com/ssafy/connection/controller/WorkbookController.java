@@ -31,7 +31,7 @@ public class WorkbookController {
     public ResponseEntity<String> addProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.addProblem(problemId, userPrincipal.getId())){
             case 1:
-                return ResponseEntity.status(HttpStatus.OK).body("success");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("success");
             case 0:
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already exist");
         }
@@ -43,7 +43,7 @@ public class WorkbookController {
     public ResponseEntity<String> deleteProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.deleteProblem(problemId, userPrincipal.getId())){
             case 1:
-                return ResponseEntity.status(HttpStatus.OK).body("success");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("success");
             case 0:
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already deleted");
         }
@@ -57,7 +57,7 @@ public class WorkbookController {
         if(list.size() > 0){
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(list);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(list);
         }
     }
 

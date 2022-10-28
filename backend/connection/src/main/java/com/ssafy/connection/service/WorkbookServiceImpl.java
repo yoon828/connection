@@ -23,10 +23,8 @@ public class WorkbookServiceImpl implements WorkbookService{
     private final ConnWorkbookRepository connWorkbookRepository;
     private final TagRepository tagRepository;
 
-    public WorkbookServiceImpl(WorkbookRepository workbookRepository, StudyRepository studyRepository,
-                               ProblemRepository problemRepository, UserRepository userRepository,
-                               ConnStudyRepository connStudyRepository, ConnWorkbookRepository connWorkbookRepository,
-                               TagRepository tagRepository){
+    public WorkbookServiceImpl(WorkbookRepository workbookRepository, StudyRepository studyRepository, ProblemRepository problemRepository, UserRepository userRepository,
+                                    ConnStudyRepository connStudyRepository, ConnWorkbookRepository connWorkbookRepository, TagRepository tagRepository){
         this.workbookRepository = workbookRepository;
         this.studyRepository = studyRepository;
         this.problemRepository = problemRepository;

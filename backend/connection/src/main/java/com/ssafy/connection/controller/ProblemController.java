@@ -67,7 +67,7 @@ public class ProblemController {
         if(returnList.size() > 0){
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(returnList);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(returnList);
         }
     }
 
