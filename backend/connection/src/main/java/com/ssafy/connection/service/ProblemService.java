@@ -14,7 +14,7 @@ public interface ProblemService {
 
     Object getPopularProblemList(long level, String tag);
 
-    Object getWorkBookProblemList(long level, String tag);
+    Object getWorkBookProblemList();
 
     Object getPopularProblemList(String tag);
 

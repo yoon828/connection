@@ -32,16 +32,19 @@ public class ProblemController {
     public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level, @RequestParam(value = "tag", required = false) String tag) {
         Map<String, Object> returnMap = new HashMap<>();
 
+        // 유저가 많이 푼 문제 추천
         if(level == null && !(tag == null || tag.isEmpty())) {          // tag만 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(tag));
         } else if(level != null && (tag == null || tag.isEmpty())){     // level만 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(level));
         } else if(level != null && !(tag == null || tag.isEmpty())){    // tag, level 모두 입력되었을 경우
             returnMap.put("popular", problemService.getPopularProblemList(level, tag));
-        } else {    // 아무값도 입력되지 않았을 경우
+        } else {                                                        // 아무값도 입력되지 않았을 경우
             returnMap.put("popular", problemService.getPopularProblemList());
         }
-        returnMap.put("workbook", problemService.getWorkBookProblemList(level, tag));
+
+        // 스터디 문제집에 많이 담긴 문제 추천
+        returnMap.put("workbook", problemService.getWorkBookProblemList());
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
@@ -53,7 +56,7 @@ public class ProblemController {
             returnList = problemService.getProblem(title);
         } else if(problemId != null && (title == null || title.isEmpty())){ // problemId가 입력되었을 경우
             returnList = problemService.getProblem(problemId);
-        } else {    // 아무값도 입력되지 않았을 경우
+        } else {                                                            // 아무값도 입력되지 않았을 경우
             returnList = problemService.getProblemList();
         }
 

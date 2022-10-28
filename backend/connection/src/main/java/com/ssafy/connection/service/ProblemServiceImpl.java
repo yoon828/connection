@@ -190,10 +190,11 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Object getWorkBookProblemList(long level, String tag) {
+    public Object getWorkBookProblemList() {
         List<ProblemReturnDto> returnList = new ArrayList<>();
         List<WorkbookProblemInterface> countList = connWorkbookRepository.findGroupByProblem();
         Collections.shuffle(countList);
+
         for(WorkbookProblemInterface object : countList){
             System.out.println(object.getProblemId() + " " + object.getCount());
             if(object.getCount() >= recommendWorkbookCount){
