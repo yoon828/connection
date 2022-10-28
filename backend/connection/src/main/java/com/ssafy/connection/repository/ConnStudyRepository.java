@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface ConnStudyRepository extends JpaRepository<ConnStudy, Long> {
     Optional<ConnStudy> findByStudy_StudyId(long studyId);
     Optional<ConnStudy> findByUser_UserId(long userId);
-
+    ConnStudy findByUser(User userEntity);
     List<ConnStudy> findAllByStudy_StudyId(long studyId);
 }
