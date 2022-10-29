@@ -21,6 +21,9 @@ public class Token extends DefaultTime {
     @Column(name = "refresh_token", length = 200 , nullable = false)
     private String refreshToken;
 
+    @Column(name = "github_token", length = 200 , nullable = true)
+    private String githubToken;
+
     public Token(){}
 
     public Token updateRefreshToken(String refreshToken) {
