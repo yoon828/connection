@@ -7,10 +7,12 @@ import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.repository.ConnStudyRepository;
 import com.ssafy.connection.repository.StudyRepository;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
+import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import com.ssafy.connection.util.RandomCodeGenerate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -28,17 +30,19 @@ import java.util.stream.Collectors;
 @Service
 public class StudyServiceImpl implements StudyService {
 
-    private final String githubToken = "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";
+    private String githubToken = "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";
     private WebClient webClient = WebClient.create("https://api.github.com");
 
     private final UserRepository userRepository;
     private final StudyRepository studyRepository;
     private final ConnStudyRepository connStudyRepository;
+    private final TokenRepository tokenRepository;
 
-    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository) {
+    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.studyRepository = studyRepository;
         this.connStudyRepository = connStudyRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -48,7 +52,8 @@ public class StudyServiceImpl implements StudyService {
             User userEntity = userRepository.findById(userId).get();
             String studyName = studyDto.getStudyName();
             String studyCode = null;
-
+            githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken();
+            System.out.println(githubToken);
             do {
                 studyCode = RandomCodeGenerate.generate();
             } while (studyRepository.findByStudyCode(studyCode) == null);
@@ -59,7 +64,7 @@ public class StudyServiceImpl implements StudyService {
                     "\"description\":\"This is your study repository\"," +
                     "\"permission\":\"push\"," +
                     "\"privacy\":\"closed\"}";
-
+            System.out.println(githubToken);
             webClient.post()
                     .uri("/orgs/{org}/teams", "co-nnection")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
@@ -68,6 +73,9 @@ public class StudyServiceImpl implements StudyService {
                     .bodyToMono(Void.class)
                     .block();
 
+            System.out.println("2222222");
+
+            /*
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
 
             webClient.put()
@@ -78,7 +86,8 @@ public class StudyServiceImpl implements StudyService {
                     .bodyToMono(Void.class)
                     .block();
 
-            System.out.println("22222222222");
+             */
+            System.out.println("3333333");
 
             String createRepositoryRequest = "{\"name\":\"" + userEntity.getGithubId() + "\"," +
                     "\"description\":\"This is your Study repository\"," +
@@ -146,6 +155,7 @@ public class StudyServiceImpl implements StudyService {
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
             ConnStudy connStudyEntity = connStudyRepository.findByStudy_StudyId(studyEntity.getStudyId()).get();
             User studyLeaderEntity = connStudyEntity.getUser();
+            githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken();
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
 
             webClient.put()
@@ -172,11 +182,11 @@ public class StudyServiceImpl implements StudyService {
     @Transactional
     public void quitStudy(long userId, Long quitUserId) {
         try {
-            User userEntity = userRepository.findById(userId).get(); // quitUserId 없을 때, 스터디장인지 여부 확인 추가 구현
+            User userEntity = userRepository.findById(userId).get(); // quitUserId 있을 때, 스터디장인지 여부 확인 추가 구현
             User quitUserEntity = null;
             ConnStudy connStudyEntity = null;
             Study studyEntity = null;
-            
+
             if (quitUserId == null) {
                 quitUserEntity = userRepository.findById(userId).get();
                 connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
@@ -186,6 +196,7 @@ public class StudyServiceImpl implements StudyService {
             }
             
             studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
+            githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken();
 
             webClient.delete()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "co-nnection", studyEntity.getStudyRepository().substring(31), quitUserEntity.getGithubId())
@@ -204,8 +215,10 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    @Transactional
     public void deleteStudy(long userId) {
         User userEntity = userRepository.findById(userId).get();
+        githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken();
         // 스터디장일때만 삭제 처리 추가
         webClient.delete()
                 .uri("/orgs/{org}/teams/{team_slug}", "co-nnection", userEntity.getGithubId())
