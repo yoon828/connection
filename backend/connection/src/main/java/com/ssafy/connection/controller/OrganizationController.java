@@ -1,6 +1,5 @@
 package com.ssafy.connection.controller;
 
-import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.OrganizationService;
