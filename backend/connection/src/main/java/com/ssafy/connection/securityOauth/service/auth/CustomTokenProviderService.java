@@ -79,6 +79,7 @@ public class CustomTokenProviderService {
                     .githubId(userPrincipal.getGithubId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
+                    .githubToken(userPrincipal.getAttribute("githubtoken"))
                     .build();
     }
 

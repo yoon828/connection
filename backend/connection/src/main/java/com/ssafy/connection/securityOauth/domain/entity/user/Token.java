@@ -32,8 +32,9 @@ public class Token extends DefaultTime {
     }
 
     @Builder
-    public Token(String githubId, String refreshToken) {
+    public Token(String githubId, String refreshToken, String githubToken) {
         this.githubId = githubId;
         this.refreshToken = refreshToken;
+        this.githubToken = githubToken;
     }
 }
