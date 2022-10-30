@@ -70,6 +70,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         Token token = Token.builder()
                             .githubId(tokenMapping.getGithubId())
                             .refreshToken(tokenMapping.getRefreshToken())
+                            .githubToken((tokenMapping.getGithubToken()))
                             .build();
         tokenRepository.save(token);
 
