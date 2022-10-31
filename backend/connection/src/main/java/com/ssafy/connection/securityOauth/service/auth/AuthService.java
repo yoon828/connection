@@ -132,19 +132,19 @@ public class AuthService {
         return ResponseEntity.created(location).body(apiResponse);
     }
 
-    public ResponseEntity<?> refresh(RefreshTokenRequest tokenRefreshRequest){
+    public ResponseEntity<?> refresh(String refreshToken){
         //1차 검증
-        boolean checkValid = valid(tokenRefreshRequest.getRefreshToken());
+        boolean checkValid = valid(refreshToken);
         DefaultAssert.isAuthentication(checkValid);
 
-        Optional<Token> token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken());
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
         Authentication authentication = customTokenProviderService.getAuthenticationByGithubId(token.get().getGithubId());
 
         //4. refresh token 정보 값을 업데이트 한다.
         //시간 유효성 확인
         TokenMapping tokenMapping;
 
-        Long expirationTime = customTokenProviderService.getExpiration(tokenRefreshRequest.getRefreshToken());
+        Long expirationTime = customTokenProviderService.getExpiration(refreshToken);
         if(expirationTime > 0){
             tokenMapping = customTokenProviderService.refreshToken(authentication, token.get().getRefreshToken());
         }else{
