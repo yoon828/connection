@@ -1,5 +1,6 @@
 package com.ssafy.connection.config;
 
+import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class SwaggerConfiguration {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
+                .ignoredParameterTypes(UserPrincipal.class)
                 .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
