@@ -65,12 +65,11 @@ public class ProblemController {
 
     @ApiOperation(value = "문제 제출")
     @PostMapping("/submit")
-    public ResponseEntity<String> submitProblem(@RequestParam(value = "problemId") Long problemId,
-                                                    @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        boolean result = solveService.saveSolve(problemId, userPrincipal.getId());
-        if(result){
-            return ResponseEntity.status(HttpStatus.OK).body("success");
-        }
+    public ResponseEntity<String> submitProblem(@RequestBody Map<String, Object> param){
+//        boolean result = solveService.saveSolve(problemId, userPrincipal.getId());
+//        if(result){
+//            return ResponseEntity.status(HttpStatus.OK).body("success");
+//        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail ");
     }
 
