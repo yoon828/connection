@@ -63,12 +63,13 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
-    public boolean saveSolve(Long problemId, Long userId) {
+    public boolean saveSolve(String problemId, String baekjoonId) {
         Solve solveEntity = new Solve();
-        solveEntity.setUser(userRepository.findById(userId).get());
-        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        System.out.println(problemId + " " + baekjoonId);
+        solveEntity.setUser(userRepository.findByBackjoonId(baekjoonId));
+        Optional<Problem> problemEntity = problemRepository.findById(Long.parseLong(problemId));
         if(problemEntity.isPresent()){
-            solveEntity.setProblem(problemRepository.findById(problemId).get());
+            solveEntity.setProblem(problemEntity.get());
         } else {
             return false;
         }

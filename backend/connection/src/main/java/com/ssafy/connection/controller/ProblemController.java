@@ -65,12 +65,12 @@ public class ProblemController {
 
     @ApiOperation(value = "문제 제출")
     @PostMapping("/submit")
-    public ResponseEntity<String> submitProblem(@RequestBody Map<String, Object> param){
-//        boolean result = solveService.saveSolve(problemId, userPrincipal.getId());
-//        if(result){
-//            return ResponseEntity.status(HttpStatus.OK).body("success");
-//        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail ");
+    public ResponseEntity<String> submitProblem(@RequestBody Map<String, Object> map){
+        boolean result = solveService.saveSolve((String) map.get("problemId"), (String) map.get("baekjoonId"));
+        if(result){
+            return ResponseEntity.status(HttpStatus.OK).body("success");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }
 
 //    @ApiOperation(value = "로그인 시, 유저가 푼 문제 정보 받기")
