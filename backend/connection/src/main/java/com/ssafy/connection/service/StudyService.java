@@ -13,4 +13,6 @@ public interface StudyService {
     void quitStudy(long userId, Long quitUserId);
 
     void deleteStudy(long userId);
+
+    int getStudyTier(Long userId);
 }

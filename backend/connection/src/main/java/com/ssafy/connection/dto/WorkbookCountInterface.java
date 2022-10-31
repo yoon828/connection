@@ -1,6 +1,6 @@
 package com.ssafy.connection.dto;
 
-public interface WorkbookProblemInterface {
+public interface WorkbookCountInterface {
     Long getProblemId();
     Long getCount();
 }

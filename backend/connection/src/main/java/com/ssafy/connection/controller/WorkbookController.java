@@ -43,9 +43,9 @@ public class WorkbookController {
     public ResponseEntity<String> deleteProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.deleteProblem(problemId, userPrincipal.getId())){
             case 1:
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("success");
+                return ResponseEntity.status(HttpStatus.OK).body("success");
             case 0:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already deleted");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("already deleted");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }

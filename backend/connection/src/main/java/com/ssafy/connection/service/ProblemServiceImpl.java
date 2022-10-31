@@ -3,12 +3,14 @@ package com.ssafy.connection.service;
 import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.dto.TagDto;
-import com.ssafy.connection.dto.WorkbookProblemInterface;
+import com.ssafy.connection.dto.WorkbookCountInterface;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Tag;
+import com.ssafy.connection.repository.ConnStudyRepository;
 import com.ssafy.connection.repository.ConnWorkbookRepository;
 import com.ssafy.connection.repository.ProblemRepository;
 import com.ssafy.connection.repository.TagRepository;
+import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,15 +32,20 @@ public class ProblemServiceImpl implements ProblemService{
     private final ProblemRepository problemRepository;
     private final TagRepository tagRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
+    private final ConnStudyRepository connStudyRepository;
+    private final StudyService studyService;
 
-    public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository){
+    public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository,
+                              ConnStudyRepository connStudyRepository, StudyService studyService){
         this.problemRepository = problemRepository;
         this.tagRepository = tagRepository;
         this.connWorkbookRepository = connWorkbookRepository;
+        this.connStudyRepository = connStudyRepository;
+        this.studyService = studyService;
     }
 
-    private static int recommendSize = 4;
-    private static int recommendWorkbookCount = 2;
+    private static int recommendSize = 4;   // 문제 추천에서 반환할 문제 수
+    private static int recommendWorkbookCount = 2;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
 
     @Override
     public Object getPopularProblemList(String tag) {
@@ -69,7 +76,7 @@ public class ProblemServiceImpl implements ProblemService{
         Collections.shuffle(problemDtoList);
         for(ProblemDto problemDto : problemDtoList){
             if(problemDto.getLevel() == level){
-                ArrayList<TagDto> tagList = (ArrayList<TagDto>) tagRepository.findAllByProblem(Problem.of(problemDto));
+                ArrayList<TagDto> tagList = tagRepository.findAllByProblem(Problem.of(problemDto));
                 for(TagDto tagDto : tagList){
                     if(tagDto.getKo().equals(tag)){
                         returnList.add(new ProblemReturnDto(problemDto, tagList));
@@ -154,7 +161,7 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public List<ProblemReturnDto> searchProblem(String keyword) {
+    public List<ProblemReturnDto> searchProblem(String keyword, UserPrincipal userPrincipal) {
         // 우선 제목으로 검색
         List<ProblemReturnDto> returnList = this.getProblem(keyword);
 
@@ -166,11 +173,15 @@ public class ProblemServiceImpl implements ProblemService{
             for(ProblemReturnDto dto : temp){
                 returnList.add(dto);
             }
-        } else {
-            for(ProblemReturnDto dto : this.getProblemByTag(keyword)){
-                returnList.add(dto);
-            }
         }
+        // 태그로 검색 제외
+//        else {
+//            for(ProblemReturnDto dto : this.getProblemByTag(keyword)){
+//                returnList.add(dto);
+//            }
+//        }
+
+        // int avgTier = studyService.getStudyTier(userPrincipal.getId());
 
         return returnList;
     }
@@ -192,11 +203,10 @@ public class ProblemServiceImpl implements ProblemService{
     @Override
     public Object getWorkBookProblemList() {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-        List<WorkbookProblemInterface> countList = connWorkbookRepository.findGroupByProblem();
+        List<WorkbookCountInterface> countList = connWorkbookRepository.findGroupByProblem();
         Collections.shuffle(countList);
 
-        for(WorkbookProblemInterface object : countList){
-            System.out.println(object.getProblemId() + " " + object.getCount());
+        for(WorkbookCountInterface object : countList){
             if(object.getCount() >= recommendWorkbookCount){
                 returnList.add(this.getProblem(object.getProblemId()).get(0));
             }
@@ -247,8 +257,8 @@ public class ProblemServiceImpl implements ProblemService{
                 jsonObject = (JSONObject) jsonArray.get(0);
 
                 // 이모티콘 검사
-                Pattern rex = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]");
-                Matcher rexMatcher = rex.matcher((String) jsonObject.get("titleKo"));
+                Matcher rexMatcher = Pattern.compile("[\\x{10000}-\\x{10ffff}\ud800-\udfff]")
+                                                .matcher((String) jsonObject.get("titleKo"));
                 if(rexMatcher.find()){
                     continue;
                 }
