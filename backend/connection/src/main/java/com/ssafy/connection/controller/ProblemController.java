@@ -74,9 +74,9 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail ");
     }
 
-    @ApiOperation(value = "로그인 시, 유저가 푼 문제 정보 받기")
-    @PostMapping("/")
-    public ResponseEntity<String> saveSolve(@RequestBody)
+//    @ApiOperation(value = "로그인 시, 유저가 푼 문제 정보 받기")
+//    @PostMapping("/")
+//    public ResponseEntity<String> saveSolve(@RequestBody)
 
 //    @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")
 //    @GetMapping("/test")
