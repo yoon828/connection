@@ -13,7 +13,7 @@ function StudyWith() {
   const socket = io(
     process.env.NODE_ENV === "development"
       ? "localhost:8000"
-      : "http://k7c202.p.ssafy.io:8000",
+      : "wss//k7c202.p.ssafy.io:8000",
     { transports: ["websocket"] }
   );
 
