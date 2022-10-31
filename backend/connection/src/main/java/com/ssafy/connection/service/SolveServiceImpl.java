@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.repository.ProblemRepository;
 import com.ssafy.connection.repository.SolveRepository;
@@ -13,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -26,7 +28,6 @@ public class SolveServiceImpl implements SolveService{
         this.problemRepository = problemRepository;
         this.solveRepository = solveRepository;
     }
-
 
     @Override
     @Transactional
@@ -59,6 +60,22 @@ public class SolveServiceImpl implements SolveService{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean saveSolve(Long problemId, Long userId) {
+        Solve solveEntity = new Solve();
+        solveEntity.setUser(userRepository.findById(userId).get());
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        if(problemEntity.isPresent()){
+            solveEntity.setProblem(problemRepository.findById(problemId).get());
+        } else {
+            return false;
+        }
+        solveEntity.setStatus(1);
+        solveEntity.setTime(LocalDateTime.now());
+        solveRepository.save(solveEntity);
+        return true;
     }
 
 

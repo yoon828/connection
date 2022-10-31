@@ -1,6 +1,7 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
+import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 
 import java.util.List;
 
@@ -28,5 +29,5 @@ public interface ProblemService {
 
     List<ProblemReturnDto> getProblemByTag(String ko);
 
-    List<ProblemReturnDto> searchProblem(String keyword);
+    List<ProblemReturnDto> searchProblem(String keyword, UserPrincipal userPrincipal);
 }

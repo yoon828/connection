@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -222,5 +223,19 @@ public class StudyServiceImpl implements StudyService {
             connStudyRepository.delete(connStudy);
         }
         studyRepository.delete(studyEntity);
+    }
+
+    @Override
+    @Transactional
+    public int getStudyTier(Long userId) {
+        ConnStudy connStudy = connStudyRepository.findByUser_UserId(userId).get();
+        List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(connStudy.getStudy().getStudyId());
+
+        int avgTier = 0;
+        for(ConnStudy temp : connStudyList){
+            avgTier += temp.getUser().getTier();
+        }
+        avgTier = Math.round(avgTier / connStudyList.size());
+        return avgTier;
     }
 }
