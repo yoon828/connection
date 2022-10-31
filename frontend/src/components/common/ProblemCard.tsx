@@ -1,18 +1,11 @@
 import React from "react";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, LinkIcon } from "@chakra-ui/icons";
+import { Problem } from "../../pages/Recommend";
 
 export interface Tag {
   id: number;
   title: string;
-}
-export interface Problem {
-  id: number;
-  title: string;
-  link: string;
-  tags: Tag[];
-  elapsedTime: string;
-  difficulty: string;
 }
 
 interface CardButtonProps {
@@ -40,7 +33,8 @@ function Button({ btnType, onBtnClick }: CardButtonProps) {
 }
 
 function ProblemCard({ problem, btnType, onBtnClick, bg }: ProblemCardProps) {
-  const { id, title, link, tags, elapsedTime, difficulty } = problem;
+  const { problemInfo, tagList, difficulty } = problem;
+  const { problemId, title, level } = problemInfo;
   return (
     <Box
       bg={bg}
@@ -60,29 +54,35 @@ function ProblemCard({ problem, btnType, onBtnClick, bg }: ProblemCardProps) {
           alignItems="center"
         >
           <Flex>
-            <Link href={link} isExternal fontSize="2xl" fontWeight="bold">
+            <Link
+              href={`https://www.acmicpc.net/problem/${problemId}`}
+              isExternal
+              fontSize="2xl"
+              fontWeight="bold"
+            >
               {title}
               <LinkIcon w="18px" h="18px" mx="2" marginBottom={2} />
             </Link>
           </Flex>
           <Button btnType={btnType} onBtnClick={onBtnClick} />
         </Flex>
-        <Flex gap="8px">
-          {tags.map(tag => (
+        <Flex gap="8px" wrap="wrap">
+          {tagList.map(tag => (
             <Box
-              key={tag.id}
-              bg="gra"
+              key={tag.tagId}
+              bg="dep_2"
               w="fit-content"
               p="4px 16px"
               borderRadius="15px"
+              fontSize="sm"
             >
-              {tag.title}
+              #{tag.ko}
             </Box>
           ))}
         </Flex>
       </Box>
       <Box>
-        <Text mb="10px">소요시간 : {elapsedTime}</Text>
+        {/* <Text mb="10px">소요시간 : {elapsedTime}</Text> */}
         <Text>체감 난이도 : {difficulty}</Text>
       </Box>
     </Box>

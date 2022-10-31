@@ -14,33 +14,9 @@ import StudyLayout from "../../components/layout/StudyLayout";
 import BackButton from "../../components/common/BackButton";
 import ProblemSelect from "../../components/common/ProblemSelect/ProblemSelect";
 import SearchModal from "../../components/common/SearchModal";
+import { Problem } from "../Recommend";
 
-const dumpProblemList = [
-  {
-    id: 123,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  },
-  {
-    id: 12,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  },
-  {
-    id: 3,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  }
-];
+const dumpProblemList: Problem[] = [];
 
 function Assignment() {
   const [problemList, setProblemList] = useState(dumpProblemList);
