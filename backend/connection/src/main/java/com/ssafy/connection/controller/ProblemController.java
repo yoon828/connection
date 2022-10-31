@@ -6,7 +6,7 @@ import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
 import com.ssafy.connection.service.SolveService;
 import com.ssafy.connection.service.TagService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,11 @@ public class ProblemController {
         this.solveService = solveService;
     }
 
-    @ApiOperation(value = "문제 추천, 체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
+    @ApiOperation(value = "문제 추천", notes = "체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "level", value = "난이도(티어) 설정", required = false),
+            @ApiImplicitParam(name = "tag", value = "태그(문제 유형) 설정", required = false)
+    })
     @GetMapping("/recommend")
     public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level, @RequestParam(value = "tag", required = false) String tag) {
         Map<String, Object> returnMap = new HashMap<>();
@@ -51,7 +55,14 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
-    @ApiOperation(value = "문제 검색 (통합검색)")
+    @ApiOperation(value = "문제 검색 (통합검색)", notes = "keyword를 입력받아 포함된 제목의 문제나 일치하는 번호의 문제를 반환")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 404, message = "검색된 문제 없음")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "검색할 키워드", required = true)
+    })
     @GetMapping("/search")
     public ResponseEntity<List<ProblemReturnDto>> searchProblem(@RequestParam(value = "keyword") String keyword,
                                                                     @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
@@ -63,7 +74,11 @@ public class ProblemController {
         }
     }
 
-    @ApiOperation(value = "문제 제출")
+    @ApiOperation(value = "문제 제출", notes = "problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 400, message = "해당 문제가 없음")
+    })
     @PostMapping("/submit")
     public ResponseEntity<String> submitProblem(@RequestBody Map<String, Object> map){
         boolean result = solveService.saveSolve((String) map.get("problemId"), (String) map.get("baekjoonId"));
@@ -88,7 +103,7 @@ public class ProblemController {
 //    public ResponseEntity<List<ProblemReturnDto>> getProblemList(){
 //        return ResponseEntity.status(HttpStatus.OK).body(problemService.getProblemList());
 //    }
-//
+//\
 //    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지)")
 //    @GetMapping("/api/load")
 //    public void loadAllProblemFromApi(){
