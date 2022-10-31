@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,7 +66,6 @@ public class SolveServiceImpl implements SolveService{
     @Override
     public boolean saveSolve(String problemId, String baekjoonId) {
         Solve solveEntity = new Solve();
-        System.out.println(problemId + " " + baekjoonId);
         solveEntity.setUser(userRepository.findByBackjoonId(baekjoonId));
         Optional<Problem> problemEntity = problemRepository.findById(Long.parseLong(problemId));
         if(problemEntity.isPresent()){
@@ -79,5 +79,21 @@ public class SolveServiceImpl implements SolveService{
         return true;
     }
 
-
+    @Override
+    public boolean saveSolveList(List<String> list, Long userId) {
+        for(String problemString : list){
+            Solve solveEntity = new Solve();
+            solveEntity.setUser(userRepository.findById(userId).get());
+            Optional<Problem> problemEntity = problemRepository.findById(Long.parseLong(problemString));
+            if(problemEntity.isPresent()){
+                solveEntity.setProblem(problemEntity.get());
+            } else {
+                return false;
+            }
+            solveEntity.setStatus(0);
+            solveEntity.setTime(LocalDateTime.now());
+            solveRepository.save(solveEntity);
+        }
+        return true;
+    }
 }

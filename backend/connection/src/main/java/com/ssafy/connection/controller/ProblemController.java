@@ -88,9 +88,19 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }
 
-//    @ApiOperation(value = "로그인 시, 유저가 푼 문제 정보 받기")
-//    @PostMapping("/")
-//    public ResponseEntity<String> saveSolve(@RequestBody)
+    @ApiOperation(value = "문제 풀이 등록", notes = "유저 회원가입 시, 유저의 문제 풀이 목록을 저장")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "list", value = "유저가 푼 문제 리스트(1111, 2222, ....)", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공")
+    })
+    @PostMapping("/register")
+    public ResponseEntity<String> saveSolve(@RequestBody Map<String, Object> map,
+                                                @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        boolean result = solveService.saveSolveList((List<String>) map.get("list"), userPrincipal.getId());
+        return ResponseEntity.status(HttpStatus.OK).body("success");
+    }
 
 //    @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")
 //    @GetMapping("/test")
