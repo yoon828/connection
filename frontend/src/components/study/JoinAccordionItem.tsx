@@ -14,6 +14,7 @@ type JoinAccordionItemProps = {
   title: string;
   panelTitle: string;
   btnTitle: string;
+  errMsg: string;
   onInputChange: (() => void) | undefined;
   onBtnClick: (() => void) | undefined;
 };
@@ -22,6 +23,7 @@ function JoinAccordionItem({
   title,
   panelTitle,
   btnTitle,
+  errMsg,
   onInputChange,
   onBtnClick
 }: JoinAccordionItemProps) {
@@ -49,10 +51,10 @@ function JoinAccordionItem({
         bg="dep_1"
         borderRadius="0 0 10px 10px"
         border="none"
-        p="40px 60px"
+        p="40px 60px 30px 60px"
       >
         <Flex>
-          <Center textAlign="center" flex={2} fontSize="20px" fontWeight="700">
+          <Center textAlign="center" flex={3} fontSize="20px" fontWeight="700">
             {panelTitle}
           </Center>
           <Input
@@ -73,6 +75,9 @@ function JoinAccordionItem({
             {btnTitle}
           </Button>
         </Flex>
+        <Center h="12px" pt="24px" color="red" fontWeight="500">
+          {errMsg}
+        </Center>
       </AccordionPanel>
     </AccordionItem>
   );
