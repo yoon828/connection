@@ -36,29 +36,37 @@ public class WorkbookServiceImpl implements WorkbookService{
     @Override
     @Transactional
     public int addProblem(Long problemId, Long userId) {
-        Problem problemEntity = problemRepository.getById(problemId);
-        Workbook workbookEnity = workbookRepository.findByStudy(
-                                    studyRepository.findByConnStudy(
-                                         connStudyRepository.findByUser(
-                                            userRepository.getById(userId))));
-        List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbookAndProblem(workbookEnity, problemEntity);
-        if(connWorkbookList.size() == 0){
-            connWorkbookRepository.save(new ConnWorkbook(problemEntity, workbookEnity));
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        if(problemEntity.isPresent()){
+            Workbook workbookEnity = workbookRepository.findByStudy(
+                                        studyRepository.findByConnStudy(
+                                                connStudyRepository.findByUser(
+                                                        userRepository.getById(userId))));
+            List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbookAndProblem(workbookEnity, problemEntity.get());
+            if(connWorkbookList.size() == 0){
+                connWorkbookRepository.save(new ConnWorkbook(problemEntity.get(), workbookEnity));
+            } else {
+                return 0;
+            }
+            return 1;
         } else {
-            return 0;
+            return 2;
         }
-        return 1;
     }
 
     @Override
     @Transactional
     public int deleteProblem(Long problemId, Long userId) {
-        Problem problemEntity = problemRepository.getById(problemId);
-        Workbook workbookEnity = workbookRepository.findByStudy(
-                                    studyRepository.findByConnStudy(
-                                        connStudyRepository.findByUser(
-                                            userRepository.getById(userId))));
-        return connWorkbookRepository.deleteByWorkbookAndProblem(workbookEnity, problemEntity);
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        if(problemEntity.isPresent()){
+            Workbook workbookEnity = workbookRepository.findByStudy(
+                                        studyRepository.findByConnStudy(
+                                                connStudyRepository.findByUser(
+                                                        userRepository.getById(userId))));
+            return connWorkbookRepository.deleteByWorkbookAndProblem(workbookEnity, problemEntity.get());
+        } else {
+            return -1;
+        }
     }
 
     @Override
