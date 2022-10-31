@@ -33,7 +33,24 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "유저 정보 확인", description = "현제 접속된 유저정보를 확인합니다.")
+    @Operation(summary = "유저 정보 확인", description = "현제 접속된 유저정보를 확인합니다.<br>" +
+            "{<br>" +
+            "  \"check\": true,<br>" +
+            "  \"information\": {<br>" +
+            "    \"userId\": 1,<br>" +
+            "    \"name\": \"Connection-code\",<br>" +
+            "    \"githubId\": \"Connection-code\",<br>" +
+            "    \"backjoonId\": null,<br>" +
+            "    \"email\": null,<br>" +
+            "    \"imageUrl\": null(프로필사진),<br>" +
+            "    \"tier\": 0(백준티어),<br>" +
+            "    \"password\": null,<br>" +
+            "    \"provider\": \"github\",<br>" +
+            "    \"role\": \"USER\"(운영자인지 일반유저인지 여부 \"USER\" | \"ADMIN\"),<br>" +
+            "    \"studyRole\": \"USER\"(스터디장인지 여부 \"LEADER\" | \"MEMBER\"),<br>" +
+            "    \"studyId2\": 1(가입한 스터디 PK값, 미가입시 0 반환)<br>" +
+            "  }<br>" +
+            "}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class) ) } ),
         @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
@@ -75,7 +92,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "유저 로그인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class) ) } ),
         @ApiResponse(responseCode = "400", description = "유저 로그인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping(value = "/signin")
+    @PostMapping(value = "/signin/")
     public ResponseEntity<?> signin(
         @Parameter(description = "Schemas의 SignInRequest를 참고해주세요.", required = true) @Valid @RequestBody SignInRequest signInRequest
     ) {
@@ -87,7 +104,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "회원가입 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
         @ApiResponse(responseCode = "400", description = "회원가입 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping(value = "/signup")
+    @PostMapping(value = "/signup/")
     public ResponseEntity<?> signup(
         @Parameter(description = "Schemas의 SignUpRequest를 참고해주세요.", required = true) @Valid @RequestBody SignUpRequest signUpRequest
     ) {
@@ -99,7 +116,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "토큰 갱신 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class) ) } ),
         @ApiResponse(responseCode = "400", description = "토큰 갱신 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping(value = "/refresh")
+    @PostMapping(value = "/refresh/")
     public ResponseEntity<?> refresh(
         @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenRequest tokenRefreshRequest
     ) {
@@ -112,7 +129,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
         @ApiResponse(responseCode = "400", description = "로그아웃 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping(value="/signout")
+    @PostMapping(value="/signout/")
     public ResponseEntity<?> signout(
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal, 
         @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenRequest tokenRefreshRequest
