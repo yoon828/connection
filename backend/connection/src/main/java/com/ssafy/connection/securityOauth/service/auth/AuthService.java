@@ -1,5 +1,7 @@
 package com.ssafy.connection.securityOauth.service.auth;
 
+import com.ssafy.connection.entity.ConnStudy;
+import com.ssafy.connection.repository.ConnStudyRepository;
 import com.ssafy.connection.securityOauth.advice.assertThat.DefaultAssert;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.securityOauth.domain.entity.user.*;
@@ -37,11 +39,22 @@ public class AuthService {
     
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final ConnStudyRepository connStudyRepository;
     
 
     public ResponseEntity<?> whoAmI(UserPrincipal userPrincipal){
         Optional<User> user = userRepository.findById(userPrincipal.getId());
         UserDto userDto = ModelMapperUtils.getModelMapper().map(user.get(), UserDto.class);
+
+        ConnStudy connStudy = connStudyRepository.findByUser(user.get());
+        if(connStudy == null){
+            userDto.setStudyId2(0);
+        }
+        else {
+            userDto.setStudyId2(connStudy.getStudy().getStudyId());
+            userDto.setStudyRole(connStudy.getRole());
+        }
+
         DefaultAssert.isOptionalPresent(user);
         ApiResponse apiResponse = ApiResponse.builder().check(true).information(userDto).build();
 
