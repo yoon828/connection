@@ -13,33 +13,9 @@ import { Search2Icon } from "@chakra-ui/icons";
 import React, { useState } from "react";
 
 import ProblemCard from "./ProblemCard";
+import { Problem } from "../../pages/Recommend";
 
-const dumpProblemList = [
-  {
-    id: 123,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  },
-  {
-    id: 12,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  },
-  {
-    id: 3,
-    title: "징검다리 건너기",
-    difficulty: "골드 3",
-    elapsedTime: "1:10:23",
-    link: "http://asasfasf.com",
-    tags: [{ id: 0, title: "#dfs" }]
-  }
-];
+const dumpProblemList: Problem[] = [];
 
 interface SearchModalTypes {
   isOpen: boolean;
@@ -95,7 +71,7 @@ function SearchModal({ isOpen, onClose }: SearchModalTypes) {
           {problemList.map(problem => (
             <ProblemCard
               bg="dep_2"
-              key={problem.id}
+              key={problem.problemInfo.problemId}
               problem={problem}
               btnType="delete"
               onBtnClick={() => {

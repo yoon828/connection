@@ -25,39 +25,7 @@ function ProblemSetView({ onBtnClick }: ProblemSetViewProps) {
             <Search2Icon w="20px" h="20px" />
           </Button>
         </Center>
-        <ProblemSelect
-          problemList={[
-            {
-              id: 123,
-              title: "징검다리 건너기",
-              difficulty: "골드 3",
-              elapsedTime: "1:10:23",
-              link: "http://asasfasf.com",
-              tags: [{ id: 0, title: "#dfs" }]
-            },
-            {
-              id: 12,
-              title: "징검다리 건너기",
-              difficulty: "골드 3",
-              elapsedTime: "1:10:23",
-              link: "http://asasfasf.com",
-              tags: [{ id: 0, title: "#dfs" }]
-            },
-            {
-              id: 3,
-              title: "징검다리 건너기",
-              difficulty: "골드 3",
-              elapsedTime: "1:10:23",
-              link: "http://asasfasf.com",
-              tags: [{ id: 0, title: "#dfs" }]
-            }
-          ]}
-          selectedProblems={[
-            { no: 1, title: "징검다리 건너기" },
-            { no: 2, title: "징검다리 건너기" },
-            { no: 3, title: "징검다리 건너기" }
-          ]}
-        />
+        <ProblemSelect problemList={[]} selectedProblems={[]} />
       </Box>
       <NextBtn mt={20} onBtnClick={onBtnClick} text="다음" />
     </Center>

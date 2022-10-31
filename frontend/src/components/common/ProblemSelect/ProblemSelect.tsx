@@ -1,7 +1,8 @@
 import React, { ReactNode, useState } from "react";
 import { Box, Flex, Grid } from "@chakra-ui/react";
-import ProblemCard, { Problem } from "../ProblemCard";
+import ProblemCard from "../ProblemCard";
 import SelectedProblem from "./SelectedProblem";
+import { Problem } from "../../../pages/Recommend";
 
 export interface selectedProblem {
   no: number;
@@ -97,11 +98,11 @@ function ProblemSelect({ selectedProblems, problemList }: ProblemSelectProps) {
         >
           {problemList.map(problem => (
             <ProblemCard
-              key={problem.id}
+              key={problem.problemInfo.problemId}
               bg="dep_2"
               problem={problem}
               btnType="add"
-              onBtnClick={() => console.log(problem.id)}
+              onBtnClick={() => console.log(problem.problemInfo.problemId)}
             />
           ))}
         </Flex>
