@@ -40,6 +40,9 @@ public class StudyServiceImpl implements StudyService {
     @Transactional
     public void createStudy(long userId, StudyDto studyDto) {
         try {
+            if(studyRepository.findByStudyName(studyDto.getStudyName()).isPresent())
+                throw new RestException(HttpStatus.CONFLICT, "Duplicate study name");
+
             User userEntity = userRepository.findById(userId).get(); // 로그인 한 사용자 정보
             String studyName = studyDto.getStudyName(); // study 이름
             String studyCode = null; // study 코드

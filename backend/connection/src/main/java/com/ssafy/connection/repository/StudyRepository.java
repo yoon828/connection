@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface StudyRepository extends JpaRepository<Study, Long> {
     Optional<Study> findByStudyCode(String studyCode);
 
+    Optional<Study> findByStudyName(String studyName);
+
     Study findByConnStudy(ConnStudy connStudyEntity);
 }
