@@ -72,7 +72,7 @@ public class SolveServiceImpl implements SolveService{
         } else {
             return false;
         }
-        solveEntity.setStatus(1);
+        solveEntity.setStatus(0);
         solveEntity.setTime(LocalDateTime.now());
         solveRepository.save(solveEntity);
         return true;
