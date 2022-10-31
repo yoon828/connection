@@ -40,13 +40,12 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public void createStudy(long userId, StudyDto studyDto) {
+    public void createStudy(long userId, String studyName) {
         try {
-            if(studyRepository.findByStudyName(studyDto.getStudyName()).isPresent())
+            if(studyRepository.findByStudyName(studyName).isPresent())
                 throw new RestException(HttpStatus.CONFLICT, "Duplicate study name");
 
             User userEntity = userRepository.findById(userId).get(); // 로그인 한 사용자 정보
-            String studyName = studyDto.getStudyName(); // study 이름
             String studyCode = null; // study 코드
 
             if (connStudyRepository.findByUser_UserId(userEntity.getUserId()).isPresent())
@@ -56,7 +55,7 @@ public class StudyServiceImpl implements StudyService {
                 studyCode = RandomCodeGenerate.generate();
             } while (studyRepository.findByStudyCode(studyCode) == null);
 
-            githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
+            //githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
 
             String createTeamRequest = "{\"name\":\"" + userEntity.getGithubId() + "\"," +
                     "\"description\":\"This is your study repository\"," +
@@ -64,23 +63,21 @@ public class StudyServiceImpl implements StudyService {
                     "\"privacy\":\"closed\"}";
             webClient.post()
                     .uri("/orgs/{org}/teams", "co-nnection")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(createTeamRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
 
-            /*
-            String inviteUserRequest = "{\"role\":\"maintainer\"}";
 
+            String inviteUserRequest = "{\"role\":\"maintainer\"}";
             webClient.put()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "co-nnection",userEntity.getGithubId(), userEntity.getGithubId())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(inviteUserRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
-             */
 
             String createRepositoryRequest = "{\"name\":\"" + userEntity.getGithubId() + "\"," +
                     "\"description\":\"This is your Study repository\"," +
@@ -91,7 +88,7 @@ public class StudyServiceImpl implements StudyService {
                     "\"has_wiki\":true}";
             webClient.post()
                     .uri("/orgs/{org}/repos", "co-nnection")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(createRepositoryRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
@@ -100,7 +97,7 @@ public class StudyServiceImpl implements StudyService {
             String connectTeamRepositoryRequest = "{\"permission\":\"push\"}";
             webClient.put()
                     .uri("/orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}","co-nnection",userEntity.getGithubId(), "co-nnection",userEntity.getGithubId())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(connectTeamRepositoryRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
@@ -151,7 +148,7 @@ public class StudyServiceImpl implements StudyService {
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get(); // 참가하려는 study 정보
             ConnStudy connStudyEntity = connStudyRepository.findByStudy_StudyIdAndRole(studyEntity.getStudyId(), "LEADER").get();
             User studyLeaderEntity = connStudyEntity.getUser(); // 참가하려는 스터디 스터디장 정보
-            githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
+            //githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
 
             if(connStudyRepository.findByUser_UserIdAndStudy_StudyId(userId,studyEntity.getStudyId()).isPresent()) // userId, studyId와 일치하는 결과가 있을 경우 예외처리(이미 가입한 경우)
                 throw new RestException(HttpStatus.BAD_REQUEST, "Already joined");
@@ -163,7 +160,7 @@ public class StudyServiceImpl implements StudyService {
                             studyLeaderEntity.getGithubId(),
                             userEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
-                            "Bearer " + githubToken)
+                            "Bearer " + adminGithubToken)
                     .bodyValue(inviteUserRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
@@ -194,29 +191,33 @@ public class StudyServiceImpl implements StudyService {
                 quitUserEntity = userRepository.findById(userId).get();
 
                 if (connStudyRepository.findByUser_UserId(userId).isEmpty()) // userId와 일치하는 결과가 없을 경우 예외처리(참여중인 study가 없는 경우)
-                    throw new RestException(HttpStatus.NOT_FOUND, "No study participated");
+                    throw new RestException(HttpStatus.BAD_REQUEST, "No study participated");
 
                 connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
                 studyLeaderEntity = userRepository.findById(connStudyRepository.findByStudy_StudyIdAndRole(connStudyEntity.getStudy().getStudyId(), "LEADER").get().getUser().getUserId()).get();
             } else { // 추방하는 경우
                 if (userRepository.findById(quitUserId).isEmpty()) // quitUserId 일치하는 결과가 없을 경우 예외처리(추방하려는 사용자가 없는 경우)
-                    throw new RestException(HttpStatus.NOT_FOUND, "Not found user to deport");
+                    throw new RestException(HttpStatus.BAD_REQUEST, "Not found user to deport");
 
                 quitUserEntity = userRepository.findById(quitUserId).get();
 
                 if (connStudyRepository.findByUser_UserId(quitUserId).isEmpty()) // quitUserId 일치하는 결과가 없을 경우 예외처리(추방하려는 사용자가 참여중인 study가 없는 경우)
-                    throw new RestException(HttpStatus.NOT_FOUND, "No study participated by user");
+                    throw new RestException(HttpStatus.BAD_REQUEST, "No study participated by user");
 
                 connStudyEntity = connStudyRepository.findByUser_UserId(quitUserId).get();
+
+                if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, connStudyEntity.getStudy().getStudyId(), "READER").isEmpty())
+                    throw new RestException(HttpStatus.BAD_REQUEST, "Not study reader");
+
                 studyLeaderEntity = userRepository.findById(userId).get();
             }
 
             studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
             if(connStudyRepository.findByUser_UserIdAndStudy_StudyId(quitUserEntity.getUserId(),studyEntity.getStudyId()).isEmpty()) // userId, studyId와 일치하는 결과가 없을 경우 예외처리(study의 스터디원이 아닌 경우)
-                throw new RestException(HttpStatus.NOT_FOUND, "Already not a member");
+                throw new RestException(HttpStatus.BAD_REQUEST, "Already not a member");
 
-            githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken();
+            //githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken();
 
             webClient.delete()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}",
@@ -224,7 +225,7 @@ public class StudyServiceImpl implements StudyService {
                             studyEntity.getStudyRepository().substring(31),
                             quitUserEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
-                            "Bearer " + githubToken)
+                            "Bearer " + adminGithubToken)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
@@ -243,7 +244,7 @@ public class StudyServiceImpl implements StudyService {
         User userEntity = userRepository.findById(userId).get();
 
         if (connStudyRepository.findByUser_UserIdAndRole(userId, "LEADER").isEmpty()) // userId, LEADER와 일치하는 결과가 없을 경우 예외처리(찾는 study가 없는 경우)
-            throw new RestException(HttpStatus.NOT_FOUND, "Not found study");
+            throw new RestException(HttpStatus.BAD_REQUEST, "Not found study");
 
         githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken();
 
@@ -252,7 +253,7 @@ public class StudyServiceImpl implements StudyService {
                         "co-nnection",
                         userEntity.getGithubId())
                 .header(HttpHeaders.AUTHORIZATION,
-                        "Bearer " + githubToken)
+                        "Bearer " + adminGithubToken)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();

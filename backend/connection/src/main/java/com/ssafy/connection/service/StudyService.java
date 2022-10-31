@@ -4,7 +4,7 @@ import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.entity.Study;
 
 public interface StudyService {
-    void createStudy(long userId, StudyDto studyDto);
+    void createStudy(long userId, String studyName);
 
     StudyDto getStudy(String studyCode);
 
