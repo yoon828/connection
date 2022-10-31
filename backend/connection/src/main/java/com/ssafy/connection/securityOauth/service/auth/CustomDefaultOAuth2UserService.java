@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        System.out.println(oAuth2UserRequest.getAccessToken().getTokenValue() + "액세스토큰");
         try {
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
         } catch (Exception e) {
@@ -49,7 +50,15 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
 
-        return UserPrincipal.create(user, oAuth2User.getAttributes());
+        Map<String,Object> map = new HashMap<>();
+        oAuth2User.getAttributes().forEach((key, value) -> {
+            map.put(key,value);
+        });
+        String token = oAuth2UserRequest.getAccessToken().getTokenValue();
+        map.put("githubtoken",token);
+
+
+        return UserPrincipal.create(user, map);
     }
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {

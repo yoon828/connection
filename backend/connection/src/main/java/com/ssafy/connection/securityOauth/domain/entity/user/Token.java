@@ -21,6 +21,9 @@ public class Token extends DefaultTime {
     @Column(name = "refresh_token", length = 200 , nullable = false)
     private String refreshToken;
 
+    @Column(name = "github_token", length = 200 , nullable = true)
+    private String githubToken;
+
     public Token(){}
 
     public Token updateRefreshToken(String refreshToken) {
@@ -29,8 +32,9 @@ public class Token extends DefaultTime {
     }
 
     @Builder
-    public Token(String githubId, String refreshToken) {
+    public Token(String githubId, String refreshToken, String githubToken) {
         this.githubId = githubId;
         this.refreshToken = refreshToken;
+        this.githubToken = githubToken;
     }
 }
