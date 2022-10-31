@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProblemReturnDto {
-    private ProblemDto problem;
+    private ProblemDto problemInfo;
     private List<TagDto> tagList;
     private long difficulty;
 
     public ProblemReturnDto(ProblemDto problemDto, List<TagDto> tagList){
-        this.problem = problemDto;
+        this.problemInfo = problemDto;
         this.tagList = tagList;
     }
 }
