@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,15 +30,22 @@ public class UserDto {
 
     //private Boolean emailVerified = false;
 
-    private String password;
+//    private String password;
 
-    private Provider provider;
+//    private Provider provider;
 
     private Role role;
 
-    private long studyId2;
+    //추가정보 ===============
+    private long studyId;
 
     private String studyRole;
+
+    private String studyName;
+
+    private String studyRepository;
+
+    private boolean ismember;
 
     //private String providerId;
 

@@ -2,7 +2,9 @@ package com.ssafy.connection.securityOauth.service.auth;
 
 import com.ssafy.connection.dto.SolvedacUserDto;
 import com.ssafy.connection.entity.ConnStudy;
+import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.repository.ConnStudyRepository;
+import com.ssafy.connection.repository.StudyRepository;
 import com.ssafy.connection.securityOauth.advice.assertThat.DefaultAssert;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.securityOauth.domain.entity.user.*;
@@ -18,6 +20,9 @@ import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.convention.NameTokenizers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -44,25 +50,19 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final ConnStudyRepository connStudyRepository;
+    private final StudyRepository studyRepository;
     private WebClient solvedac = WebClient.create("https://solved.ac/api");
 
-    public ResponseEntity<?> whoAmI(UserPrincipal userPrincipal){
+    @Transactional
+    public ResponseEntity whoAmI(UserPrincipal userPrincipal){
         Optional<User> user = userRepository.findById(userPrincipal.getId());
         UserDto userDto = ModelMapperUtils.getModelMapper().map(user.get(), UserDto.class);
 
-        ConnStudy connStudy = connStudyRepository.findByUser(user.get());
-        if(connStudy == null){
-            userDto.setStudyId2(0);
-        }
-        else {
-            userDto.setStudyId2(connStudy.getStudy().getStudyId());
-            userDto.setStudyRole(connStudy.getRole());
-        }
-
         DefaultAssert.isOptionalPresent(user);
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(userDto).build();
+//        ApiResponse apiResponse = ApiResponse.builder().information(userDto).build();
 
-        return ResponseEntity.ok(apiResponse);
+//        return ResponseEntity.ok(userDto);
+        return new ResponseEntity<UserDto>(userDto,HttpStatus.OK);
     }
 
     public ResponseEntity getAuthBoj(String code, String baekjoonId, long userId){
