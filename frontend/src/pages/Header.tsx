@@ -57,7 +57,8 @@ function Header() {
 
   useEffect(() => {
     if (!isBJ && isLogin) {
-      onOpen();
+      // 모달창 띄우기 추후 주석 해제
+      // onOpen();
     }
   }, [isBJ, isLogin, location]);
 
