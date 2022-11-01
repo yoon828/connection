@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setToken } from "../api/api";
 import { getUserInfo } from "../store/ducks/auth/authThunk";
 import { useAppDispatch } from "../store/hooks";
 
@@ -12,7 +11,7 @@ function Callback() {
 
   useEffect(() => {
     if (token) {
-      setToken(token);
+      localStorage.setItem("token", token);
       dispatch(getUserInfo()); // redux에 유저 정보 setting
     } else {
       alert("문제 발생");
