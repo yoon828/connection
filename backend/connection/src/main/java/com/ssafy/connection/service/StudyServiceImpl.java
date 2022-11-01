@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -311,7 +312,7 @@ public class StudyServiceImpl implements StudyService {
         List<SolveStudyStatsInterface> solveStudyStats = solveRepository.findByStudyStreak(studyEntity.getStudyId());
 
         for (SolveStudyStatsInterface solveStudyStatsInterface : solveStudyStats) {
-            solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCnt()));
+            solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCount()));
         }
 
         return solveStudyStatsList;
