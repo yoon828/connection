@@ -1,6 +1,8 @@
 package com.ssafy.connection.securityOauth.controller.auth;
 
 
+import com.ssafy.connection.dto.BaekjoonAuthDto;
+import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.securityOauth.advice.payload.ErrorResponse;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
@@ -12,6 +14,7 @@ import com.ssafy.connection.securityOauth.payload.request.auth.SignUpRequest;
 import com.ssafy.connection.securityOauth.payload.response.AuthResponse;
 import com.ssafy.connection.securityOauth.payload.response.Message;
 import com.ssafy.connection.securityOauth.service.auth.AuthService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,12 +60,31 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ), 
         @ApiResponse(responseCode = "401", description = "토큰 없음"),
     })
-    @GetMapping(value = "/")
+    @GetMapping
     public ResponseEntity<?> whoAmI(
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        if(userPrincipal == null) {
+            System.out.println("여오기");
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return authService.whoAmI(userPrincipal);
+    }
+
+    @Operation(summary = "백준연동확인", description = "백준 아이디와 프론트에서 생성한 난수를 보내주세요")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 연동 성공"),
+            @ApiResponse(responseCode = "400", description = "상태 메세지가 다름"),
+            @ApiResponse(responseCode = "401", description = "토큰 없음"),
+            @ApiResponse(responseCode = "404", description = "해당 유저가 없음"),
+    })
+    @PostMapping("/baekjoon")
+    public ResponseEntity getAuthBoj(
+            @RequestBody BaekjoonAuthDto baekjoonAuthDto
+            , @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        ResponseEntity responseEntity = authService.getAuthBoj(baekjoonAuthDto.getCode(), baekjoonAuthDto.getBaekjoonId(), userPrincipal.getId());
+        return responseEntity;
     }
 
 //    @Operation(summary = "유저 정보 삭제", description = "현제 접속된 유저정보를 삭제합니다.")
@@ -114,14 +136,13 @@ public class AuthController {
 //        return authService.signup(signUpRequest);
 //    }
 
-    @Operation(summary = "토큰 갱신", description = "신규 토큰 갱신을 수행합니다.")
+    @Operation(summary = "토큰 갱신", description = "신규 토큰 갱신을 수행합니다. (바디, 파라미터 일절 필요없음)")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "토큰 갱신 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class) ) } ),
         @ApiResponse(responseCode = "400", description = "토큰 갱신 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping(value = "/refresh/")
+    @PostMapping(value = "/refresh")
     public ResponseEntity<?> refresh(
-//        @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenRequest tokenRefreshRequest
         @CookieValue("refreshToken") String refreshToken
     ) {
         return authService.refresh(refreshToken);

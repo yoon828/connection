@@ -1,5 +1,6 @@
 package com.ssafy.connection.repository;
 
+import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
@@ -21,4 +22,7 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND status = 1", nativeQuery = true)
     List<Solve> findStudyProblemByUserId(long userId);
+
+    @Query(value = "SELECT MID(s.time,1,10) date, COUNT(s.time) as cnt FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 GROUP BY date", nativeQuery = true)
+    List<SolveStudyStatsInterface> findByStudyStreak(long studyId);
 }

@@ -20,6 +20,8 @@ public class StudyDto {
 
     private int studyPersonnel;
 
+    private String studyLeaderName;
+
     public static StudyDto of(Study studyEntity) {
         StudyDto studyDto = ModelMapperUtils.getModelMapper().map(studyEntity, StudyDto.class);
 

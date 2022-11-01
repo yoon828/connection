@@ -1,5 +1,7 @@
 package com.ssafy.connection.securityOauth.service.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.connection.advice.RestException;
 import com.ssafy.connection.securityOauth.config.security.OAuth2Config;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.securityOauth.domain.mapping.TokenMapping;
@@ -8,11 +10,15 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 
@@ -118,15 +124,20 @@ public class CustomTokenProviderService {
     public boolean validateToken(String token) {
         try {
             //log.info("bearerToken = {} \n oAuth2Config.getAuth()={}", token, oAuth2Config.getAuth().getTokenSecret());
+            System.out.println("야호호");
             Jwts.parserBuilder().setSigningKey(oAuth2Config.getAuth().getTokenSecret()).build().parseClaimsJws(token);
+            System.out.println("무야호오");
             return true;
         } catch (io.jsonwebtoken.security.SecurityException ex) {
             log.error("잘못된 JWT 서명입니다.");
         } catch (MalformedJwtException ex) {
             log.error("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException ex) {
+        }/* catch (ExpiredJwtException ex) {
             log.error("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException ex) {
+//            throw new RestException(HttpStatus.NOT_FOUND, "만료df됬다!!");
+//            throw new JwtException("Expired");
+        }*/
+        catch (UnsupportedJwtException ex) {
             log.error("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException ex) {
             log.error("JWT 토큰이 잘못되었습니다.");
