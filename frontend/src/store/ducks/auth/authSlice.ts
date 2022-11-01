@@ -3,38 +3,40 @@ import { getUserInfo, getUserMorInfo } from "./authThunk";
 import { InitialStateType } from "./auth.type";
 
 const initialState: InitialStateType = {
-  tmpId: "",
-  userInfo: null
+  check: false,
+  information: null
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setTmpId: (state, action) => {
-      state.tmpId = action.payload.tmpId;
+    setUserInfo: (state, action) => {
+      state.check = action.payload.check;
+      state.information = action.payload.information;
     },
     resetUserInfo: state => {
-      state.userInfo = null;
-      sessionStorage.removeItem("access-token");
-    },
-    setMoreInfo: (state, action) => {
-      if (state.userInfo) {
-        state.userInfo.area = action.payload.area;
-        state.userInfo.categorys = action.payload.categorys;
-      }
+      state.check = false;
+      state.information = null;
     }
+    // setMoreInfo: (state, action) => {
+    //   if (state.information) {
+    //     state.information.area = action.payload.area;
+    //     state.information.categorys = action.payload.categorys;
+    //   }
+    // }
   },
   extraReducers: builder => {
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
-      state.userInfo = { ...state.userInfo, ...payload };
+      state.information = { ...state.information, ...payload.information };
+      state.check = payload.check;
     });
     builder.addCase(getUserMorInfo.fulfilled, (state, { payload }) => {
-      state.userInfo = { ...state.userInfo, ...payload };
+      state.information = { ...state.information, ...payload };
     });
   }
 });
 
-export const { setTmpId, resetUserInfo, setMoreInfo } = authSlice.actions;
+export const { setUserInfo, resetUserInfo } = authSlice.actions;
 
 export default authSlice.reducer;

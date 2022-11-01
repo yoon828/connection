@@ -1,10 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Center,
   Flex,
   Image,
   Link,
+  Menu,
+  MenuButton,
+  MenuGroup,
+  MenuItem,
+  MenuList,
   Modal,
   ModalOverlay,
   Spacer,
@@ -14,10 +19,11 @@ import {
 import { Link as ReactLink, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
-import axios from "axios";
 import JoinModal from "../components/join/JoinModal";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { resetUserInfo } from "../store/ducks/auth/authSlice";
 
 interface menuType {
   title: string;
@@ -27,26 +33,37 @@ interface menuType {
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(false);
+  const [isBJ, setIsBJ] = useState(false);
 
-  function getAPI(e: any) {
-    e.preventDefault();
-    // 깃허브 로그인
-    axios
-      .get("https://www.coalla.co.kr/api/auth")
-      .then(data => {
-        console.log(data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
+  const location = useLocation();
+  const auth = useAppSelector(state => state.auth);
+  const dispatch = useAppDispatch();
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
     { title: "스터디", link: "/study" },
     { title: "문제 풀기", link: "/study-with" }
   ];
+
+  useEffect(() => {
+    setIsLogin(auth.check);
+    if (auth.check) {
+      if (auth.information?.backjoonId) {
+        setIsBJ(true);
+      }
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    if (!isBJ && isLogin) {
+      onOpen();
+    }
+  }, [isBJ, isLogin, location]);
+
+  function logout() {
+    dispatch(resetUserInfo());
+  }
 
   return (
     <Flex
@@ -56,7 +73,7 @@ function Header() {
       bg={colorMode === "light" ? "white" : "#121212"}
       zIndex="5"
     >
-      <Center maxW="1200px" m="0 auto" w="100%">
+      <Center maxW="1200px" m="0 auto" w="100%" flex={1}>
         <Center p="14px">
           <Link as={ReactLink} to="/">
             <Image
@@ -67,7 +84,7 @@ function Header() {
           </Link>
         </Center>
         <Spacer />
-        <Center p="14px" w="540px" justifyContent="left">
+        <Center p="14px" w="540px" justifyContent="left" flex={6}>
           {menus.map(menu => {
             return (
               <Link
@@ -85,20 +102,39 @@ function Header() {
           })}
         </Center>
         <Spacer />
-        <Center p="14px">
+        <Center p="14px" flex={1} minW="170px">
           <Button mr="14px" onClick={toggleColorMode}>
             <MoonIcon />
           </Button>
-          <Link
-            href={`${process.env.REACT_APP_API_BASE_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
-            _hover={{}}
-          >
-            <Button>로그인</Button>
-            <Button onClick={e => getAPI(e)}>test</Button>
-          </Link>
-          <Modal isOpen={isOpen} onClose={onClose}>
+
+          {isLogin ? (
+            <Menu>
+              <MenuButton>
+                <Image
+                  src={auth.information?.imageUrl}
+                  borderRadius="50px"
+                  minW="35px"
+                  w="35px"
+                />
+              </MenuButton>
+              <MenuList _dark={{ bg: "#121212" }}>
+                <MenuGroup title={`${auth.information?.name}님 반가워요😀`}>
+                  <MenuItem onClick={() => logout()}>로그아웃</MenuItem>
+                </MenuGroup>
+              </MenuList>
+            </Menu>
+          ) : (
+            <Link
+              href={`${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
+              _hover={{}}
+            >
+              <Button>로그인</Button>
+            </Link>
+          )}
+          <Button onClick={onOpen}>백준</Button>
+          <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
             <ModalOverlay />
-            <JoinModal />
+            <JoinModal onClose={onClose} />
           </Modal>
         </Center>
       </Center>
