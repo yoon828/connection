@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 public class SolveStudyStatsDto {
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    //@DateTimeFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
     private LocalDate date;
 
-    private long cnt;
+    private long count;
 }

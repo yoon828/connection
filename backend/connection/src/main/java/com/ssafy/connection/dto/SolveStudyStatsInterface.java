@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 
 public interface SolveStudyStatsInterface {
     LocalDate getDate();
-    Long getCnt();
+    Long getCount();
 }
