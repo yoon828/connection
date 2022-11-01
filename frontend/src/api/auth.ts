@@ -2,7 +2,7 @@ import axios from "axios";
 import { api } from "./api";
 
 export const getUser = async () => {
-  const res = api.get("/auth/");
+  const res = await api.get("/auth/");
   return res;
 };
 
