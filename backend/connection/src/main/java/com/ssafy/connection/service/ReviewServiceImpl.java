@@ -6,6 +6,7 @@ import com.ssafy.connection.repository.ProblemRepository;
 import com.ssafy.connection.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public int saveReview(List<Map<String, Object>> map) {
+        List<Review> saveList = new ArrayList<>();
         for(Map<String, Object> reviewInput : map){
             Review reviewEntity = new Review();
             long problemId = Long.parseLong((String) reviewInput.get("problemId"));
@@ -32,11 +34,12 @@ public class ReviewServiceImpl implements ReviewService{
             if(problemEntity.isPresent()){
                 reviewEntity.setDifficulty(difficulty);
                 reviewEntity.setProblem(problemEntity.get());
-                reviewRepository.save(reviewEntity);
+                saveList.add(reviewEntity);
             } else {
                 return -1;
             }
         }
+        reviewRepository.saveAll(saveList);
         return 1;
     }
 }

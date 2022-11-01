@@ -174,7 +174,9 @@ public class ProblemServiceImpl implements ProblemService{
             // 숫자만 있으면 문제 ID로 검색
             List<ProblemReturnDto> temp = this.getProblem(Long.parseLong(keyword));
             for(ProblemReturnDto dto : temp){
-                returnList.add(dto);
+                if(dto.getProblemInfo().getProblemId() != 0){
+                    returnList.add(dto);
+                }
             }
         }
         // 태그로 검색 제외
@@ -185,7 +187,6 @@ public class ProblemServiceImpl implements ProblemService{
 //        }
 
         // int avgTier = studyService.getStudyTier(userPrincipal.getId());
-
         return returnList;
     }
 

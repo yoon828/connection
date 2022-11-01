@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,14 +53,11 @@ public class SubjectController {
     }
 
     @ApiOperation(value = "진행중인 과제현황")
-    @GetMapping("/{study_id}")
-    public void getTeamStatus(@PathVariable("study_id") Long studyId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        try{
-            Long userId = userPrincipal.getId();
-            subjectService.getTeamStatus(studyId, userId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @GetMapping("/")
+    public ResponseEntity<Map<String, Object>> getTeamStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        subjectService.getTeamStatus(userPrincipal.getId());
+
+        return null;
     }
 //    @ApiOperation(value = "내 과제 현황")
 }
