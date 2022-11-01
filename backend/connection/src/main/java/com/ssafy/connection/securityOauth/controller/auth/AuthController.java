@@ -61,7 +61,10 @@ public class AuthController {
     public ResponseEntity<?> whoAmI(
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        if(userPrincipal == null) {
+            System.out.println("여오기");
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return authService.whoAmI(userPrincipal);
     }
 

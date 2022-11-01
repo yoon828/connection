@@ -1,13 +1,20 @@
 package com.ssafy.connection.securityOauth.config.security.token;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.connection.securityOauth.service.auth.CustomTokenProviderService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,13 +32,39 @@ public class CustomOncePerRequestFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        if (StringUtils.hasText(jwt) && customTokenProviderService.validateToken(jwt)) {
-            UsernamePasswordAuthenticationToken authentication = customTokenProviderService.getAuthenticationById(jwt);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (StringUtils.hasText(jwt) && customTokenProviderService.validateToken(jwt)) {
+                UsernamePasswordAuthenticationToken authentication = customTokenProviderService.getAuthenticationById(jwt);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+        catch(ExpiredJwtException jwtException){
+            log.error("에러에러");
+            System.out.println("낄낄");
+            log.info("토큰 만료");
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+
+            ResponseStatusException responseStatusException = new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
+            System.out.println("이이");
+            System.out.println("이게맞니"+responseStatusException.getMessage());
+
+
+            mapper.writeValue(response.getWriter(), responseStatusException);
+        }catch (JwtException | IllegalArgumentException exception) {
+            log.info("jwtException : {}", exception);
+            throw exception;
         }
 
         filterChain.doFilter(request, response);
+
+
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
