@@ -2,18 +2,16 @@ package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.ConnStudy;
+import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
-import com.ssafy.connection.repository.ConnStudyRepository;
-import com.ssafy.connection.repository.ProblemRepository;
-import com.ssafy.connection.repository.StudyRepository;
-import com.ssafy.connection.repository.SubjectRepository;
+import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class SubjectServiceImpl implements SubjectService{
@@ -23,14 +21,16 @@ public class SubjectServiceImpl implements SubjectService{
     private final ProblemRepository problemRepository;
     private final ConnStudyRepository  connStudyRepository;
     private final UserRepository userRepository;
+    private final SolveRepository solveRepository;
 
     public SubjectServiceImpl(SubjectRepository subjectRepository, StudyRepository studyRepository, ProblemRepository problemRepository,
-                              ConnStudyRepository connStudyRepository, UserRepository userRepository){
+                              ConnStudyRepository connStudyRepository, UserRepository userRepository, SolveRepository solveRepository){
         this.subjectRepository = subjectRepository;
         this.studyRepository = studyRepository;
         this.problemRepository = problemRepository;
         this.connStudyRepository = connStudyRepository;
         this.userRepository = userRepository;
+        this.solveRepository = solveRepository;
     }
 
 //    @Override
@@ -56,11 +56,48 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public void getTeamStatus(Long userId){
-        Study studyEntity = studyRepository.findByConnStudy(
-                                connStudyRepository.findByUser(
-                                    userRepository.findById(userId).get()));
-        List<Subject> subjectList = subjectRepository.findAllByStudy(studyEntity);
-        System.out.println(subjectList.toString());
+    public Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList){
+        Map<String, Object> returnMap = new HashMap<>();
+
+        Study studyEntity = studyRepository.findByConnStudy(connStudyRepository.findByUser_UserId(userId).get());
+
+        // 전체 과제 개수
+        int totalSubjectSize = totalSubjectList.size();
+        // 지금까지 푼 과제 개수
+        int solvedSubjectCount = solveRepository.countsolvedSubject(userId, studyEntity.getStudyId());
+        returnMap.put("totalSubject", totalSubjectSize);
+        returnMap.put("solvedSubject", solvedSubjectCount);
+
+        int solvedStudyProblemCount = 0;
+
+        List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
+        List<User> userList = new ArrayList<>();
+        for(ConnStudy connStudy : connStudyList){
+            userList.add(connStudy.getUser());
+        }
+
+        HashSet<Long> studyProblemIdSet = new HashSet<Long>();
+        for(User user : userList){
+            List<Solve> solveList = solveRepository.findStudyProblemByUserId(user.getUserId());
+            for(Solve solve : solveList){
+                studyProblemIdSet.add(solve.getProblem().getProblemId());
+                if(user.getUserId() == userId){
+                    solvedStudyProblemCount++;
+                }
+            }
+        }
+
+        returnMap.put("totalStudyProblem", studyProblemIdSet.size());
+        returnMap.put("solvedStudyProblem", solvedStudyProblemCount);
+
+        return returnMap;
+    }
+
+    @Override
+    public List<Subject> getTotalSubjectList(Long userId) {
+        return subjectRepository.findAllByStudy(
+                studyRepository.findByConnStudy(
+                    connStudyRepository.findByUser(
+                        userRepository.findById(userId).get())));
     }
 }
