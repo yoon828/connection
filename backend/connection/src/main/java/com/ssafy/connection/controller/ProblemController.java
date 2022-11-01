@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @RestController
@@ -70,6 +72,11 @@ public class ProblemController {
     @GetMapping("/search")
     public ResponseEntity<List<ProblemReturnDto>> searchProblem(@RequestParam(value = "keyword") String keyword,
                                                                     @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        try {
+            keyword = URLDecoder.decode(keyword, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         List<ProblemReturnDto> returnList = problemService.searchProblem(keyword, userPrincipal);
         if(returnList.size() > 0){
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
