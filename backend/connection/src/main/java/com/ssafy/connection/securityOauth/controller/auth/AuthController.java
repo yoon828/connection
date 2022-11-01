@@ -7,6 +7,7 @@ import com.ssafy.connection.securityOauth.advice.payload.ErrorResponse;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
+import com.ssafy.connection.securityOauth.domain.entity.user.UserDto;
 import com.ssafy.connection.securityOauth.payload.request.auth.ChangePasswordRequest;
 import com.ssafy.connection.securityOauth.payload.request.auth.RefreshTokenRequest;
 import com.ssafy.connection.securityOauth.payload.request.auth.SignInRequest;
@@ -39,36 +40,34 @@ public class AuthController {
 
     @Operation(summary = "유저 정보 확인", description = "현제 접속된 유저정보를 확인합니다.<br>" +
             "{<br>" +
-            "  \"check\": true,<br>" +
-            "  \"information\": {<br>" +
-            "    \"userId\": 1,<br>" +
-            "    \"name\": \"Connection-code\",<br>" +
-            "    \"githubId\": \"Connection-code\",<br>" +
-            "    \"backjoonId\": null,<br>" +
-            "    \"email\": null,<br>" +
-            "    \"imageUrl\": null(프로필사진),<br>" +
-            "    \"tier\": 0(백준티어),<br>" +
-            "    \"password\": null,<br>" +
-            "    \"provider\": \"github\",<br>" +
-            "    \"role\": \"USER\"(운영자인지 일반유저인지 여부 \"USER\" | \"ADMIN\"),<br>" +
-            "    \"studyRole\": \"USER\"(스터디장인지 여부 \"LEADER\" | \"MEMBER\"),<br>" +
-            "    \"studyId2\": 1(가입한 스터디 PK값, 미가입시 0 반환)<br>" +
-            "  }<br>" +
+            "  \"userId\": 1,<br>" +
+            "  \"name\": \"Connection-code\",<br>" +
+            "  \"githubId\": \"Connection-code\",<br>" +
+            "  \"backjoonId\": null,<br>" +
+            "  \"email\": null,<br>" +
+            "  \"imageUrl\": null(프로필사진),<br>" +
+            "  \"tier\": 0(백준티어),<br>" +
+            "  \"role\": \"USER\"(운영자인지 일반유저인지 여부 \"USER\" | \"ADMIN\"),<br>" +
+            "  \"studyRole\": \"USER\"(스터디장인지 여부 \"LEADER\" | \"MEMBER\"),<br>" +
+            "  \"studyName\": 1(가입한 스터디 PK값, 미가입시 0 반환)<br>" +
+            "  \"studyRepository\": \"github주소\",<br>" +
+            "  \"ismember\": \"false(organization 멤버 여부)\",<br>" +
             "}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class) ) } ),
-        @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ), 
+        @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class) ) } ),
+        @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
         @ApiResponse(responseCode = "401", description = "토큰 없음"),
     })
     @GetMapping
-    public ResponseEntity<?> whoAmI(
+    public ResponseEntity whoAmI(
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         if(userPrincipal == null) {
             System.out.println("여오기");
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
-        return authService.whoAmI(userPrincipal);
+        ResponseEntity result = authService.whoAmI(userPrincipal);
+        return result;
     }
 
     @Operation(summary = "백준연동확인", description = "백준 아이디와 프론트에서 생성한 난수를 보내주세요")
