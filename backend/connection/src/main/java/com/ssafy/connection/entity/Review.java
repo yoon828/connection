@@ -24,8 +24,6 @@ public class Review {
 
     private int difficulty; // 난이도
 
-    private LocalDateTime time; // 소요 시간
-
     /* 연관관계 매핑 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problemId")

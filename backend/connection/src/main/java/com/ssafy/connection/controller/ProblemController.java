@@ -4,6 +4,7 @@ import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
+import com.ssafy.connection.service.ReviewService;
 import com.ssafy.connection.service.SolveService;
 import com.ssafy.connection.service.TagService;
 import io.swagger.annotations.*;
@@ -22,12 +23,15 @@ public class ProblemController {
     private final ProblemService problemService;
     private final TagService tagService;
     private final SolveService solveService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public ProblemController(ProblemService problemService, TagService tagService, SolveService solveService){
+    public ProblemController(ProblemService problemService, TagService tagService, SolveService solveService,
+                                ReviewService reviewService){
         this.problemService = problemService;
         this.tagService = tagService;
         this.solveService = solveService;
+        this.reviewService = reviewService;
     }
 
     @ApiOperation(value = "문제 추천", notes = "체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
@@ -100,6 +104,26 @@ public class ProblemController {
                                                 @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         boolean result = solveService.saveSolveList((List<String>) map.get("list"), userPrincipal.getId());
         return ResponseEntity.status(HttpStatus.OK).body("success");
+    }
+
+    @ApiOperation(value = "문제 리뷰 등록", notes = "문제 스터디 완료 후, 문제에 대한 리뷰를 저장")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "list", value = "문제에 대한 리뷰", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 400, message = "실패(문제 ID 잘못됨)")
+    })
+    @PostMapping("/review")
+    public ResponseEntity<String> saveReview(@RequestBody List<Map<String, Object>> list){
+        int result = reviewService.saveReview(list);
+        switch (result){
+            case 1:
+                return ResponseEntity.status(HttpStatus.OK).body("success");
+            case -1:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("wrong problemId");
+        }
+        return null;
     }
 
 //    @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")

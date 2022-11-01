@@ -10,8 +10,6 @@ public class ReviewDto {
 
     private int difficulty; // 난이도
 
-    private LocalDateTime time; // 소요 시간
-
     public static ReviewDto of(Review reviewEntity) {
         ReviewDto reviewDto = ModelMapperUtils.getModelMapper().map(reviewEntity, ReviewDto.class);
 
