@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+//@NamedNativeQuery(name = "findByStudyStreak",query = "SELECT ", resultSetMapping = "solveStudyStatsDto")
+//@SqlResultSetMapping(name = "solveStudyStatsDto", classes = @ConstructorResult(targetClass = SolveStudyStatsInterface.class, columns = {@ColumnResult(name = "date", type = Date.class), @ColumnResult(name = "cnt", type = Long.class)}))
 @Table(name = "Solve")
 public class Solve {
     @Id
@@ -43,4 +45,5 @@ public class Solve {
 
         return solveEntity;
     }
+
 }

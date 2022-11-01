@@ -1,5 +1,7 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.SolveStudyStatsDto;
+import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/study")
@@ -98,6 +102,15 @@ public class StudyController {
         studyService.quitStudy(userId, quitUserId);
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "스터디 스트릭")
+    @GetMapping
+    public ResponseEntity<List<SolveStudyStatsDto>> getStudyStreak(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        List<SolveStudyStatsDto> result = studyService.getStudyStreak(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 }
