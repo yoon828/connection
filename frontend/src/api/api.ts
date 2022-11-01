@@ -1,24 +1,22 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { getAccessToken } from "../components/common/functions/functions";
 
 const url = process.env.REACT_APP_API_URL;
 
 export const api: AxiosInstance = axios.create({
   baseURL: url,
   headers: {
-    // Authorization: `Bearer ${getToken()}`,
     "Content-Type": "application/json"
   }
 });
 
-export const setToken = (token: string) => {
-  api.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-// // api 요청 인터셉터
-// api.interceptors.request.use(config => {
-//   config.headers.Authorization = `Bearer ${getAccessToken()}`;
-//   return config;
-// });
+// api 요청 인터셉터
+api.interceptors.request.use((config: AxiosRequestConfig) => {
+  if (config.headers) {
+    config.headers.Authorization = `Bearer ${getAccessToken()}`;
+  }
+  return config;
+});
 
 // // api 응답 인터셉터
 // api.interceptors.response.use(
@@ -55,3 +53,5 @@ export const setToken = (token: string) => {
 //     return Promise.reject(error);
 //   }
 // );
+
+export default api;
