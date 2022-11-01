@@ -33,28 +33,6 @@ public class SolveServiceImpl implements SolveService{
     @Override
     @Transactional
     public boolean isSolved(long problemId, long userId) {
-            StringBuffer result = new StringBuffer();
-            User user = userRepository.getById(userId);
-        URL url = null;
-        try {
-            url = new URL("https://solved.ac/api/v3/search/problem?query=solved_by%3" + user.getBackjoonId());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            urlConnection.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        }
-        urlConnection.setRequestProperty("Content-type", "application/json");
-
-
         Optional<Solve> solve = solveRepository.findByUserAndProblem(userRepository.getById(userId), problemRepository.getById(problemId));
         if(solve.isPresent()){
             return true;
