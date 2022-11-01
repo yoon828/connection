@@ -4,16 +4,26 @@ import {
   PreloadedState
 } from "@reduxjs/toolkit";
 import logger from "redux-logger";
+import storage from "redux-persist/lib/storage";
+import { persistReducer } from "redux-persist";
 import authSlice from "./ducks/auth/authSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice
 });
 
+const persistConfig = {
+  key: "root",
+  storage,
+  whiteList: ["auth"]
+};
+
+const persistRootReducer = persistReducer(persistConfig, rootReducer);
+
 // eslint-disable-next-line no-use-before-define
 export const setUpStore = (preloadedState?: PreloadedState<RootState>) => {
   return configureStore({
-    reducer: rootReducer,
+    reducer: persistRootReducer,
     preloadedState,
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({ serializableCheck: false }).concat(logger)
