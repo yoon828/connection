@@ -10,12 +10,23 @@ import SolvingView from "../components/studyWith/SolvingView";
 import TimeSetView from "../components/studyWith/TimeSetView";
 
 function StudyWith() {
-  const socket = io(
+  const socket =
     process.env.NODE_ENV === "development"
-      ? "localhost:8000"
-      : "wss://k7c202.p.ssafy.io",
-    { transports: ["websocket"] }
-  );
+      ? io("ws://localhost:8000", {
+          autoConnect: false,
+          reconnectionDelay: 1000,
+          reconnectionDelayMax: 5000,
+          reconnectionAttempts: 3,
+          transports: ["websocket"]
+        })
+      : io("wss://k7c202.p.ssafy.io", {
+          path: "/node/socket.io",
+          autoConnect: false,
+          reconnectionDelay: 1000,
+          reconnectionDelayMax: 5000,
+          reconnectionAttempts: 3,
+          transports: ["websocket"]
+        });
 
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
