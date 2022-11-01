@@ -134,7 +134,9 @@ public class StudyServiceImpl implements StudyService {
                 throw new RestException(HttpStatus.NOT_FOUND, "Not Found Study");
 
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
+            User studyLeaderEntity = connStudyRepository.findByStudy_StudyIdAndRole(studyEntity.getStudyId(),"LEADER").get().getUser();
             StudyDto studyDto = StudyDto.of(studyEntity);
+            studyDto.setStudyLeaderName(studyLeaderEntity.getName());
 
             return studyDto;
         } catch (Exception e) {
