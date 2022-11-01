@@ -186,7 +186,7 @@ public class ProblemServiceImpl implements ProblemService{
 //            }
 //        }
 
-        // int avgTier = studyService.getStudyTier(userPrincipal.getId());  
+        // int avgTier = studyService.getStudyTier(userPrincipal.getId());
         return returnList;
     }
 
