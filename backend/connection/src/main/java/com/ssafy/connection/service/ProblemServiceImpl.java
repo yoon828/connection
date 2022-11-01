@@ -162,6 +162,9 @@ public class ProblemServiceImpl implements ProblemService{
 
     @Override
     public List<ProblemReturnDto> searchProblem(String keyword, UserPrincipal userPrincipal) {
+        if(keyword == null || keyword.isEmpty()){
+            return new ArrayList<>();
+        }
         // 우선 제목으로 검색
         List<ProblemReturnDto> returnList = this.getProblem(keyword);
 
