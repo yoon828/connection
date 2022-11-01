@@ -46,7 +46,7 @@ function StudyWith() {
   ];
 
   useEffect(() => {
-    // socket.connect();
+    socket.connect();
     return () => {
       socket.disconnect();
     };
