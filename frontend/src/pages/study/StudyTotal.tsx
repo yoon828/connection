@@ -70,10 +70,10 @@ function StudyTotal() {
       </Center>
       <Box p="40px 20px">
         <Flex>
-          <TotalLayout title="Challenge" flex="3" height="200px" mr="10px">
+          <TotalLayout title="챌린지" flex="3" height="200px" mr="10px">
             <Text>잔디 심기</Text>
           </TotalLayout>
-          <TotalLayout title="Rank" flex="2" height="200px">
+          <TotalLayout title="랭킹" flex="2" height="200px">
             <Ranking />
           </TotalLayout>
         </Flex>
