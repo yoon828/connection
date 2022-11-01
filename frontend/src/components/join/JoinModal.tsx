@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -8,21 +8,29 @@ import {
   Input,
   Link,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalHeader,
   Text
 } from "@chakra-ui/react";
-import axios from "axios";
+import { getUserProblems } from "../../api/auth";
 
-function JoinModal() {
+type JoinModalProps = {
+  onClose: () => void;
+};
+
+function JoinModal({ onClose }: JoinModalProps) {
+  const [id, setId] = useState("yoon828990");
+
+  // 백준에서 푼 문제 가져오기
+  const confirmBJ = async () => {
+    onClose();
+    const data = await getUserProblems("yoon828990", 1);
+  };
+
   return (
     <ModalContent bg="dep_1" maxW={650}>
-      <ModalHeader />
-      <ModalCloseButton size="lg" p="10px" />
-      <ModalBody px="50px">
+      <ModalBody p="50px">
         <Text fontSize="30px" fontStyle="bold">
-          회원가입
+          백준 연동
         </Text>
         <Center p="50px 0 30px" flexDir="column">
           <Flex w="350px" mb="50px">
@@ -30,7 +38,7 @@ function JoinModal() {
               백준ID
             </Flex>
             <Flex direction="column">
-              <Input type="text" />
+              <Input type="text" value={id} placeholder="백준 아이디" />
               <Text fontSize={12} mt="5px">
                 인증하는데 문제가 발생했습니다
               </Text>
@@ -56,15 +64,15 @@ function JoinModal() {
                 SD2SF4
               </Flex>
               <Text fontSize={12} mt="5px">
-                백준 설정 {">"} 정보 수정 {">"} 상태메시지를
+                Solved.ac 프로필 편집 {">"} 상태메시지를
                 <br /> Code로 변경한 뒤,{" "}
-                <Text color="main" display="inline" fontWeight="bold">
+                <Text as="span" color="main" display="inline" fontWeight="bold">
                   인증
                 </Text>{" "}
                 버튼을 눌러주세요
               </Text>
               <Link
-                href="https://www.acmicpc.net/"
+                href={`https://solved.ac/profile/${id}`}
                 isExternal
                 fontSize={12}
                 display="flex"
@@ -72,15 +80,20 @@ function JoinModal() {
                 mt="10px"
                 textDecorationLine="underline"
               >
-                백준으로 이동하기
+                Solved.ac로 이동하기
                 <ExternalLinkIcon mx="2px" />
               </Link>
             </Flex>
           </Flex>
         </Center>
-        <Center mb="30px">
-          <Button bg="gra" width="250px" _hover={{}}>
-            가입하기
+        <Center>
+          <Button
+            bg="gra"
+            width="250px"
+            _hover={{}}
+            onClick={() => confirmBJ()}
+          >
+            연동하기
           </Button>
         </Center>
       </ModalBody>

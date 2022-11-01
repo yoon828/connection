@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { Link as ReactLink, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,7 +7,8 @@ import {
   Flex,
   Image,
   Text,
-  useColorMode
+  useColorMode,
+  useToast
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
 import C from "../asset/img/c.png";
@@ -30,10 +31,31 @@ import DownArrow from "../asset/img/downarrow.gif";
 
 function Main() {
   const { colorMode } = useColorMode();
-
   const navigate = useNavigate();
+  const { pathname, state } = useLocation();
+  const toast = useToast();
+
   const mainRef = useRef<HTMLDivElement>(null);
   const imgs = [C, Java, JS, Python, Kotlin];
+
+  useEffect(() => {
+    if (state) {
+      if (state.mode === 0) {
+        toast({
+          title: `로그인해주세요!`,
+          position: "top",
+          isClosable: true
+        });
+      } else if (state.mode === 1) {
+        toast({
+          title: `백준 연동 해주세요!`,
+          position: "top",
+          isClosable: true
+        });
+      }
+    }
+    return navigate(pathname, { replace: true });
+  }, []);
 
   function onDown() {
     mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });

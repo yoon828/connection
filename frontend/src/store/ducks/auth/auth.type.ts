@@ -1,20 +1,16 @@
 export interface UserInfoType {
-  id: string;
-  nickname: string;
-  area: string | null;
-  followOpen: boolean;
-  followerOpen: boolean;
-  likeNotice: boolean;
-  followNotice: boolean;
-  commentNotice: boolean;
-  replyNotice: boolean;
-  profileMsg: string | null;
-  profileImg: string | null;
-  backgroundImg: string | null;
-  categorys: Array<string>;
-  social: string;
+  userIdx: number;
+  name: string;
+  githubId: string;
+  backjoonId: null | string;
+  email: string;
+  imageUrl: string;
+  tier: number;
+  password: string | null;
+  provider: string;
+  role: string;
 }
 export interface InitialStateType {
-  tmpId: string;
-  userInfo: UserInfoType | null;
+  check: boolean;
+  information: UserInfoType | null;
 }
