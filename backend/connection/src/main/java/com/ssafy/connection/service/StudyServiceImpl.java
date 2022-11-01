@@ -1,10 +1,13 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.advice.RestException;
+import com.ssafy.connection.dto.SolveStudyStatsDto;
+import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.repository.ConnStudyRepository;
+import com.ssafy.connection.repository.SolveRepository;
 import com.ssafy.connection.repository.StudyRepository;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
@@ -30,12 +33,15 @@ public class StudyServiceImpl implements StudyService {
     private final StudyRepository studyRepository;
     private final ConnStudyRepository connStudyRepository;
     private final TokenRepository tokenRepository;
+    private final SolveRepository solveRepository;
 
-    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository) {
+    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository, SolveRepository solveRepository) {
         this.userRepository = userRepository;
         this.studyRepository = studyRepository;
         this.connStudyRepository = connStudyRepository;
         this.tokenRepository = tokenRepository;
+        this.solveRepository = solveRepository;
+
     }
 
     @Override
@@ -280,7 +286,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public int getStudyTier(Long userId) {
+    public int getStudyTier(long userId) {
         ConnStudy connStudy = connStudyRepository.findByUser_UserId(userId).get();
         List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(connStudy.getStudy().getStudyId());
 
@@ -290,5 +296,22 @@ public class StudyServiceImpl implements StudyService {
         }
         avgTier = Math.round(avgTier / connStudyList.size());
         return avgTier;
+    }
+
+    @Override
+    @Transactional
+    public List<SolveStudyStatsDto> getStudyStreak(long userId) {
+        User userEntity = userRepository.findById(userId).get();
+        ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
+        Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
+
+        List<SolveStudyStatsDto> solveStudyStatsList = new ArrayList<>();
+        List<SolveStudyStatsInterface> solveStudyStats = solveRepository.findByStudyStreak(studyEntity.getStudyId());
+
+        for (SolveStudyStatsInterface solveStudyStatsInterface : solveStudyStats) {
+            solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCnt()));
+        }
+
+        return solveStudyStatsList;
     }
 }

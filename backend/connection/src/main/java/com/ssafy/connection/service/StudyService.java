@@ -1,7 +1,10 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.SolveStudyStatsDto;
+import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
-import com.ssafy.connection.entity.Study;
+
+import java.util.List;
 
 public interface StudyService {
     void createStudy(long userId, String studyName);
@@ -14,5 +17,7 @@ public interface StudyService {
 
     void deleteStudy(long userId);
 
-    int getStudyTier(Long userId);
+    int getStudyTier(long userId);
+
+    List<SolveStudyStatsDto> getStudyStreak(long userId);
 }
