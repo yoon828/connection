@@ -202,6 +202,10 @@ public class StudyServiceImpl implements StudyService {
 
                 connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
                 studyLeaderEntity = userRepository.findById(connStudyRepository.findByStudy_StudyIdAndRole(connStudyEntity.getStudy().getStudyId(), "LEADER").get().getUser().getUserId()).get();
+                studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
+
+                if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, studyEntity.getStudyId(), "READER").isPresent()) // userId,studyId,role과 일치하는 결과가 있는 경우 예외처리(탈퇴하려는 사용자가 스터디장인 경우)
+                    throw new RestException(HttpStatus.BAD_REQUEST, "Unable to quit because you are leader");
             } else { // 추방하는 경우
                 if (userRepository.findById(quitUserId).isEmpty()) // quitUserId 일치하는 결과가 없을 경우 예외처리(추방하려는 사용자가 없는 경우)
                     throw new RestException(HttpStatus.BAD_REQUEST, "Not found user to deport");
@@ -217,9 +221,8 @@ public class StudyServiceImpl implements StudyService {
                     throw new RestException(HttpStatus.BAD_REQUEST, "Not study reader");
 
                 studyLeaderEntity = userRepository.findById(userId).get();
+                studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
             }
-
-            studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
             if(connStudyRepository.findByUser_UserIdAndStudy_StudyId(quitUserEntity.getUserId(),studyEntity.getStudyId()).isEmpty()) // userId, studyId와 일치하는 결과가 없을 경우 예외처리(study의 스터디원이 아닌 경우)
                 throw new RestException(HttpStatus.BAD_REQUEST, "Already not a member");
