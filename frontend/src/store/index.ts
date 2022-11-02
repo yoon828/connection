@@ -7,9 +7,11 @@ import logger from "redux-logger";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import authSlice from "./ducks/auth/authSlice";
+import selectedProblemSlice from "./ducks/selectedProblem/selectedProblemSlice";
 
 const rootReducer = combineReducers({
-  auth: authSlice
+  auth: authSlice,
+  selectedProblem: selectedProblemSlice
 });
 
 const persistConfig = {

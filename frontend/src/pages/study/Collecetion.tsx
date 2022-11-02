@@ -57,7 +57,7 @@ function Collection() {
           ))}
         </Grid>
       </StudyLayout>
-      <SearchModal isOpen={isOpen} onClose={onClose} />
+      <SearchModal isOpen={isOpen} onClose={onClose} maxCnt={0} />
     </>
   );
 }

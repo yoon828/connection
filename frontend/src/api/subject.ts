@@ -1,7 +1,11 @@
 import { api } from "./api";
 
-export const getRecommend = async () => {
-  const res = await api.get("/problem/recommend");
+export interface SubjectBody {
+  deadline: string;
+  problemList: number[];
+}
+export const postSubject = async (body: SubjectBody) => {
+  const res = await api.post("/subject", body);
   return res;
 };
 
