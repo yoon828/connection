@@ -33,7 +33,7 @@ public class WorkbookController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "problemId", value = "추가할 문제 번호", required = true)
     })
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseDto> addProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.addProblem(problemId, userPrincipal.getId())){
             case 1:
@@ -50,7 +50,7 @@ public class WorkbookController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "problemId", value = "삭제할 문제 번호", required = true)
     })
-    @DeleteMapping("/")
+    @DeleteMapping("")
     public ResponseEntity<ResponseDto> deleteProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.deleteProblem(problemId, userPrincipal.getId())){
             case 1:
@@ -64,7 +64,7 @@ public class WorkbookController {
     }
 
     @ApiOperation(value = "문제 조회", notes = "현재 유저가 속해있는 스터디의 문제집에서 문제 리스트 조회")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Map<String, Object>> getProblem(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         Map<String, Object> returnMap = new HashMap<>();
         List<ProblemReturnDto> list = workbookService.getProblem(userPrincipal.getId());
