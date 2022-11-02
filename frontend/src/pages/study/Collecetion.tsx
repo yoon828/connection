@@ -1,27 +1,48 @@
-import React, { useState } from "react";
-import { Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Flex, Grid, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 
 import StudyLayout from "../../components/layout/StudyLayout";
 import BackButton from "../../components/common/BackButton";
 import ProblemCard from "../../components/common/ProblemCard";
-import SearchModal from "../../components/common/SearchModal";
+import SearchModal from "../../components/collection/SearchModal";
 import { Problem } from "../Recommend";
-
-const dumpProblemList: Problem[] = [];
+import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
 
 function Collection() {
-  const [problemList, setProblemList] = useState(dumpProblemList);
+  const [workbook, setWorkbook] = useState<Problem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const deleteProblem = (problemId: number) => {
-    // todo : 확인하는 로직 추후 구현 필요?
-    setProblemList(prevProblemList =>
-      prevProblemList.filter(
+  const toast = useToast();
+  const deleteProblem = async (problemId: number) => {
+    const res = await deleteWorkbook(problemId);
+    setWorkbook(prevWorkbook =>
+      prevWorkbook.filter(
         problem => problem.problemInfo.problemId !== problemId
       )
     );
+    toast({
+      title: `${problemId}번 문제를 삭제했습니다`,
+      position: "top",
+      isClosable: true
+    });
+  };
+  const addProblem = async (problem: Problem) => {
+    const res = await addWorkbook(problem.problemInfo.problemId);
+    setWorkbook(prevWorkbook => [...prevWorkbook, problem]);
+    toast({
+      title: `${problem.problemInfo.problemId}번 문제를 추가했습니다.`,
+      position: "top",
+      isClosable: true
+    });
   };
 
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await getWorkbook();
+      setWorkbook(res.data);
+    };
+    fetch();
+  }, []);
   return (
     <>
       <StudyLayout
@@ -47,7 +68,7 @@ function Collection() {
           </Text>
         </Flex>
         <Grid templateColumns="repeat(2,1fr)" gap="32px">
-          {problemList.map(problem => (
+          {workbook.map(problem => (
             <ProblemCard
               key={problem.problemInfo.problemId}
               problem={problem}
@@ -57,7 +78,14 @@ function Collection() {
           ))}
         </Grid>
       </StudyLayout>
-      <SearchModal isOpen={isOpen} onClose={onClose} maxCnt={0} />
+      <SearchModal
+        isOpen={isOpen}
+        onClose={onClose}
+        maxCnt={10}
+        workbook={workbook}
+        deleteProblem={deleteProblem}
+        addProblem={addProblem}
+      />
     </>
   );
 }
