@@ -41,7 +41,7 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
-    @ApiOperation(value = "문제제출")
+    @ApiOperation(value = "과제 등록")
     @PostMapping("/")
     public ResponseEntity makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         int result = 0;
@@ -62,5 +62,4 @@ public class SubjectController {
 
         return ResponseEntity.status(HttpStatus.OK).body(myMap);
     }
-//    @ApiOperation(value = "내 과제 현황")
 }
