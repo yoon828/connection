@@ -6,9 +6,13 @@ export interface UserInfoType {
   email: string;
   imageUrl: string;
   tier: number;
-  password: string | null;
-  provider: string;
   role: string;
+  studyId: number;
+  studyRole: string;
+  studyName: string;
+  studyRepository: string;
+  studyCode: string;
+  ismember: boolean;
 }
 export interface InitialStateType {
   check: boolean;
