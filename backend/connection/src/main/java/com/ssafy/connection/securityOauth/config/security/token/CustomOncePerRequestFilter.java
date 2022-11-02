@@ -40,9 +40,7 @@ public class CustomOncePerRequestFilter extends OncePerRequestFilter{
             }
         }
         catch(ExpiredJwtException jwtException){
-            log.error("에러에러");
-            System.out.println("낄낄");
-            log.info("토큰 만료");
+            System.out.println("토큰만료");
 
             ObjectMapper mapper = new ObjectMapper();
 
@@ -51,9 +49,7 @@ public class CustomOncePerRequestFilter extends OncePerRequestFilter{
             response.setCharacterEncoding("UTF-8");
 
             ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
-            System.out.println("이이");
-            System.out.println("이게맞니"+responseStatusException.getMessage());
+                    HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.expiredtoken");
 
 
             mapper.writeValue(response.getWriter(), responseStatusException);
