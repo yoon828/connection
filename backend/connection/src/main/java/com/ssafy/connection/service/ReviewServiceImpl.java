@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Review;
 import com.ssafy.connection.repository.ProblemRepository;
@@ -41,5 +42,22 @@ public class ReviewServiceImpl implements ReviewService{
         }
         reviewRepository.saveAll(saveList);
         return 1;
+    }
+
+    @Override
+    public int getAvgDifficulty(ProblemDto problemDto) {
+        Problem problemEntity = Problem.of(problemDto);
+        List<Review> reviewEntityList = reviewRepository.findAllByProblem(problemEntity);
+
+        if(reviewEntityList.size() == 0){
+            return 0;
+        }
+
+        int sum = 0;
+        for(Review reviewEntity : reviewEntityList){
+            sum += reviewEntity.getDifficulty();
+        }
+
+        return Math.round(sum / reviewEntityList.size());
     }
 }

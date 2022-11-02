@@ -34,14 +34,16 @@ public class ProblemServiceImpl implements ProblemService{
     private final ConnWorkbookRepository connWorkbookRepository;
     private final ConnStudyRepository connStudyRepository;
     private final StudyService studyService;
+    private final ReviewService reviewService;
 
     public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository,
-                              ConnStudyRepository connStudyRepository, StudyService studyService){
+                              ConnStudyRepository connStudyRepository, StudyService studyService, ReviewService reviewService){
         this.problemRepository = problemRepository;
         this.tagRepository = tagRepository;
         this.connWorkbookRepository = connWorkbookRepository;
         this.connStudyRepository = connStudyRepository;
         this.studyService = studyService;
+        this.reviewService = reviewService;
     }
 
     private static int recommendSize = 4;   // 문제 추천에서 반환할 문제 수
@@ -57,7 +59,8 @@ public class ProblemServiceImpl implements ProblemService{
             ArrayList<TagDto> tagList = (ArrayList<TagDto>) tagRepository.findAllByProblem(Problem.of(problemDto));
             for(TagDto tagDto : tagList){
                 if(tagDto.getKo().equals(tag)){
-                    returnList.add(new ProblemReturnDto(problemDto, tagList));
+                    int difficulty = reviewService.getAvgDifficulty(problemDto);
+                    returnList.add(new ProblemReturnDto(problemDto, tagList, difficulty));
                     break;
                 }
             }
@@ -79,7 +82,8 @@ public class ProblemServiceImpl implements ProblemService{
                 ArrayList<TagDto> tagList = tagRepository.findAllByProblem(Problem.of(problemDto));
                 for(TagDto tagDto : tagList){
                     if(tagDto.getKo().equals(tag)){
-                        returnList.add(new ProblemReturnDto(problemDto, tagList));
+                        int difficulty = reviewService.getAvgDifficulty(problemDto);
+                        returnList.add(new ProblemReturnDto(problemDto, tagList, difficulty));
                         break;
                     }
                 }
@@ -99,7 +103,8 @@ public class ProblemServiceImpl implements ProblemService{
         Collections.shuffle(problemDtoList);
         for(ProblemDto problemDto : problemDtoList){
             if(problemDto.getLevel() == level){
-                returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+                int difficulty = reviewService.getAvgDifficulty(problemDto);
+                returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
             }
             if(returnList.size() == recommendSize){
                 break;
@@ -115,7 +120,8 @@ public class ProblemServiceImpl implements ProblemService{
 
         Collections.shuffle(problemDtoList);
         for(ProblemDto problemDto : problemDtoList){
-            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            int difficulty = reviewService.getAvgDifficulty(problemDto);
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
             if(returnList.size() == recommendSize){
                 break;
             }
@@ -132,7 +138,8 @@ public class ProblemServiceImpl implements ProblemService{
         if(problem.isPresent()){
             problemDto = ProblemDto.of(problem.get());
         }
-        returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+        int difficulty = reviewService.getAvgDifficulty(problemDto);
+        returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
         return returnList;
     }
 
@@ -143,7 +150,8 @@ public class ProblemServiceImpl implements ProblemService{
         List<ProblemDto> problemDtoList = problemRepository.findAllByTitle(title).stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
 
         for(ProblemDto problemDto : problemDtoList){
-            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            int difficulty = reviewService.getAvgDifficulty(problemDto);
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
         }
         return returnList;
     }
@@ -155,7 +163,8 @@ public class ProblemServiceImpl implements ProblemService{
         List<ProblemDto> problemDtoList = problemRepository.findAllByTag(ko).stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
 
         for(ProblemDto problemDto : problemDtoList){
-            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto))));
+            int difficulty = reviewService.getAvgDifficulty(problemDto);
+            returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
         }
         return returnList;
     }
@@ -198,7 +207,8 @@ public class ProblemServiceImpl implements ProblemService{
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
         for(int i = 0; i < recommendSize; i++){
-            returnList.add(new ProblemReturnDto(problemDtoList.get(i), tagRepository.findAllByProblem(Problem.of(problemDtoList.get(i)))));
+            int difficulty = reviewService.getAvgDifficulty(problemDtoList.get(i));
+            returnList.add(new ProblemReturnDto(problemDtoList.get(i), tagRepository.findAllByProblem(Problem.of(problemDtoList.get(i))), difficulty));
         }
 
         return returnList;

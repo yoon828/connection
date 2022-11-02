@@ -37,7 +37,7 @@ public class ProblemController {
         this.reviewService = reviewService;
     }
 
-    @ApiOperation(value = "문제 추천", notes = "체감 난이도 & 스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
+    @ApiOperation(value = "문제 추천", notes = "스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "level", value = "난이도(티어) 설정", required = false),
             @ApiImplicitParam(name = "tag", value = "태그(문제 유형) 설정", required = false)
@@ -118,6 +118,7 @@ public class ProblemController {
         }
         return null;
     }
+
 
 //    @ApiOperation(value = "유저가 푼 문제 반환 (테스트용)")
 //    @GetMapping("/test")
