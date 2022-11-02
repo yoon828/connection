@@ -12,5 +12,4 @@ import lombok.*;
 @Builder
 public class ResponseDto {
     String msg;
-    Object response;
 }
