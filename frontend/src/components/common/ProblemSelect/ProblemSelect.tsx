@@ -1,18 +1,17 @@
-import React, { ReactNode, useState } from "react";
-import { Box, Flex, Grid } from "@chakra-ui/react";
+import React, { ReactNode, useEffect, useState } from "react";
+import { Box, Flex, Grid, useToast } from "@chakra-ui/react";
 import ProblemCard from "../ProblemCard";
 import SelectedProblem from "./SelectedProblem";
-import { Problem } from "../../../pages/Recommend";
-
-export interface selectedProblem {
-  no: number;
-  title: string;
-}
-
-interface ProblemSelectProps {
-  selectedProblems?: selectedProblem[];
-  problemList: Problem[];
-}
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import {
+  addProblem,
+  removeProblem,
+  reset
+} from "../../../store/ducks/selectedProblem/selectedProblemSlice";
+import {
+  getMyWorkbook,
+  getRecommends
+} from "../../../store/ducks/selectedProblem/selectedProblemThunk";
 
 interface TabProps {
   selected?: boolean;
@@ -39,8 +38,26 @@ Tab.defaultProps = {
   selected: false
 };
 
-function ProblemSelect({ selectedProblems, problemList }: ProblemSelectProps) {
-  const [selectedTab, setSelectedTap] = useState(1);
+interface ProblemSelectProps {
+  maxCnt: number;
+}
+function ProblemSelect({ maxCnt }: ProblemSelectProps) {
+  const [selectedTab, setSelectedTap] = useState(0);
+  const appSelector = useAppSelector(state => state.selectedProblem);
+  const dispatch = useAppDispatch();
+  const toast = useToast();
+
+  useEffect(() => {
+    const fetch = async () => {
+      dispatch(getRecommends());
+      dispatch(getMyWorkbook());
+    };
+    fetch();
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
+
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
       <Flex direction="column" alignItems="center">
@@ -64,14 +81,15 @@ function ProblemSelect({ selectedProblems, problemList }: ProblemSelectProps) {
           py={8}
           gap={4}
           borderBottomRadius="20px"
+          overflowY="scroll"
         >
-          {selectedProblems?.map(problem => (
+          {appSelector.selectedProblemList?.map(problem => (
             <SelectedProblem
-              key={problem.no}
-              no={problem.no}
-              title={problem.title}
+              key={problem.problemInfo.problemId}
+              no={problem.problemInfo.problemId}
+              title={problem.problemInfo.title}
               onDeleteHandler={() => {
-                console.log(`${problem.no} 삭제`);
+                dispatch(removeProblem(problem));
               }}
             />
           ))}
@@ -96,23 +114,63 @@ function ProblemSelect({ selectedProblems, problemList }: ProblemSelectProps) {
           overflowY="scroll"
           borderBottomRadius="20px"
         >
-          {problemList.map(problem => (
-            <ProblemCard
-              key={problem.problemInfo.problemId}
-              bg="dep_2"
-              problem={problem}
-              btnType="add"
-              onBtnClick={() => console.log(problem.problemInfo.problemId)}
-            />
-          ))}
+          {selectedTab === 0
+            ? appSelector.showedRecommends.map(problem => (
+                <ProblemCard
+                  key={problem.problemInfo.problemId}
+                  bg="dep_2"
+                  problem={problem}
+                  btnType="add"
+                  onBtnClick={() => {
+                    if (appSelector.cnt >= maxCnt) {
+                      toast({
+                        title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
+                        position: "top",
+                        isClosable: true
+                      });
+                      return;
+                    }
+                    // setRecommends(prev => [
+                    //   ...prev.filter(
+                    //     p =>
+                    //       p.problemInfo.problemId !==
+                    //       problem.problemInfo.problemId
+                    //   )
+                    // ]);
+                    dispatch(addProblem(problem));
+                  }}
+                />
+              ))
+            : appSelector.showedMyWorkbook.map(problem => (
+                <ProblemCard
+                  key={problem.problemInfo.problemId}
+                  bg="dep_2"
+                  problem={problem}
+                  btnType="add"
+                  onBtnClick={() => {
+                    if (appSelector.cnt >= maxCnt) {
+                      toast({
+                        title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
+                        position: "top",
+                        isClosable: true
+                      });
+                      return;
+                    }
+                    // setMyWorkbook(prev => [
+                    //   ...prev.filter(
+                    //     p =>
+                    //       p.problemInfo.problemId !==
+                    //       problem.problemInfo.problemId
+                    //   )
+                    // ]);
+                    dispatch(addProblem(problem));
+                  }}
+                />
+              ))}
         </Flex>
       </Flex>
     </Grid>
   );
 }
-
-ProblemSelect.defaultProps = {
-  selectedProblems: []
-};
 
 export default ProblemSelect;

@@ -20,12 +20,10 @@ function SelectedProblem({ no, title, onDeleteHandler }: SelectedProblemProps) {
       w="full"
       borderRadius="20px"
       alignItems="center"
-      justifyContent="space-around"
+      justifyContent="space-between"
     >
-      <Text w="15%" borderRight="1px" borderColor="border_gray">
-        No {no}
-      </Text>
-      <Text w="70%" paddingLeft={2}>
+      <Text>{no}</Text>
+      <Text paddingLeft={2} noOfLines={2}>
         {title}
       </Text>
       <Icon
