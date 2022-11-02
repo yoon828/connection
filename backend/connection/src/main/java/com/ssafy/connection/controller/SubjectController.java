@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Subject;
@@ -23,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -57,9 +59,14 @@ public class SubjectController {
     @ApiOperation(value = "내 과제 현황", notes = "유저가 푼 과제 개수, 스터디문제(같이 푼) 개수와 전체 과제개수, 전체 스터디문제 개수를 반환")
     @GetMapping("/")
     public ResponseEntity<Map<String, Object>> getTeamStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        Map<String, Object> returnMap = new HashMap<>();
+
         List<Subject> totalSubjectList = subjectService.getTotalSubjectList(userPrincipal.getId());
         Map<String, Object> myMap = subjectService.getMyStatus(userPrincipal.getId(), totalSubjectList);
 
-        return ResponseEntity.status(HttpStatus.OK).body(myMap);
+        returnMap.put("msg", new ResponseDto("success"));
+        returnMap.put("status", myMap);
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 }

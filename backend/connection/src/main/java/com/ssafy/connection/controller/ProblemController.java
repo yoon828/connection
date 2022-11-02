@@ -1,6 +1,7 @@
 package com.ssafy.connection.controller;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
@@ -62,10 +63,6 @@ public class ProblemController {
     }
 
     @ApiOperation(value = "문제 검색 (통합검색)", notes = "keyword를 입력받아 포함된 제목의 문제나 일치하는 번호의 문제를 반환")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 404, message = "검색된 문제 없음")
-    })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "검색할 키워드", required = true)
     })
@@ -81,54 +78,43 @@ public class ProblemController {
         if(returnList.size() > 0){
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(returnList);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(returnList);
         }
     }
 
     @ApiOperation(value = "문제 제출", notes = "problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "해당 문제가 없음")
-    })
     @PostMapping("/submit")
-    public ResponseEntity<String> submitProblem(@RequestBody Map<String, Object> map){
+    public ResponseEntity<ResponseDto> submitProblem(@RequestBody Map<String, Object> map){
         boolean result = solveService.saveSolve((String) map.get("problemId"), (String) map.get("baekjoonId"));
         if(result){
-            return ResponseEntity.status(HttpStatus.OK).body("success");
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
     }
 
     @ApiOperation(value = "문제 풀이 등록", notes = "유저 회원가입 시, 유저의 문제 풀이 목록을 저장")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "list", value = "유저가 푼 문제 리스트(1111, 2222, ....)", required = true)
     })
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공")
-    })
     @PostMapping("/register")
-    public ResponseEntity<String> saveSolve(@RequestBody Map<String, Object> map,
+    public ResponseEntity<ResponseDto> saveSolve(@RequestBody Map<String, Object> map,
                                                 @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         boolean result = solveService.saveSolveList((List<String>) map.get("list"), userPrincipal.getId());
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
     }
 
     @ApiOperation(value = "문제 리뷰 등록", notes = "문제 스터디 완료 후, 문제에 대한 리뷰를 저장")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "list", value = "문제에 대한 리뷰", required = true)
     })
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "실패(문제 ID 잘못됨)")
-    })
     @PostMapping("/review")
-    public ResponseEntity<String> saveReview(@RequestBody List<Map<String, Object>> list){
+    public ResponseEntity<ResponseDto> saveReview(@RequestBody List<Map<String, Object>> list){
         int result = reviewService.saveReview(list);
         switch (result){
             case 1:
-                return ResponseEntity.status(HttpStatus.OK).body("success");
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
             case -1:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("wrong problemId");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("wrong parameter value"));
         }
         return null;
     }
