@@ -321,7 +321,7 @@ public class StudyServiceImpl implements StudyService {
         }
 
         LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusMonths(3).minusDays(endDate.getDayOfWeek().getValue()-2);
+        LocalDate startDate = endDate.minusDays(190);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
         map.put("studyPersonnel", studyEntity.getStudyPersonnel());
