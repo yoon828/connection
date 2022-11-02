@@ -25,7 +25,7 @@ function ProblemSetView({ onBtnClick }: ProblemSetViewProps) {
             <Search2Icon w="20px" h="20px" />
           </Button>
         </Center>
-        <ProblemSelect problemList={[]} selectedProblems={[]} />
+        <ProblemSelect maxCnt={3} />
       </Box>
       <NextBtn mt={20} onBtnClick={onBtnClick} text="다음" />
     </Center>
