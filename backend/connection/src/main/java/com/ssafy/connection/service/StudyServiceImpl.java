@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -314,7 +316,13 @@ public class StudyServiceImpl implements StudyService {
             solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCount()));
         }
 
+        LocalDate endDate = LocalDate.now();
+        LocalDate startDate = endDate.minusMonths(3).minusDays(endDate.getDayOfWeek().getValue()-2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
         map.put("studyPersonnel", studyEntity.getStudyPersonnel());
+        map.put("startDate", startDate.format(formatter));
+        map.put("endDate", endDate.format(formatter));
         map.put("data", solveStudyStatsList);
 
         return map;
