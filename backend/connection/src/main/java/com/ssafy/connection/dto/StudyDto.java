@@ -4,6 +4,8 @@ import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.*;
 
+import javax.persistence.Column;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +21,12 @@ public class StudyDto {
     private String studyRepository;
 
     private int studyPersonnel;
+
+    private int studyScore;
+
+    private int homeworkScore;
+
+    private int totalScore;
 
     private String studyLeaderName;
 
