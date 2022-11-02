@@ -80,7 +80,13 @@ public class User extends DefaultTime {
     }
 
     public long getStudyId(){
+        if(this.getConnStudy() == null) return 0;
         return this.getConnStudy().getStudy().getStudyId();
+    }
+
+    public String getStudyCode(){
+        if(this.getConnStudy() == null) return null;
+        return this.getConnStudy().getStudy().getStudyCode();
     }
 
     /* 연관관계 매핑 */

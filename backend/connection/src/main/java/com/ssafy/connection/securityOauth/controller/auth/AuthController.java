@@ -51,12 +51,13 @@ public class AuthController {
             "  \"studyRole\": \"USER\"(스터디장인지 여부 \"LEADER\" | \"MEMBER\"),<br>" +
             "  \"studyName\": 1(가입한 스터디 PK값, 미가입시 0 반환)<br>" +
             "  \"studyRepository\": \"github주소\",<br>" +
+            "  \"studyCode\": null(스터디코드),<br>" +
             "  \"ismember\": \"false(organization 멤버 여부)\",<br>" +
             "}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class) ) } ),
-        @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-        @ApiResponse(responseCode = "401", description = "토큰 없음"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+        @ApiResponse(responseCode = "401", description = "토큰 없거나 잘못됨, 토큰 만료(추가 핸들링 예정)"),
     })
     @GetMapping
     public ResponseEntity whoAmI(

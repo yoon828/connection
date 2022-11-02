@@ -45,6 +45,8 @@ public class UserDto {
 
     private String studyRepository;
 
+    private String studyCode;
+
     private boolean ismember;
 
     //private String providerId;
