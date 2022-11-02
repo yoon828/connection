@@ -47,6 +47,9 @@ public class StudyServiceImpl implements StudyService {
     @Transactional
     public void createStudy(long userId, String studyName) {
         try {
+            if (!userRepository.findById(userId).get().isIsmember()) // 깃허브 미연동한 경우
+                throw new RestException(HttpStatus.I_AM_A_TEAPOT, "Github is not connected");
+
             if(studyRepository.findByStudyName(studyName).isPresent())
                 throw new RestException(HttpStatus.CONFLICT, "Duplicate study name");
 
