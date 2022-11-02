@@ -9,16 +9,56 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
+  useToast
 } from "@chakra-ui/react";
+import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { GetStudyInfoRes, joinStudy } from "../../api/studyJoin";
 
 interface StudyInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  studyInfo: GetStudyInfoRes;
 }
 
-function StudyInfoModal({ isOpen, onClose }: StudyInfoModalProps) {
+function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
+  const toast = useToast();
+  const navigator = useNavigate();
+
+  const handleJoinBtn = async () => {
+    const res = await joinStudy(studyInfo.studyCode);
+    if (axios.isAxiosError(res)) {
+      if (res.response?.status === 404) {
+        toast({
+          title: "스터디 코드확인",
+          description: "스터디가 존재하지 않습니다.",
+          status: "error",
+          duration: 9000,
+          position: "top",
+          isClosable: true
+        });
+        onClose();
+      }
+
+      if (res.response?.status === 400) {
+        toast({
+          title: "스터디 중복가입",
+          description: "이미 가입하신 스터디가 존재합니다.",
+          status: "error",
+          duration: 9000,
+          position: "top",
+          isClosable: true
+        });
+        navigator("/study", { replace: true });
+      }
+    } else {
+      // 여기서 리덕스에 studyCode 추가--!
+      navigator("/study", { replace: true });
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
@@ -29,19 +69,24 @@ function StudyInfoModal({ isOpen, onClose }: StudyInfoModalProps) {
           <Box>
             <Flex mb="12px">
               <Text fontWeight="700">스터디명</Text>
-              <Text ml="12px">우건공듀와애긔들</Text>
+              <Text ml="12px">{studyInfo.studyName}</Text>
             </Flex>
             <Flex>
-              <Text fontWeight="700">스터디명</Text>
+              <Text fontWeight="700">스터디장</Text>
               <Text ml="12px" mr="20px">
-                우건공듀
+                {studyInfo.studyLeaderName}
               </Text>
               <Text fontWeight="700">인원</Text>
-              <Text ml="12px">4 / 6</Text>
+              <Text ml="12px">{studyInfo.studyPersonnel} / 6</Text>
             </Flex>
           </Box>
           <ModalFooter p="20px 0">
-            <Button borderRadius="12px" bg="gra" _hover={{ opacity: 0.6 }}>
+            <Button
+              borderRadius="12px"
+              bg="gra"
+              _hover={{ opacity: 0.6 }}
+              onClick={handleJoinBtn}
+            >
               참가하기
             </Button>
           </ModalFooter>
