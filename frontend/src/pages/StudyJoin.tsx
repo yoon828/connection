@@ -1,10 +1,12 @@
-import { Accordion, Center, useDisclosure } from "@chakra-ui/react";
+import { Accordion, Center, useDisclosure, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStudy, getStudyInfo, GetStudyInfoRes } from "../api/studyJoin";
 import StudyInfoModal from "../components/join/StudyInfoModal";
 import JoinAccordionItem from "../components/study/JoinAccordionItem";
+import { updateUserInfo } from "../store/ducks/auth/authSlice";
+import { useAppDispatch } from "../store/hooks";
 
 type ErrorMsgType =
   | ""
@@ -24,6 +26,8 @@ function StudyJoin() {
   const [joinErr, setJoinErr] = useState<ErrorMsgType>("");
 
   const navigator = useNavigate();
+  const toast = useToast();
+  const dispatch = useAppDispatch();
 
   const handleCreateBtn = async () => {
     if (!studyName) {
@@ -32,9 +36,25 @@ function StudyJoin() {
     }
     const res = await createStudy(studyName);
     if (axios.isAxiosError(res)) {
-      setCreateErr("이미 존재하는 스터디명입니다.");
+      if (res.response?.status === 409) {
+        setCreateErr("이미 존재하는 스터디명입니다.");
+      }
+      if (res.response?.status === 418) {
+        dispatch(updateUserInfo({ ismember: false }));
+      }
+      if (res.response?.status === 400) {
+        toast({
+          title: "스터디 중복가입",
+          description: "이미 가입하신 스터디가 존재합니다.",
+          status: "error",
+          duration: 9000,
+          position: "top",
+          isClosable: true
+        });
+        navigator("/study", { replace: true });
+      }
     } else {
-      // 여기도 리덕스에 studyCode 추가
+      dispatch(updateUserInfo({ studyCode: studyInfo.studyCode }));
       navigator("/study", { replace: true });
     }
   };

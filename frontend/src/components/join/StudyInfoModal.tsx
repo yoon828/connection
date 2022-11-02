@@ -16,6 +16,8 @@ import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GetStudyInfoRes, joinStudy } from "../../api/studyJoin";
+import { updateUserInfo } from "../../store/ducks/auth/authSlice";
+import { useAppDispatch } from "../../store/hooks";
 
 interface StudyInfoModalProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ interface StudyInfoModalProps {
 function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
   const toast = useToast();
   const navigator = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleJoinBtn = async () => {
     const res = await joinStudy(studyInfo.studyCode);
@@ -53,8 +56,10 @@ function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
         });
         navigator("/study", { replace: true });
       }
-    } else {
-      // 여기서 리덕스에 studyCode 추가--!
+    }
+
+    if (!axios.isAxiosError(res)) {
+      dispatch(updateUserInfo({ studyCode: studyInfo.studyCode }));
       navigator("/study", { replace: true });
     }
   };

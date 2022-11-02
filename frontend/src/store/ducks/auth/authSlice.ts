@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { stat } from "fs";
 import { getUserInfo, getUserMorInfo } from "./authThunk";
-import { InitialStateType } from "./auth.type";
+import { InitialStateType, UserInfoType } from "./auth.type";
 
 const initialState: InitialStateType = {
   check: false,
@@ -15,8 +16,17 @@ export const authSlice = createSlice({
       state.check = true;
       state.information = { ...action.payload };
     },
-    updateUserInfo: (state, action) => {
-      state.information = { ...state.information, ...action.payload };
+    updateUserInfo: (
+      state,
+      {
+        payload
+      }: {
+        payload: Partial<UserInfoType>;
+      }
+    ) => {
+      if (state.information) {
+        state.information = { ...state.information, ...payload };
+      }
     },
     resetUserInfo: state => {
       state.check = false;
@@ -32,6 +42,6 @@ export const authSlice = createSlice({
   }
 });
 
-export const { setUserInfo, resetUserInfo } = authSlice.actions;
+export const { setUserInfo, updateUserInfo, resetUserInfo } = authSlice.actions;
 
 export default authSlice.reducer;
