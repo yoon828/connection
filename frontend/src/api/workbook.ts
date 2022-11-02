@@ -12,5 +12,5 @@ export const deleteWorkbook = async (problemId: number) => {
 
 export const getWorkbook = async () => {
   const res = await api.get(`/workbook`);
-  return res;
+  return res.data;
 };
