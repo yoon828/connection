@@ -10,7 +10,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useToast
+  useToast,
+  useColorMode,
+  Image
 } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
@@ -18,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import { GetStudyInfoRes, joinStudy } from "../../api/studyJoin";
 import { updateUserInfo } from "../../store/ducks/auth/authSlice";
 import { useAppDispatch } from "../../store/hooks";
+import GithubL from "../../asset/img/githubL.svg";
+import GithubD from "../../asset/img/githubD.svg";
 
 interface StudyInfoModalProps {
   isOpen: boolean;
@@ -29,6 +33,7 @@ function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
   const toast = useToast();
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
+  const { colorMode } = useColorMode();
 
   const handleJoinBtn = async () => {
     const res = await joinStudy(studyInfo.studyCode);
@@ -65,16 +70,23 @@ function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader fontSize="24px">스터디 정보</ModalHeader>
+      <ModalContent p="20px">
+        <ModalHeader fontSize="32px">스터디 정보</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody fontSize="20px">
           <Box>
             <Flex mb="12px">
               <Text fontWeight="700">스터디명</Text>
               <Text ml="12px">{studyInfo.studyName}</Text>
+              <Image
+                ml="12px"
+                src={colorMode === "light" ? GithubL : GithubD}
+                w="20px"
+                onClick={() => window.open(studyInfo.studyRepository)}
+                _hover={{ cursor: "pointer" }}
+              />
             </Flex>
             <Flex>
               <Text fontWeight="700">스터디장</Text>
