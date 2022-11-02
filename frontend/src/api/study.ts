@@ -2,7 +2,7 @@ import api from "./api";
 
 // 스터디 스트릭
 export const getStrict = async () => {
-  const res = await api.get("/study");
+  const res = await api.get("/study/streak");
   return res;
 };
 export const getUser3 = async () => {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useEffect, useState } from "react";
 import HeatMap from "@uiw/react-heat-map";
 import Tooltip from "@uiw/react-tooltip";
@@ -6,26 +7,42 @@ import { getStrict } from "../../api/study";
 
 function Challenge() {
   const { colorMode } = useColorMode();
-  const [strict, setstrict] = useState([]);
   const [selected, setSelected] = useState("");
+  const [streak, setStreak] = useState([]);
+  const [info, setInfo] = useState();
 
   const getChallenge = async () => {
-    const data = await getStrict();
-    // console.log(data);
+    const {
+      data: { data, startDate, endDate, studyPersonnel }
+    } = await getStrict();
+    setInfo({
+      startDate,
+      endDate,
+      studyPersonnel
+    });
+    const tmp = [];
+    data.map(day => {
+      // const percent = (day.count / data.studyPersonnel) * 100;
+      const percent = Math.ceil((2 / 3) * 100);
+      console.log(percent);
+      return tmp.push({ ...day, count: percent, cnt: day.count }); // count에는 퍼센트 cnt에 해당 날짜에 몇 명이 제출했는지
+    });
+    setStreak(tmp);
   };
+
   const value = [
-    { date: "2016/01/11", count: 2 },
-    { date: "2016/01/12", count: 4 },
-    { date: "2016/01/13", count: 2 },
+    { date: "2022/10/11", count: 2 },
+    { date: "2022/10/12", count: 4 },
+    { date: "2022/10/13", count: 2 },
     ...[...Array(17)].map((_, idx) => ({
-      date: `2016/02/${idx + 10}`,
+      date: `2022/10/${idx + 10}`,
       count: idx,
       content: ""
     })),
-    { date: "2016/04/11", count: 2 },
-    { date: "2016/05/01", count: 5 },
-    { date: "2016/05/02", count: 5 },
-    { date: "2016/05/04", count: 3 }
+    { date: "2022/10/11", count: 2 },
+    { date: "2022/10/01", count: 5 },
+    { date: "2022/10/02", count: 5 },
+    { date: "2022/10/04", count: 3, cnt: 1 }
   ];
 
   useEffect(() => {
@@ -35,10 +52,11 @@ function Challenge() {
   return (
     <HeatMap
       value={value}
-      width={400}
+      width={380}
       style={{ color: colorMode === "light" ? "black" : "white" }}
-      startDate={new Date("2016/01/01")}
-      legendCellSize="0"
+      startDate={new Date(info?.startDate)}
+      endDate={new Date(info?.endDate)}
+      legendCellSize={12}
       panelColors={{
         0: colorMode === "light" ? "#C5C8CD" : "rgb(255 255 255 / 25%)",
         2: "#CFE5FE",
@@ -49,7 +67,6 @@ function Challenge() {
         rx: "3px"
       }}
       rectSize={14}
-      // eslint-disable-next-line react/no-unstable-nested-components
       rectRender={(props, data) => {
         if (selected !== "") {
           props.opacity = data.date === selected ? 1 : 0.45;
@@ -58,7 +75,7 @@ function Challenge() {
           <Tooltip
             key={`${data.date}_${data.row}`}
             placement="top"
-            content={`count: ${data.count || 0}`}
+            content={`${data.cnt || 0} problems solved on ${data.date}`}
           >
             <rect
               {...props}
