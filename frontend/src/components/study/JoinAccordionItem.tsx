@@ -8,14 +8,14 @@ import {
   Input,
   Button
 } from "@chakra-ui/react";
-import React from "react";
+import React, { ChangeEvent } from "react";
 
 type JoinAccordionItemProps = {
   title: string;
   panelTitle: string;
   btnTitle: string;
   errMsg: string;
-  onInputChange: (() => void) | undefined;
+  onInputChange: (arg: string) => void;
   onBtnClick: (() => void) | undefined;
 };
 
@@ -27,6 +27,9 @@ function JoinAccordionItem({
   onInputChange,
   onBtnClick
 }: JoinAccordionItemProps) {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onInputChange(e.target.value);
+  };
   return (
     <AccordionItem
       bg="dep_1"
@@ -58,7 +61,7 @@ function JoinAccordionItem({
             {panelTitle}
           </Center>
           <Input
-            onChange={onInputChange}
+            onChange={handleInputChange}
             flex={6}
             m="0 20px"
             bg="dep_2"
