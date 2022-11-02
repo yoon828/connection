@@ -1,9 +1,7 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.advice.RestException;
-import com.ssafy.connection.dto.SolveStudyStatsDto;
-import com.ssafy.connection.dto.SolveStudyStatsInterface;
-import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.dto.*;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.repository.ConnStudyRepository;
@@ -324,6 +322,40 @@ public class StudyServiceImpl implements StudyService {
         map.put("startDate", startDate.format(formatter));
         map.put("endDate", endDate.format(formatter));
         map.put("data", solveStudyStatsList);
+
+        return map;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> getStudyRanking() {
+
+        List<StudyRankingDto> studyRankingList = new ArrayList<>();
+        List<StudyRankingInterface> studyRanking = studyRepository.findStudyRanking();
+        Map<String, Object> map = new HashMap<>();
+
+        int ranking = 0;
+        int add = 0;
+        int beforeScore = 0;
+
+        for (StudyRankingInterface studyStatsInterface : studyRanking) {
+            StudyRankingDto studyRankingDto = new StudyRankingDto(studyStatsInterface.getStudyName(), studyStatsInterface.getStudyId(), studyStatsInterface.getStudyScore(), studyStatsInterface.getHomeworkScore(), studyStatsInterface.getTotalScore(), ranking + add);
+
+            if (beforeScore != studyStatsInterface.getTotalScore()) {
+                ranking++;
+                studyRankingDto.setRanking(ranking + add);
+                add = 0;
+            }
+            else {
+                studyRankingDto.setRanking(ranking);
+                add++;
+            }
+
+            beforeScore = studyStatsInterface.getTotalScore();
+            studyRankingList.add(studyRankingDto);
+        }
+
+        map.put("data", studyRankingList);
 
         return map;
     }

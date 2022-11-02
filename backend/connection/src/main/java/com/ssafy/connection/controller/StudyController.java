@@ -119,11 +119,11 @@ public class StudyController {
 
     @ApiOperation(value = "", notes = "")
     @GetMapping("ranking")
-    public ResponseEntity<?> getStudyRanking(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+    public ResponseEntity<Map<String, Object>> getStudyRanking(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
-        //studyService.getStudyRanking(userId);
+        Map<String, Object> result = studyService.getStudyRanking();
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 }
