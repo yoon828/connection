@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/study")
@@ -104,13 +105,25 @@ public class StudyController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @ApiOperation(value = "스터디 스트릭")
-    @GetMapping
-    public ResponseEntity<List<SolveStudyStatsDto>> getStudyStreak(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+    @ApiOperation(value = "스터디 스트릭", notes = "사용자가 참가한 스터디의 스트릭 정보 반환")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공")
+    })
+    @GetMapping("streak")
+    public ResponseEntity<Map<String, Object>> getStudyStreak(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
-        List<SolveStudyStatsDto> result = studyService.getStudyStreak(userId);
+        Map<String, Object> result = studyService.getStudyStreak(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("ranking")
+    public ResponseEntity<?> getStudyRanking(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        //studyService.getStudyRanking(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }

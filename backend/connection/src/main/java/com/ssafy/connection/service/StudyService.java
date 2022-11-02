@@ -5,6 +5,7 @@ import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StudyService {
     void createStudy(long userId, String studyName);
@@ -19,5 +20,6 @@ public interface StudyService {
 
     int getStudyTier(long userId);
 
-    List<SolveStudyStatsDto> getStudyStreak(long userId);
+    Map<String, Object> getStudyStreak(long userId);
+
 }

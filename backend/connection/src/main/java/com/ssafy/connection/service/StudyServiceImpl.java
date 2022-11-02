@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -303,18 +301,23 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public List<SolveStudyStatsDto> getStudyStreak(long userId) {
+    public Map<String, Object> getStudyStreak(long userId) {
         User userEntity = userRepository.findById(userId).get();
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
         List<SolveStudyStatsDto> solveStudyStatsList = new ArrayList<>();
         List<SolveStudyStatsInterface> solveStudyStats = solveRepository.findByStudyStreak(studyEntity.getStudyId());
+        Map<String, Object> map = new HashMap<>();
 
         for (SolveStudyStatsInterface solveStudyStatsInterface : solveStudyStats) {
             solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCount()));
         }
 
-        return solveStudyStatsList;
+        map.put("studyPersonnel", studyEntity.getStudyPersonnel());
+        map.put("data", solveStudyStatsList);
+
+        return map;
     }
+
 }
