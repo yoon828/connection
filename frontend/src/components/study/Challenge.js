@@ -52,7 +52,8 @@ function Challenge() {
   return (
     <HeatMap
       value={value}
-      width={380}
+      width={400}
+      height={170}
       style={{ color: colorMode === "light" ? "black" : "white" }}
       startDate={new Date(info?.startDate)}
       endDate={new Date(info?.endDate)}
@@ -66,7 +67,7 @@ function Challenge() {
       rectProps={{
         rx: "3px"
       }}
-      rectSize={14}
+      rectSize={13}
       rectRender={(props, data) => {
         if (selected !== "") {
           props.opacity = data.date === selected ? 1 : 0.45;

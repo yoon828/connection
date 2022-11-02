@@ -7,9 +7,18 @@ interface TotalLayoutProps {
   flex?: string;
   height: string;
   mr?: string;
+  end?: string;
 }
 
-function TotalLayout({ title, children, flex, height, mr }: TotalLayoutProps) {
+function TotalLayout({
+  title,
+  children,
+  flex,
+  height,
+  mr,
+  end
+}: TotalLayoutProps) {
+  console.log(end);
   return (
     <Box
       maxW="900px"
@@ -41,13 +50,16 @@ function TotalLayout({ title, children, flex, height, mr }: TotalLayoutProps) {
       >
         {title}
       </Text>
-      <Center h="100%">{children}</Center>
+      <Center h="100%" align-items={end}>
+        {children}
+      </Center>
     </Box>
   );
 }
 TotalLayout.defaultProps = {
   mr: "0",
-  flex: 1
+  flex: 1,
+  end: "center"
 };
 
 export default TotalLayout;
