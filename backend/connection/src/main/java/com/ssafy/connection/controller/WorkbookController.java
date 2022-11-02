@@ -68,7 +68,7 @@ public class WorkbookController {
     public ResponseEntity<Map<String, Object>> getProblem(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         Map<String, Object> returnMap = new HashMap<>();
         List<ProblemReturnDto> list = workbookService.getProblem(userPrincipal.getId());
-        returnMap.put("list", list);
+        returnMap.put("data", list);
         if(list.size() > 0){
             returnMap.put("msg", "success");
             return ResponseEntity.status(HttpStatus.OK).body(returnMap);
