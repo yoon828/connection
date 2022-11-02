@@ -18,6 +18,7 @@ import Homework from "../../components/study/Homework";
 import Ranking from "../../components/study/Ranking";
 import GithubL from "../../asset/img/githubL.svg";
 import GithubD from "../../asset/img/githubD.svg";
+import Challenge from "../../components/study/Challenge";
 
 function StudyTotal() {
   const { colorMode } = useColorMode();
@@ -70,10 +71,16 @@ function StudyTotal() {
       </Center>
       <Box p="40px 20px">
         <Flex>
-          <TotalLayout title="Challenge" flex="3" height="200px" mr="10px">
-            <Text>잔디 심기</Text>
+          <TotalLayout
+            title="챌린지"
+            flex="3"
+            height="200px"
+            mr="10px"
+            end="flex-end"
+          >
+            <Challenge />
           </TotalLayout>
-          <TotalLayout title="Rank" flex="2" height="200px">
+          <TotalLayout title="랭킹" flex="2" height="200px">
             <Ranking />
           </TotalLayout>
         </Flex>
