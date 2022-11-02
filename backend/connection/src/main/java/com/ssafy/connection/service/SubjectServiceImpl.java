@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.Solve;
@@ -8,9 +9,11 @@ import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -38,21 +41,34 @@ public class SubjectServiceImpl implements SubjectService{
 //        subjectRepository.save(subject);
 //    }
     @Override
-    public int makeSubject(SubjectDto subjectDto, Long userId){
-        studyRepository.getById(subjectDto.getStudyId());
+    public ResponseEntity makeSubject(SubjectDto subjectDto, Long userId){
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
+        Study study = studyRepository.findByConnStudy(connStudy.get());
 
         List<Subject> list = new ArrayList<>();
         List<Long> problemList = subjectDto.getProblemList();
+
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
             subject.setDeadline(subjectDto.getDeadline());
-            subject.setStudy(studyRepository.getById(subjectDto.getStudyId()));
-            subject.setProblem(problemRepository.getById(problemList.get(i)));
+            subject.setStudy(study);
+            try {
+                subject.setProblem(problemRepository.getById(problemList.get(i)));
+            }
+            catch (Exception e){
+                return new ResponseEntity<>(new ResponseDto("wrong parameter value"), HttpStatus.CONFLICT);
+            }
             list.add(subject);
         }
-        subjectRepository.saveAll(list);
+        try {
+            subjectRepository.saveAll(list);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(new ResponseDto("wrong parameter value"), HttpStatus.CONFLICT);
+        }
 
-        return problemList.size();
+        return new ResponseEntity<>(new ResponseDto("success"), HttpStatus.OK);
     }
 
     @Override
