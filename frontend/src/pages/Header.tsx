@@ -23,7 +23,7 @@ import JoinModal from "../components/join/JoinModal";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { resetUserInfo } from "../store/ducks/auth/authSlice";
+import { resetUserInfo, setUserInfo } from "../store/ducks/auth/authSlice";
 
 interface menuType {
   title: string;

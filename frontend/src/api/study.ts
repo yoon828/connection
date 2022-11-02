@@ -5,7 +5,9 @@ export const getStrict = async () => {
   const res = await api.get("/study/streak");
   return res;
 };
-export const getUser3 = async () => {
-  const res = await api.get("/auth/");
+
+// 스터디 내 활동 현황
+export const getMyActivity = async () => {
+  const res = await api.get("/subject/");
   return res;
 };
