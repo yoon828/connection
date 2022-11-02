@@ -65,7 +65,7 @@ public class SubjectController {
         Map<String, Object> myMap = subjectService.getMyStatus(userPrincipal.getId(), totalSubjectList);
 
         returnMap.put("msg", "success");
-        returnMap.put("status", myMap);
+        returnMap.put("data", myMap);
 
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
