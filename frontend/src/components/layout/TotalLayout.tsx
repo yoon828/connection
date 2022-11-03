@@ -35,6 +35,7 @@ function TotalLayout({
       <Text
         as="span"
         bg="white"
+        _dark={{ bg: "dep_2" }}
         p="5px 15px"
         borderRadius=" 10px"
         boxShadow="md"

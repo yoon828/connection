@@ -16,7 +16,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import TotalLayout from "../../components/layout/TotalLayout";
-import Homework from "../../components/study/Homework";
+import Homework from "../../components/study/HomeworkView";
 import Ranking from "../../components/study/Ranking";
 import GithubL from "../../asset/img/githubL.svg";
 import GithubD from "../../asset/img/githubD.svg";
@@ -96,7 +96,7 @@ function StudyTotal() {
             <Ranking />
           </TotalLayout>
         </Flex>
-        <TotalLayout title="진행중인 과제" height="300px">
+        <TotalLayout title="과제 현황" height="300px">
           <Homework />
         </TotalLayout>
         <TotalLayout title="내 풀이 현황" height="300px">
