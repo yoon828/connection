@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { getAccessToken } from "../components/common/functions/functions";
+import { getAccessToken } from "../utils/functions";
 
 const url = process.env.REACT_APP_API_URL;
 
