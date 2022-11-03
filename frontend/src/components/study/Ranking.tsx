@@ -1,43 +1,96 @@
-import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import { Box, Center, Flex, Link, Text, Tooltip } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
+import { getRank } from "../../api/study";
+import { useAppSelector } from "../../store/hooks";
 
-const datas = [
-  { id: 1, name: "스터디명", rank: 1 },
-  { id: 2, name: "스터디명", rank: 2 },
-  { id: 3, name: "스터디명", rank: 3 },
-  { id: 4, name: "스터디명", rank: 4 },
-  { id: 5, name: "스터디명", rank: 5 },
-  { id: 6, name: "스터디명", rank: 6 },
-  { id: 7, name: "스터디명", rank: 7 },
-  { id: 8, name: "스터디명", rank: 8 },
-  { id: 9, name: "스터디명", rank: 9 },
-  { id: 10, name: "스터디명", rank: 10 }
-];
+type RankingProps = {
+  homeworkScore: number;
+  ranking: number;
+  studyId: number;
+  studyName: string;
+  studyScore: number;
+  totalScore: number;
+  studyRepository: string;
+};
+
 function Ranking() {
-  const [id, setId] = useState(5);
-  const ref = useRef();
+  const id = useAppSelector(state => state.auth.information?.studyId);
+  const [ranks, setRanks] = useState<RankingProps[]>([]);
+  const myStudyRef = useRef<null | HTMLDivElement>(null);
+  const parentRef = useRef<null | HTMLDivElement>(null);
+
+  const getRanking = async () => {
+    const {
+      data: { data }
+    } = await getRank();
+    setRanks(data);
+  };
+
+  useEffect(() => {
+    getRanking();
+    if (myStudyRef.current && parentRef.current) {
+      const test = myStudyRef.current.offsetTop;
+      // 가운데로 포커싱하기 위해 빼주는 값
+      const centerHeight =
+        parentRef.current.clientHeight / 2 -
+        myStudyRef.current.clientHeight / 2;
+      parentRef.current.scrollTo({
+        top: test - centerHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [parentRef.current]);
 
   return (
-    <Center h="100%" w="100%" overflowY="auto" flexDir="column">
-      {datas.map(data => {
+    <Box
+      h="100%"
+      w="100%"
+      overflowY="auto"
+      display="flex"
+      flexDir="column"
+      alignItems="center"
+      p="26px 0 10px"
+      ref={parentRef}
+    >
+      {ranks.map(study => {
         return (
-          <Flex
-            key={v4()}
-            bg={id === data.id ? "gra" : "white"}
-            borderRadius="15px"
-            boxShadow="md"
-            p="8px 16px"
-            m="3px 0"
-            w="200px"
-            _dark={id === data.id ? {} : { bg: "dep_3" }}
-          >
-            <Text w="40px">{data.rank}</Text>
-            <Text>{data.name}</Text>
-          </Flex>
+          <Link href={study.studyRepository} key={v4()} _hover={{}}>
+            <Tooltip
+              label={
+                <div>
+                  {study.studyName}
+                  <br />
+                  과제 점수 : {study.homeworkScore} <br />
+                  문제 풀이 점수 : {study.studyScore} <br /> 총 점수 :
+                  {study.totalScore}
+                </div>
+              }
+            >
+              <Flex
+                bg={id === study.studyId ? "gra" : "white"}
+                borderRadius="15px"
+                boxShadow="md"
+                p="8px 16px"
+                m="3px 0"
+                w="200px"
+                _dark={id === study.studyId ? {} : { bg: "dep_3" }}
+                ref={id === study.studyId ? myStudyRef : null}
+              >
+                <Text w="40px">{study.ranking}</Text>
+                <Text
+                  textOverflow="ellipsis"
+                  overflow="hidden"
+                  whiteSpace="nowrap"
+                >
+                  {study.studyName}
+                </Text>
+              </Flex>
+            </Tooltip>
+          </Link>
         );
       })}
-    </Center>
+    </Box>
   );
 }
 

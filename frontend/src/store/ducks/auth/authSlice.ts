@@ -1,11 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stat } from "fs";
 import { getUserInfo, getUserMorInfo } from "./authThunk";
 import { InitialStateType, UserInfoType } from "./auth.type";
 
 const initialState: InitialStateType = {
   check: false,
-  information: null
+  information: {
+    userId: 0,
+    name: "",
+    githubId: "",
+    backjoonId: null,
+    email: "",
+    imageUrl: "",
+    tier: 0,
+    role: "",
+    studyId: 0,
+    studyRole: "",
+    studyName: "",
+    studyRepository: "",
+    studyCode: "",
+    ismember: false
+  }
 };
 
 export const authSlice = createSlice({
@@ -30,7 +44,7 @@ export const authSlice = createSlice({
     },
     resetUserInfo: state => {
       state.check = false;
-      state.information = null;
+      state.information = initialState.information;
       localStorage.removeItem("token");
     }
   },

@@ -11,3 +11,9 @@ export const getMyActivity = async () => {
   const res = await api.get("/subject/");
   return res;
 };
+
+// 스터디 랭킹
+export const getRank = async () => {
+  const res = await api.get("/study/ranking");
+  return res;
+};

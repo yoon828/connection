@@ -4,8 +4,8 @@ import { UserInfoType } from "./auth.type";
 // import { reqUserInfo, reqUserMoreInfo } from "@apis/auth";
 
 export const getUserInfo = createAsyncThunk("auth/getUserInfo", async () => {
-  const res = await getUser();
-  return res.data;
+  const { data } = await getUser();
+  return data;
 });
 
 export const getUserMorInfo = createAsyncThunk(

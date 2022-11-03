@@ -1,5 +1,5 @@
 export interface UserInfoType {
-  userIdx: number;
+  userId: number;
   name: string;
   githubId: string;
   backjoonId: null | string;
@@ -16,5 +16,5 @@ export interface UserInfoType {
 }
 export interface InitialStateType {
   check: boolean;
-  information: UserInfoType | null;
+  information: UserInfoType;
 }
