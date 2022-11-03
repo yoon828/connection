@@ -21,7 +21,6 @@ const init: ContentProps = {
 
 function PercentChart({ title, content }: PercentChartProps) {
   const { colorMode } = useColorMode();
-
   const options: ApexOptions = {
     chart: {
       height: 100,
@@ -71,8 +70,9 @@ function PercentChart({ title, content }: PercentChartProps) {
     },
     labels: ["풀이율"]
   };
-  if (content && content.total !== 0) {
-    const series = [(content.my / content.total) * 100];
+  if (content) {
+    const series =
+      content.total !== 0 ? [(content.my / content.total) * 100] : [0];
     return (
       <Center>
         <ReactApexChart
@@ -111,6 +111,8 @@ function MyActivity() {
         }
       }
     } = await getMyActivity();
+    // console.log(totalSubject);
+    // console.log(totalStudyProblem);
     setSubject({ my: solvedSubject, total: totalSubject });
     setProblems({ my: solvedStudyProblem, total: totalStudyProblem });
   };
