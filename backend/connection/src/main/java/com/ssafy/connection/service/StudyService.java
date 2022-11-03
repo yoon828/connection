@@ -10,7 +10,7 @@ import java.util.Map;
 public interface StudyService {
     void createStudy(long userId, String studyName);
 
-    StudyDto getStudy(String studyCode);
+    StudyDto getStudy(long userId, String studyCode);
 
     void joinStudy(long userId,String studyCode);
 
