@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface SubjectService {
     ResponseEntity makeSubject(SubjectDto subjectDto, Long userId);
+    ResponseEntity getTeamStatus(Long userId);
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
 
     List<Subject> getTotalSubjectList(Long userId);
