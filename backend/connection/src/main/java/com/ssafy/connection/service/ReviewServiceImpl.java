@@ -46,18 +46,12 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public int getAvgDifficulty(ProblemDto problemDto) {
-        Problem problemEntity = Problem.of(problemDto);
-        List<Review> reviewEntityList = reviewRepository.findAllByProblem(problemEntity);
-
-        if(reviewEntityList.size() == 0){
+        long count = reviewRepository.findCountBtProblem(problemDto.getProblemId());
+        if(count == 0){
             return 0;
         }
+        long sum = reviewRepository.findSumByProblem(problemDto.getProblemId());
 
-        int sum = 0;
-        for(Review reviewEntity : reviewEntityList){
-            sum += reviewEntity.getDifficulty();
-        }
-
-        return Math.round(sum / reviewEntityList.size());
+        return Math.round(sum / count);
     }
 }

@@ -2,6 +2,7 @@ package com.ssafy.connection.controller;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.dto.ResponseDto;
+import com.ssafy.connection.dto.UserStatDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.ProblemService;
@@ -37,7 +38,11 @@ public class ProblemController {
         this.reviewService = reviewService;
     }
 
-    @ApiOperation(value = "문제 추천", notes = "스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
+    @ApiOperation(value = "문제 추천", notes = "popular : 사람들이 많이 푼 문제 추천<br><br>" +
+                                            "workbook : 스터디 문제집에 많이 담겨있는 문제 추천<br><br>" +
+                                            "weak : 유저가 많이 안 푼 유형의 문제 추천<br><br>" +
+                                            "stat : 유형별 유저가 푼 문제 개수<br><br>" +
+                                            "스터디원 중 몇명이 풀었는지 여부는 유저쪽 완료되면 완성")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "level", value = "난이도(티어) 설정", required = false),
             @ApiImplicitParam(name = "tag", value = "태그(문제 유형) 설정", required = false)
@@ -63,7 +68,7 @@ public class ProblemController {
 
         List<Map.Entry<String, Integer>> userStat = problemService.getUserStat(userPrincipal.getId());
         returnMap.put("weak", problemService.getWeakProblemList(userStat));
-        returnMap.put("stat", userStat);
+        returnMap.put("stat", problemService.getUserStatList(userStat));
 
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
