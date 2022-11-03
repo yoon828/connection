@@ -64,9 +64,46 @@ public class SubjectController {
         return result;
     }
 
+    @ApiOperation(value = "팀 과제 현황", notes = "")
+    @ApiResponse(responseCode = "200", description = "success : 성공<br>" +
+            "example : <br>{<br>" +
+            "&nbsp;\"inProgress\": false,<br>" +
+            "&nbsp;\"subjects\": [<br>" +
+            "&nbsp;&nbsp;{<br>" +
+            "&nbsp;&nbsp;&nbsp;\"deadline\": [<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;\"2022-10-31\",<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;\"2022-11-02\"<br>" +
+            "&nbsp;&nbsp;&nbsp;],<br>" +
+            "&nbsp;&nbsp;&nbsp;\"users\": [<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;{<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"problem_cnt\": 1,<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"user_id\": 7,<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"user_name\": \"Connection-code\"<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;},<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;...<br>" +
+            "&nbsp;&nbsp;&nbsp;],<br>" +
+            "&nbsp;&nbsp;&nbsp;\"problems\": [<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;{<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"problem_id\": 130,<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"problem_name\": \"문제제목\",<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"problem_solved\": [<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true,<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false,<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;},<br>" +
+            "&nbsp;&nbsp;&nbsp;]<br>" +
+            "&nbsp;&nbsp;},<br>" +
+            "&nbsp;]<br>" +
+            "}<br>")
+    @GetMapping("/team")
+    public ResponseEntity getTeamStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        return subjectService.getTeamStatus(userPrincipal.getId());
+    }
+
     @ApiOperation(value = "내 과제 현황", notes = "유저가 푼 과제 개수, 스터디문제(같이 푼) 개수와 전체 과제개수, 전체 스터디문제 개수를 반환")
-    @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getTeamStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+    @GetMapping("/")
+    public ResponseEntity<Map<String, Object>> getMyStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         Map<String, Object> returnMap = new HashMap<>();
 
         List<Subject> totalSubjectList = subjectService.getTotalSubjectList(userPrincipal.getId());
