@@ -8,8 +8,8 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
-  SocketData
-} from "../src/asset/data/socket.type";
+  SocketData,
+} from "./socket.type";
 
 const app = express();
 
@@ -23,9 +23,9 @@ const io = new Server<
 >(httpServer, {
   cors: {
     origin: "*",
-    credentials: true
+    credentials: true,
   },
-  transports: ["websocket"]
+  transports: ["websocket"],
 });
 
 instrument(io, { auth: false });
@@ -34,7 +34,7 @@ httpServer.listen(8000, () => {
   console.log("listening!!");
 });
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   socket.on("enter", (studyId, name, imageUrl) => {
     console.log(`${studyId}방에 ${name}님이 입장하셨어`);
     socket.data.name = name;
@@ -42,7 +42,7 @@ io.on("connection", socket => {
     socket.to(`${studyId}`).emit("addParticipant", name, imageUrl);
   });
   socket.on("disconnecting", () => {
-    socket.rooms.forEach(room =>
+    socket.rooms.forEach((room) =>
       socket.to(room).emit("removeParticipant", socket.data.name as string)
     );
   });
