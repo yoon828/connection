@@ -43,7 +43,8 @@ public class ProblemController {
             @ApiImplicitParam(name = "tag", value = "태그(문제 유형) 설정", required = false)
     })
     @GetMapping("/recommend")
-    public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level, @RequestParam(value = "tag", required = false) String tag) {
+    public ResponseEntity<Map<String, Object>> getRecommendProblemList(@RequestParam(value = "level", required = false) Long level, @RequestParam(value = "tag", required = false) String tag,
+                                                                        @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         Map<String, Object> returnMap = new HashMap<>();
 
         // 유저가 많이 푼 문제 추천
@@ -59,6 +60,11 @@ public class ProblemController {
 
         // 스터디 문제집에 많이 담긴 문제 추천
         returnMap.put("workbook", problemService.getWorkBookProblemList());
+
+        List<Map.Entry<String, Integer>> userStat = problemService.getUserStat(userPrincipal.getId());
+        returnMap.put("weak", problemService.getWeakProblemList(userStat));
+        returnMap.put("stat", userStat);
+
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 

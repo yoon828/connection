@@ -11,4 +11,6 @@ import java.util.ArrayList;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     ArrayList<TagDto> findAllByProblem(Problem problem);
+
+    ArrayList<TagDto> findAllByProblemAndKo(Problem problem, String ko);
 }

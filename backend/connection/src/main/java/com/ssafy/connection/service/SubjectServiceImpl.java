@@ -84,6 +84,7 @@ public class SubjectServiceImpl implements SubjectService{
         returnMap.put("totalSubject", totalSubjectSize);
         returnMap.put("solvedSubject", solvedSubjectCount);
 
+        // 지금까지 푼 스터디 문제 개수
         int solvedStudyProblemCount = 0;
 
         List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());

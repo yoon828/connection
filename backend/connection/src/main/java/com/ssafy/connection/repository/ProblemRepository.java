@@ -19,4 +19,6 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     @Query(value = "SELECT * FROM problem JOIN tag ON tag.problem_id = problem.problem_id WHERE tag.ko = :ko", nativeQuery = true)
     List<Problem> findAllByTag(String ko);
 
+    @Query(value = "SELECT * FROM problem p JOIN tag t ON p.problem_id = t.problem_id WHERE p.accepted > 10000 AND p.level > 2 AND t.ko = :tag", nativeQuery = true)
+    List<Problem> findPopularProblemListByTag(String tag);
 }

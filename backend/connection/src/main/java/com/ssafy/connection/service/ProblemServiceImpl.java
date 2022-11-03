@@ -5,11 +5,9 @@ import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.dto.TagDto;
 import com.ssafy.connection.dto.WorkbookCountInterface;
 import com.ssafy.connection.entity.Problem;
+import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.entity.Tag;
-import com.ssafy.connection.repository.ConnStudyRepository;
-import com.ssafy.connection.repository.ConnWorkbookRepository;
-import com.ssafy.connection.repository.ProblemRepository;
-import com.ssafy.connection.repository.TagRepository;
+import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,44 +34,47 @@ public class ProblemServiceImpl implements ProblemService{
     private final ConnStudyRepository connStudyRepository;
     private final StudyService studyService;
     private final ReviewService reviewService;
+    private final SolveRepository solveRepository;
 
     public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository,
-                              ConnStudyRepository connStudyRepository, StudyService studyService, ReviewService reviewService){
+                              ConnStudyRepository connStudyRepository, StudyService studyService, ReviewService reviewService, SolveRepository solveRepository){
         this.problemRepository = problemRepository;
         this.tagRepository = tagRepository;
         this.connWorkbookRepository = connWorkbookRepository;
         this.connStudyRepository = connStudyRepository;
         this.studyService = studyService;
         this.reviewService = reviewService;
+        this.solveRepository = solveRepository;
     }
 
     private static int recommendSize = 4;   // 문제 추천에서 반환할 문제 수
-    private static int recommendWorkbookCount = 2;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
+    private static int recommendWorkbookCount = 1;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
+    private static String[] recommendTagList = {"수학", "구현", "다이나믹 프로그래밍", "자료 구조", "그래프 이론", "문자열", "그리디 알고리즘", "브루트포스 알고리즘", "그래프 탐색",
+                                                    "정렬", "트리", "이분 탐색", "애드 혹", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "누적 합", "비트마스킹", "데이크스트라",
+                                                        "백트래킹", "분할 정복", "두 포인터", "재귀", "플로이드-워셜"};
 
     @Override
-    public Object getPopularProblemList(String tag) {
-        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
+    public List<ProblemReturnDto> getPopularProblemList(String tag) {
+        List<Problem> problemList = problemRepository.findPopularProblemListByTag(tag);
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
-        Collections.shuffle(problemDtoList);
-        for(ProblemDto problemDto : problemDtoList){
-            ArrayList<TagDto> tagList = (ArrayList<TagDto>) tagRepository.findAllByProblem(Problem.of(problemDto));
-            for(TagDto tagDto : tagList){
-                if(tagDto.getKo().equals(tag)){
-                    int difficulty = reviewService.getAvgDifficulty(problemDto);
-                    returnList.add(new ProblemReturnDto(problemDto, tagList, difficulty));
-                    break;
-                }
-            }
+        Collections.shuffle(problemList);
+
+        for(Problem problem : problemList){
+            ProblemDto problemDto = ProblemDto.of(problem);
+            int difficulty = reviewService.getAvgDifficulty(problemDto);
+            ArrayList<TagDto> tagList = tagRepository.findAllByProblem(problem);
+            returnList.add(new ProblemReturnDto(problemDto, tagList, difficulty));
             if(returnList.size() == recommendSize){
                 break;
             }
         }
+
         return returnList;
     }
 
     @Override
-    public Object getPopularProblemList(long level, String tag) {
+    public List<ProblemReturnDto> getPopularProblemList(long level, String tag) {
         List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
@@ -96,7 +98,7 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Object getPopularProblemList(Long level) {
+    public List<ProblemReturnDto> getPopularProblemList(Long level) {
         List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
@@ -114,7 +116,7 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Object getPopularProblemList() {
+    public List<ProblemReturnDto> getPopularProblemList() {
         List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
 
@@ -199,7 +201,6 @@ public class ProblemServiceImpl implements ProblemService{
         return returnList;
     }
 
-
     @Override
     @Transactional
     public List<ProblemReturnDto> getProblemList() {
@@ -215,12 +216,13 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Object getWorkBookProblemList() {
+    public List<ProblemReturnDto> getWorkBookProblemList() {
         List<ProblemReturnDto> returnList = new ArrayList<>();
         List<WorkbookCountInterface> countList = connWorkbookRepository.findGroupByProblem();
         Collections.shuffle(countList);
 
         for(WorkbookCountInterface object : countList){
+            System.out.println("$$$$$$$$$$$$$$ " + object.getProblemId() + " " + object.getCount());
             if(object.getCount() >= recommendWorkbookCount){
                 returnList.add(this.getProblem(object.getProblemId()).get(0));
             }
@@ -232,9 +234,45 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public List<ProblemReturnDto> getSolvedProblemList(String baekjoonId) {
-        return null;
+    public List<Entry<String, Integer>> getUserStat(Long userId){
+        Map<String, Integer> tagCountMap = new HashMap<>();
+        for(String tagName : recommendTagList){
+            tagCountMap.put(tagName, 0);
+        }
+
+        List<Solve> solveEntityList = solveRepository.findAllByUser_UserId(userId);
+        for(Solve solveEntity : solveEntityList){
+            Problem problemEntity = solveEntity.getProblem();
+
+            ArrayList<TagDto> tagList = tagRepository.findAllByProblem(problemEntity);
+            for(TagDto tagDto : tagList){
+                if(tagCountMap.containsKey(tagDto.getKo())){
+                    tagCountMap.put(tagDto.getKo(), tagCountMap.get(tagDto.getKo()) + 1);
+                }
+            }
+        }
+
+        List<Entry<String, Integer>> entryList = new ArrayList<Entry<String, Integer>>(tagCountMap.entrySet());
+        Collections.sort(entryList, new Comparator<Entry<String, Integer>>() {
+            @Override
+            public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+
+        return entryList;
     }
+
+    @Override
+    public List<ProblemReturnDto> getWeakProblemList(List<Entry<String, Integer>> entryList) {
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+            for(int i = 0; i < 4; i++){
+                returnList.add(this.getPopularProblemList(entryList.get(i).getKey()).get(0));
+            }
+
+        return returnList;
+    }
+
 
     @Override
     public void loadAllProblemFromApi() {
