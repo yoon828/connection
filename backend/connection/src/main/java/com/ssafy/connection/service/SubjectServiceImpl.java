@@ -56,6 +56,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
+            subject.setStart(subjectDto.getStart());
             subject.setDeadline(subjectDto.getDeadline());
             subject.setStudy(study);
             try {
@@ -206,5 +207,32 @@ public class SubjectServiceImpl implements SubjectService{
                 studyRepository.findByConnStudy(
                     connStudyRepository.findByUser(
                         userRepository.findById(userId).get())));
+    }
+
+    @Override
+    public Map<String, Integer> getSubjectCountByMonth(List<Subject> totalSubjectList, List<User> userList) {
+        Map<String, Integer> totalCountMap = new HashMap<>();
+        Map<User, Map<String, Integer>> userCountMap = new HashMap<>();
+
+        for(Subject subject : totalSubjectList){
+            String date = subject.getDeadline().toString().substring(0, 7);
+            if(totalCountMap.containsKey(date)){
+                totalCountMap.put(date, totalCountMap.get(date) + 1);
+            } else {
+                totalCountMap.put(date, 1);
+            }
+        }
+
+        for(User user : userList){
+            Map<String, Integer> temp = new HashMap<>();
+            for(Subject subject : totalSubjectList){
+                String date = subject.getDeadline().toString().substring(0, 7);
+                Optional<Solve> solve = solveRepository.findByUserAndProblem(user, subject.getProblem());
+            }
+
+        }
+
+
+        return null;
     }
 }

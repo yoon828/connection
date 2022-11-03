@@ -374,4 +374,20 @@ public class StudyServiceImpl implements StudyService {
         return map;
     }
 
+    @Override
+    public List<User> getStudyUser(Long userId) {
+        List<User> userList = new ArrayList<>();
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+        if(connStudy.isPresent()){
+            Study studyEntity = studyRepository.findByConnStudy(connStudy.get());
+            List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
+            for(ConnStudy conn : connStudyList){
+                userList.add(conn.getUser());
+            }
+        } else {
+            return null;
+        }
+        return userList;
+    }
+
 }
