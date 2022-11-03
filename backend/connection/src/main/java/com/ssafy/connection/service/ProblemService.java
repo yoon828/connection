@@ -4,6 +4,7 @@ import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProblemService {
 
@@ -11,17 +12,16 @@ public interface ProblemService {
 
     void loadAllProblemFromApi();
 
-    List<ProblemReturnDto> getSolvedProblemList(String baekjoonId);
 
-    Object getPopularProblemList(long level, String tag);
+    List<ProblemReturnDto> getPopularProblemList(long level, String tag);
 
-    Object getWorkBookProblemList();
+    List<ProblemReturnDto> getWorkBookProblemList();
 
-    Object getPopularProblemList(String tag);
+    List<ProblemReturnDto> getPopularProblemList(String tag);
 
-    Object getPopularProblemList(Long level);
+    List<ProblemReturnDto> getPopularProblemList(Long level);
 
-    Object getPopularProblemList();
+    List<ProblemReturnDto> getPopularProblemList();
 
     List<ProblemReturnDto> getProblem(String title);
 
@@ -30,4 +30,8 @@ public interface ProblemService {
     List<ProblemReturnDto> getProblemByTag(String ko);
 
     List<ProblemReturnDto> searchProblem(String keyword, UserPrincipal userPrincipal);
+
+    List<ProblemReturnDto> getWeakProblemList(List<Map.Entry<String, Integer>> entryList);
+
+    List<Map.Entry<String, Integer>> getUserStat(Long id);
 }

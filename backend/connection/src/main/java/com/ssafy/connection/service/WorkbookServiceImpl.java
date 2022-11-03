@@ -40,8 +40,8 @@ public class WorkbookServiceImpl implements WorkbookService{
         if(problemEntity.isPresent()){
             Workbook workbookEnity = workbookRepository.findByStudy(
                                         studyRepository.findByConnStudy(
-                                                connStudyRepository.findByUser(
-                                                        userRepository.getById(userId))));
+                                            connStudyRepository.findByUser(
+                                                userRepository.getById(userId))));
             List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbookAndProblem(workbookEnity, problemEntity.get());
             if(connWorkbookList.size() == 0){
                 connWorkbookRepository.save(new ConnWorkbook(problemEntity.get(), workbookEnity));
@@ -61,8 +61,8 @@ public class WorkbookServiceImpl implements WorkbookService{
         if(problemEntity.isPresent()){
             Workbook workbookEnity = workbookRepository.findByStudy(
                                         studyRepository.findByConnStudy(
-                                                connStudyRepository.findByUser(
-                                                        userRepository.getById(userId))));
+                                            connStudyRepository.findByUser(
+                                                userRepository.getById(userId))));
             return connWorkbookRepository.deleteByWorkbookAndProblem(workbookEnity, problemEntity.get());
         } else {
             return -1;
