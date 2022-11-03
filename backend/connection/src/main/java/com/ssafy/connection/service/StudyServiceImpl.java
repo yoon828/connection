@@ -345,7 +345,7 @@ public class StudyServiceImpl implements StudyService {
         int beforeScore = 0;
 
         for (StudyRankingInterface studyStatsInterface : studyRanking) {
-            StudyRankingDto studyRankingDto = new StudyRankingDto(studyStatsInterface.getStudyName(), studyStatsInterface.getStudyId(), studyStatsInterface.getStudyScore(), studyStatsInterface.getHomeworkScore(), studyStatsInterface.getTotalScore(), ranking + add);
+            StudyRankingDto studyRankingDto = new StudyRankingDto(studyStatsInterface.getStudyName(), studyStatsInterface.getStudyId(), studyStatsInterface.getStudyScore(), studyStatsInterface.getHomeworkScore(), studyStatsInterface.getTotalScore(), ranking + add, studyStatsInterface.getStudyRepository());
 
             if (beforeScore != studyStatsInterface.getTotalScore()) {
                 ranking++;

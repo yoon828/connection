@@ -19,4 +19,6 @@ public class StudyRankingDto {
     private int totalScore;
 
     private int ranking;
+
+    private String studyRepository;
 }
