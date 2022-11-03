@@ -18,7 +18,6 @@ function TotalLayout({
   mr,
   end
 }: TotalLayoutProps) {
-  console.log(end);
   return (
     <Box
       maxW="900px"
@@ -50,7 +49,7 @@ function TotalLayout({
       >
         {title}
       </Text>
-      <Center h="100%" align-items={end}>
+      <Center h="100%" alignItems={end}>
         {children}
       </Center>
     </Box>
