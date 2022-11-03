@@ -127,4 +127,13 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("member")
+    public ResponseEntity<Map<String, Object>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        Map<String, Object> result = studyService.getStudyMember(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
 }
