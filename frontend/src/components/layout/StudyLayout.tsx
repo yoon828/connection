@@ -37,6 +37,7 @@ function StudyLayout({
           px="40px"
           zIndex={1}
           width="880px"
+          position="relative"
         >
           <Box mb="40px">
             <Text fontSize="3xl" fontWeight="bold" mt="20px" mb="20px">
