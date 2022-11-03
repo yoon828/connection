@@ -6,4 +6,5 @@ public interface StudyRankingInterface {
     int getStudyScore();
     int getHomeworkScore();
     int getTotalScore();
+    String getStudyRepository();
 }
