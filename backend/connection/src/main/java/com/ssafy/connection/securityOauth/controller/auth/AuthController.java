@@ -64,7 +64,6 @@ public class AuthController {
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         if(userPrincipal == null) {
-            System.out.println("여오기");
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         ResponseEntity result = authService.whoAmI(userPrincipal);
@@ -87,17 +86,17 @@ public class AuthController {
         return responseEntity;
     }
 
-//    @Operation(summary = "유저 정보 삭제", description = "현제 접속된 유저정보를 삭제합니다.")
-//    @ApiResponses(value = {
-//        @ApiResponse(responseCode = "200", description = "유저 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-//        @ApiResponse(responseCode = "400", description = "유저 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
-//    })
-//    @DeleteMapping(value = "/")
-//    public ResponseEntity<?> delete(
-//        @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
-//    ){
-//        return authService.delete(userPrincipal);
-//    }
+    @Operation(summary = "유저 정보 삭제", description = "현제 접속된 유저정보를 삭제합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "유저 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+        @ApiResponse(responseCode = "409", description = "유저 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    @DeleteMapping(value = "/")
+    public ResponseEntity<?> delete(
+        @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ){
+        return authService.delete(userPrincipal);
+    }
 
 //    @Operation(summary = "유저 정보 갱신", description = "현제 접속된 유저의 비밀번호를 새로 지정합니다.")
 //    @ApiResponses(value = {

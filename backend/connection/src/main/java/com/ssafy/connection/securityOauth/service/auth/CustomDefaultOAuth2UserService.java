@@ -55,9 +55,8 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+//            organizationService.joinOrganization(user.getUserId());
         }
-
-        organizationService.joinOrganization(user.getUserId());
 
         //깃허브 토큰 저장
         Map<String,Object> map = new HashMap<>();
