@@ -1,16 +1,23 @@
 import { Center, CircularProgress } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { v4 } from "uuid";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import NumberSetView from "../components/studyWith/NumberSetView";
 import ProblemSetView from "../components/studyWith/ProblemSetView";
 import ResultView from "../components/studyWith/ResultView";
 import ReviewView from "../components/studyWith/ReviewView";
 import SolvingView from "../components/studyWith/SolvingView";
 import TimeSetView from "../components/studyWith/TimeSetView";
+import {
+  ClientToServerEvents,
+  PageViewState,
+  ServerToClientEvents
+} from "../asset/data/socket.type";
+import { useAppSelector } from "../store/hooks";
+import { UserInfoType } from "../store/ducks/auth/auth.type";
 
 function StudyWith() {
-  const socket =
+  const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
     process.env.NODE_ENV === "development"
       ? io("ws://localhost:8000", {
           autoConnect: false,
@@ -27,26 +34,53 @@ function StudyWith() {
           reconnectionAttempts: 3,
           transports: ["websocket"]
         });
+  const { studyId, name, imageUrl } = useAppSelector(
+    ({ auth: { information } }) => information
+  );
 
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
+  const [participants, setPartcipants] = useState<
+    Pick<UserInfoType, "name" | "imageUrl">[]
+  >([{ name, imageUrl }]);
 
   const bossView: React.FunctionComponentElement<undefined>[] = [
-    <NumberSetView key={v4()} onBtnClick={() => setStep(1)} />,
-    <ProblemSetView key={v4()} onBtnClick={() => setStep(2)} />,
+    <NumberSetView
+      key={v4()}
+      onBtnClick={() => setStep(PageViewState.ProblemSet)}
+    />,
+    <ProblemSetView
+      key={v4()}
+      onBtnClick={() => setStep(PageViewState.TimeSet)}
+      participants={participants}
+    />,
     <TimeSetView
       key={v4()}
-      onBtnClick={() => setStep(3)}
-      onPrevBtnClick={() => setStep(1)}
+      onBtnClick={() => setStep(PageViewState.Solving)}
+      onPrevBtnClick={() => setStep(PageViewState.ProblemSet)}
+      participants={participants}
     />,
-    <SolvingView key={v4()} onBtnClick={() => setStep(4)} />,
-    <ResultView key={v4()} onBtnClick={() => setStep(5)} />,
+    <SolvingView key={v4()} onBtnClick={() => setStep(PageViewState.Result)} />,
+    <ResultView key={v4()} onBtnClick={() => setStep(PageViewState.Review)} />,
     <ReviewView key={v4()} onBtnClick={() => setStep(1)} />
   ];
 
   useEffect(() => {
     socket.connect();
+    socket.emit("enter", studyId, name, imageUrl);
+
+    socket.on("addParticipant", (newName, newImageUrl) => {
+      setPartcipants(prev => [
+        ...prev,
+        { name: newName, imageUrl: newImageUrl }
+      ]);
+    });
+
+    socket.on("removeParticipant", targetName => {
+      setPartcipants(prev => prev.filter(user => user.name !== targetName));
+    });
+
     return () => {
       socket.disconnect();
     };

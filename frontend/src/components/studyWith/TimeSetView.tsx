@@ -15,6 +15,9 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import getTime from "../../utils/getTime";
 import ViewTitle from "./ViewTitle";
 import NextBtn from "./NextBtn";
+import { useAppSelector } from "../../store/hooks";
+import { UserInfoType } from "../../store/ducks/auth/auth.type";
+import ParticipantContainer from "./ParticipantContainer";
 
 type ProblemContainerProps = {
   id: number;
@@ -25,6 +28,7 @@ type ProblemContainerProps = {
 type TimeSetViewProps = {
   onBtnClick: () => void;
   onPrevBtnClick: () => void;
+  participants: Pick<UserInfoType, "name" | "imageUrl">[];
 };
 
 function ProblemContainer({
@@ -94,13 +98,20 @@ function ProblemContainer({
 }
 const MemoProblemContainer = React.memo(ProblemContainer);
 
-function TimeSetView({ onBtnClick, onPrevBtnClick }: TimeSetViewProps) {
+function TimeSetView({
+  onBtnClick,
+  onPrevBtnClick,
+  participants
+}: TimeSetViewProps) {
   const problemDummy = [
     { id: 1, title: "징검다리 달리기", recommendTime: 60 },
     { id: 2, title: "징검다리 달리기", recommendTime: 60 },
     { id: 3, title: "징검다리 달리기", recommendTime: 120 }
   ];
   const [times, setTimes] = useState<Map<number, number>>(new Map());
+  const studyName = useAppSelector(
+    ({ auth: { information } }) => information.studyName
+  );
 
   const totalTime = useMemo(() => {
     let total = 0;
@@ -142,19 +153,23 @@ function TimeSetView({ onBtnClick, onPrevBtnClick }: TimeSetViewProps) {
       <ViewTitle
         main="문제 풀이 시간"
         mt={60}
-        mb={60}
-        des="우건이와 아이들 과 함께 문제를 풀 제한 시간을 설정해주세요"
-        highLight="우건이와 아이들"
+        mb={10}
+        des={`${studyName} 과 함께 풀 문제 개수를 선택해주세요`}
+        highLight={`${studyName}`}
       />
-      {problemDummy.map(problem => (
-        <MemoProblemContainer
-          key={problem.id}
-          title={problem.title}
-          id={problem.id}
-          recommendTime={problem.recommendTime}
-          setTimes={handleTimes}
-        />
-      ))}
+      <ParticipantContainer users={participants} />
+      <Box mt="16px">
+        {problemDummy.map(problem => (
+          <MemoProblemContainer
+            key={problem.id}
+            title={problem.title}
+            id={problem.id}
+            recommendTime={problem.recommendTime}
+            setTimes={handleTimes}
+          />
+        ))}
+      </Box>
+
       <Center h="90px" mb="12px">
         <Text
           fontSize={
