@@ -24,4 +24,6 @@ public interface StudyService {
 
     Map<String, Object> getStudyRanking();
 
+    Map<String, Object> getStudyMember(long userId);
+
 }
