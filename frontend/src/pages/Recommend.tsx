@@ -6,6 +6,7 @@ import StudyLayout from "../components/layout/StudyLayout";
 import SideComponent from "../components/recommend/SideComponent";
 import { getRecommend } from "../api/problem";
 import { addWorkbook, deleteWorkbook, getWorkbook } from "../api/workbook";
+import { useAppSelector } from "../store/hooks";
 
 const TABS = [
   {
@@ -54,6 +55,7 @@ interface ProblemListProps {
 }
 
 function ProblemList({ problemList }: ProblemListProps) {
+  const auth = useAppSelector(state => state.auth);
   const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
   const [btnTypes, setBtnTypes] = useState(
     problemList.map(problem =>
@@ -95,6 +97,7 @@ function ProblemList({ problemList }: ProblemListProps) {
           key={problem.problemInfo.problemId}
           problem={problem}
           btnType={btnTypes[idx]}
+          hasBtn={auth.information.studyId !== 0}
           onBtnClick={() => {
             if (btnTypes[idx] === "add")
               addProblem(problem.problemInfo.problemId, idx);

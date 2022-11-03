@@ -15,6 +15,7 @@ interface CardButtonProps {
 interface ProblemCardProps extends CardButtonProps {
   problem: Problem;
   bg?: string;
+  hasBtn?: boolean;
 }
 
 function Button({ btnType, onBtnClick }: CardButtonProps) {
@@ -32,7 +33,13 @@ function Button({ btnType, onBtnClick }: CardButtonProps) {
   );
 }
 
-function ProblemCard({ problem, btnType, onBtnClick, bg }: ProblemCardProps) {
+function ProblemCard({
+  problem,
+  btnType,
+  onBtnClick,
+  bg,
+  hasBtn
+}: ProblemCardProps) {
   const { problemInfo, tagList, difficulty } = problem;
   const { problemId, title, level } = problemInfo;
   return (
@@ -66,7 +73,7 @@ function ProblemCard({ problem, btnType, onBtnClick, bg }: ProblemCardProps) {
               <LinkIcon w="18px" h="18px" mx="2" marginBottom={2} />
             </Link>
           </Flex>
-          <Button btnType={btnType} onBtnClick={onBtnClick} />
+          {hasBtn && <Button btnType={btnType} onBtnClick={onBtnClick} />}
         </Flex>
         <Flex gap="8px" wrap="wrap">
           {tagList.map(tag => (
@@ -92,6 +99,7 @@ function ProblemCard({ problem, btnType, onBtnClick, bg }: ProblemCardProps) {
 }
 
 ProblemCard.defaultProps = {
-  bg: "dep_1"
+  bg: "dep_1",
+  hasBtn: true
 };
 export default ProblemCard;
