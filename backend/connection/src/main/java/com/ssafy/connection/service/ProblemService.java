@@ -1,6 +1,7 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.ProblemReturnDto;
+import com.ssafy.connection.dto.UserStatDto;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface ProblemService {
     List<ProblemReturnDto> getWeakProblemList(List<Map.Entry<String, Integer>> entryList);
 
     List<Map.Entry<String, Integer>> getUserStat(Long id);
+
+    List<UserStatDto> getUserStatList(List<Map.Entry<String, Integer>> userStat);
 }

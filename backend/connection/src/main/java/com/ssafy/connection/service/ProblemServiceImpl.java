@@ -1,9 +1,6 @@
 package com.ssafy.connection.service;
 
-import com.ssafy.connection.dto.ProblemDto;
-import com.ssafy.connection.dto.ProblemReturnDto;
-import com.ssafy.connection.dto.TagDto;
-import com.ssafy.connection.dto.WorkbookCountInterface;
+import com.ssafy.connection.dto.*;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.entity.Tag;
@@ -49,9 +46,9 @@ public class ProblemServiceImpl implements ProblemService{
 
     private static int recommendSize = 4;   // 문제 추천에서 반환할 문제 수
     private static int recommendWorkbookCount = 1;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
-    private static String[] recommendTagList = {"수학", "구현", "다이나믹 프로그래밍", "자료 구조", "그래프 이론", "문자열", "그리디 알고리즘", "브루트포스 알고리즘", "그래프 탐색",
-                                                    "정렬", "트리", "이분 탐색", "애드 혹", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "누적 합", "비트마스킹", "데이크스트라",
-                                                        "백트래킹", "분할 정복", "두 포인터", "재귀", "플로이드-워셜"};
+    private static String[] recommendTagList = {"구현", "다이나믹 프로그래밍", "그래프 이론", "문자열", "그리디 알고리즘", "브루트포스 알고리즘", "그래프 탐색",
+                                                    "트리", "이분 탐색", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "데이크스트라",
+                                                        "백트래킹", "분할 정복", "재귀" };
 
     @Override
     public List<ProblemReturnDto> getPopularProblemList(String tag) {
@@ -190,14 +187,6 @@ public class ProblemServiceImpl implements ProblemService{
                 }
             }
         }
-        // 태그로 검색 제외
-//        else {
-//            for(ProblemReturnDto dto : this.getProblemByTag(keyword)){
-//                returnList.add(dto);
-//            }
-//        }
-
-        // int avgTier = studyService.getStudyTier(userPrincipal.getId());
         return returnList;
     }
 
@@ -222,7 +211,6 @@ public class ProblemServiceImpl implements ProblemService{
         Collections.shuffle(countList);
 
         for(WorkbookCountInterface object : countList){
-            System.out.println("$$$$$$$$$$$$$$ " + object.getProblemId() + " " + object.getCount());
             if(object.getCount() >= recommendWorkbookCount){
                 returnList.add(this.getProblem(object.getProblemId()).get(0));
             }
@@ -261,6 +249,15 @@ public class ProblemServiceImpl implements ProblemService{
         });
 
         return entryList;
+    }
+
+    @Override
+    public List<UserStatDto> getUserStatList(List<Entry<String, Integer>> userStat) {
+        List<UserStatDto> returnList = new ArrayList<>();
+        for(Entry<String, Integer> entry : userStat){
+            returnList.add(new UserStatDto(entry.getKey(), entry.getValue()));
+        }
+        return returnList;
     }
 
     @Override
