@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Center, Highlight, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useAppSelector } from "../../store/hooks";
 import NextBtn from "./NextBtn";
 import ViewTitle from "./ViewTitle";
 
@@ -9,14 +10,17 @@ type NumberSetViewProps = {
 
 function NumberSetView({ onBtnClick }: NumberSetViewProps) {
   const [selectedNum, setSelectedNum] = useState(0);
+  const studyName = useAppSelector(
+    ({ auth: { information } }) => information.studyName
+  );
   return (
     <Center w="1200px" m="auto" flexDir="column">
       <ViewTitle
         mt={60}
         main="문제 개수 선택"
         mb={80}
-        des="우건이와 아이들 과 함께 풀 문제 개수를 선택해주세요"
-        highLight="우건이와 아이들"
+        des={`${studyName} 과 함께 풀 문제 개수를 선택해주세요`}
+        highLight={`${studyName}`}
       />
       <ButtonGroup spacing="32px" mb="120px">
         {[1, 2, 3].map(num => {

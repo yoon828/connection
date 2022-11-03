@@ -54,7 +54,7 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
     };
     fetch();
     return () => {
-      dispatch(reset());
+      if (maxCnt === 5) dispatch(reset());
     };
   }, []);
 
