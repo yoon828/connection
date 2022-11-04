@@ -408,4 +408,23 @@ public class StudyServiceImpl implements StudyService {
         return result;
     }
 
+    @Override
+    public void ckeckStudy(long userId, String studyName) {
+        try {
+            if (!userRepository.findById(userId).get().isIsmember()) // 깃허브 미연동한 경우
+                throw new RestException(HttpStatus.I_AM_A_TEAPOT, "Github is not connected");
+
+            if(studyRepository.findByStudyName(studyName).isPresent())
+                throw new RestException(HttpStatus.CONFLICT, "Duplicate study name");
+
+            User userEntity = userRepository.findById(userId).get(); // 로그인 한 사용자 정보
+            String studyCode = null; // study 코드
+
+            if (connStudyRepository.findByUser_UserId(userEntity.getUserId()).isPresent()) // 이미 스터디에 가입한 경우
+                throw new RestException(HttpStatus.BAD_REQUEST, "Already joined to another study");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

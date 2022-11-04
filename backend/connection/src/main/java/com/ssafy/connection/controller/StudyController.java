@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +35,32 @@ public class StudyController {
         this.subjectService = subjectService;
     }
 
-    @ApiOperation(value = "스터디 Repository 생성", notes = "study_name을 입력받아 새로운 스터디 생성(Github team&repository)")
+    @ApiOperation(value = "스터디 생성 전 확인", notes = "study_name을 입력받아 새로운 스터디 생성(Github team&repository) 가능한지 반환")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "이미 다른 스터디에 가입되어 있음"),
-            @ApiResponse(code = 409, message = "스터디명 중복")
+            @ApiResponse(code = 400, message = "이미 다른 스터디에 가입되어 있는 경우"),
+            @ApiResponse(code = 409, message = "스터디명 중복인 경우"),
+            @ApiResponse(code = 418, message = "깃허브 미연동한 경우")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "study_name", value = "생성할 스터디명", required = true)
+    })
+    @GetMapping
+    public ResponseEntity<Map<String,Object>> checkStudy(@RequestParam(value = "study_name") String studyName, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        Map<String, Object> returnMap = new HashMap<>();
+        studyService.ckeckStudy(userId, studyName);
+        returnMap.put("msg", "success");
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnMap);
+    }
+
+    @ApiOperation(value = "스터디 생성", notes = "study_name을 입력받아 새로운 스터디 생성(Github team&repository)")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 400, message = "이미 다른 스터디에 가입되어 있는 경우"),
+            @ApiResponse(code = 409, message = "스터디명 중복인 경우"),
+            @ApiResponse(code = 418, message = "깃허브 미연동한 경우")
     })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "study_name", value = "생성할 스터디명", required = true)
