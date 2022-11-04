@@ -14,9 +14,6 @@ function Subject({ problems, users, deadline }: SubjectProps) {
       seriesTmp.push(user.problem_cnt);
       return labelsTmp.push(user.user_name);
     });
-    console.log(users);
-    console.log(seriesTmp);
-    console.log(labelsTmp);
     setSeries(seriesTmp);
     setlabels(labelsTmp);
   }, []);
