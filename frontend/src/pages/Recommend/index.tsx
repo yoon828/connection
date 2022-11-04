@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { RepeatIcon } from "@chakra-ui/icons";
 
-import StudyLayout from "../components/layout/StudyLayout";
+import StudyLayout from "../../components/layout/StudyLayout";
 import SideComponent, {
   RECOMMEND_TAPS
-} from "../components/recommend/SideComponent";
-import { getRecommend, GetRecommendRes } from "../api/problem";
-import ProblemList from "../components/recommend/ProblemList";
-import { Problem } from "../@types/Problem";
-import Tooltip from "../components/recommend/Tooltip";
+} from "../../components/recommend/SideComponent";
+import { getRecommend, GetRecommendRes } from "../../api/problem";
+import ProblemList from "../../components/recommend/ProblemList";
+import { Problem } from "../../@types/Problem";
+import Tooltip from "../../components/recommend/Tooltip";
+import Style from "./index.style";
 
 function Recommend() {
   const [recommends, setRecommends] = useState<null | GetRecommendRes>(null);
@@ -39,17 +39,7 @@ function Recommend() {
       title={RECOMMEND_TAPS[selectedTap].label}
       description={RECOMMEND_TAPS[selectedTap].msg}
     >
-      <RepeatIcon
-        w={10}
-        h={10}
-        position="absolute"
-        top={120}
-        right={12}
-        cursor="pointer"
-        onClick={getAndSetRecommend}
-        _hover={{ transform: "rotate(90deg)" }}
-        transition="transform .6s"
-      />
+      <Style.StyledIcon onClick={getAndSetRecommend} />
       {RECOMMEND_TAPS[selectedTap].category === "weak" && (
         <Tooltip recommends={recommends} />
       )}
