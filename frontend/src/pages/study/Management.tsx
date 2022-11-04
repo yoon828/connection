@@ -1,20 +1,12 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Text,
-  useColorMode,
-  useDisclosure
-} from "@chakra-ui/react";
-import { ApexOptions } from "apexcharts";
-import React, { useEffect, useMemo, useState } from "react";
+import { Box, Button, Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useNavigate } from "react-router-dom";
 import { deleteStudy, getMember, quitStudy } from "../../api/study";
 import BackButton from "../../components/common/BackButton";
 import Confirm from "../../components/common/Confirm";
 import StudyLayout from "../../components/layout/StudyLayout";
+import useChartOption from "../../hooks/useChartOption";
 import { getUserInfo } from "../../store/ducks/auth/authThunk";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
@@ -35,64 +27,7 @@ interface ConfirmStateType {
 }
 
 function Management() {
-  const { colorMode } = useColorMode();
-  const CHART_OPTIONS = useMemo(
-    (): ApexOptions => ({
-      chart: {
-        type: "bar",
-        animations: {
-          enabled: true,
-          easing: "easeinout",
-          speed: 800,
-          animateGradually: {
-            enabled: true,
-            delay: 150
-          },
-          dynamicAnimation: {
-            enabled: true,
-            speed: 350
-          }
-        }
-      },
-      colors: ["#88BFFF"],
-      plotOptions: {
-        bar: {
-          columnWidth: "60%"
-        }
-      },
-
-      dataLabels: {
-        enabled: false
-      },
-      xaxis: {
-        labels: {
-          style: {
-            colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
-          }
-        }
-      },
-      legend: {
-        show: true,
-        showForSingleSeries: true,
-        customLegendItems: ["참여율", "평균"],
-        markers: {
-          fillColors: ["#88BFFF", "#775DD0"]
-        },
-        labels: {
-          colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
-        }
-      },
-      theme: { mode: colorMode === "light" ? "light" : "dark" }
-    }),
-    [colorMode]
-  );
+  const chartOption = useChartOption();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -186,7 +121,7 @@ function Management() {
               type="bar"
               height={220}
               width="100%"
-              options={CHART_OPTIONS}
+              options={chartOption}
               series={[
                 {
                   name: "참여율",
