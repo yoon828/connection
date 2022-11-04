@@ -1,10 +1,10 @@
 import { Center, Image, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { v4 } from "uuid";
-import { UserInfoType } from "../../store/ducks/auth/auth.type";
+import { UserProfileType } from "../../asset/data/socket.type";
 
 interface ParticipantContainerProps {
-  users: Pick<UserInfoType, "name" | "imageUrl">[];
+  users: UserProfileType[];
 }
 function ParticipantContainer({ users }: ParticipantContainerProps) {
   return (

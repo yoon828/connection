@@ -16,8 +16,8 @@ import getTime from "../../utils/getTime";
 import ViewTitle from "./ViewTitle";
 import NextBtn from "./NextBtn";
 import { useAppSelector } from "../../store/hooks";
-import { UserInfoType } from "../../store/ducks/auth/auth.type";
 import ParticipantContainer from "./ParticipantContainer";
+import { UserProfileType } from "../../asset/data/socket.type";
 
 type ProblemContainerProps = {
   id: number;
@@ -28,7 +28,7 @@ type ProblemContainerProps = {
 type TimeSetViewProps = {
   onBtnClick: () => void;
   onPrevBtnClick: () => void;
-  participants: Pick<UserInfoType, "name" | "imageUrl">[];
+  participants: UserProfileType[];
 };
 
 function ProblemContainer({

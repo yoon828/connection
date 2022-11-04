@@ -1,6 +1,5 @@
 import { Center, CircularProgress } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { v4 } from "uuid";
 import { io, Socket } from "socket.io-client";
 import NumberSetView from "../components/studyWith/NumberSetView";
 import ProblemSetView from "../components/studyWith/ProblemSetView";
@@ -11,10 +10,10 @@ import TimeSetView from "../components/studyWith/TimeSetView";
 import {
   ClientToServerEvents,
   PageViewState,
-  ServerToClientEvents
+  ServerToClientEvents,
+  UserProfileType
 } from "../asset/data/socket.type";
 import { useAppSelector } from "../store/hooks";
-import { UserInfoType } from "../store/ducks/auth/auth.type";
 
 function StudyWith() {
   const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
@@ -41,34 +40,44 @@ function StudyWith() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
-  const [participants, setPartcipants] = useState<
-    Pick<UserInfoType, "name" | "imageUrl">[]
-  >([{ name, imageUrl }]);
+  const [participants, setPartcipants] = useState<UserProfileType[]>([]);
 
   const bossView: React.FunctionComponentElement<undefined>[] = [
     <NumberSetView
-      key={v4()}
+      key={PageViewState.NumberSet}
       onBtnClick={() => setStep(PageViewState.ProblemSet)}
     />,
     <ProblemSetView
-      key={v4()}
+      key={PageViewState.ProblemSet}
       onBtnClick={() => setStep(PageViewState.TimeSet)}
       participants={participants}
     />,
     <TimeSetView
-      key={v4()}
+      key={PageViewState.TimeSet}
       onBtnClick={() => setStep(PageViewState.Solving)}
       onPrevBtnClick={() => setStep(PageViewState.ProblemSet)}
       participants={participants}
     />,
-    <SolvingView key={v4()} onBtnClick={() => setStep(PageViewState.Result)} />,
-    <ResultView key={v4()} onBtnClick={() => setStep(PageViewState.Review)} />,
-    <ReviewView key={v4()} onBtnClick={() => setStep(1)} />
+    <SolvingView
+      key={PageViewState.Solving}
+      onBtnClick={() => setStep(PageViewState.Result)}
+    />,
+    <ResultView
+      key={PageViewState.Result}
+      onBtnClick={() => setStep(PageViewState.Review)}
+    />,
+    <ReviewView key={PageViewState.Review} onBtnClick={() => setStep(1)} />
   ];
 
   useEffect(() => {
     socket.connect();
-    socket.emit("enter", studyId, name, imageUrl);
+    socket.emit(
+      "enter",
+      studyId,
+      name,
+      imageUrl,
+      (userList: UserProfileType[]) => setPartcipants(userList)
+    );
 
     socket.on("addParticipant", (newName, newImageUrl) => {
       setPartcipants(prev => [
@@ -86,12 +95,8 @@ function StudyWith() {
     };
   }, []);
 
-  const test = (e: ChangeEvent<HTMLInputElement>) => {
-    socket.emit("chat", e.target.value);
-  };
   return (
     <Center>
-      <input onChange={test} />
       {isLoading ? (
         <CircularProgress size="120px" mt="30vh" isIndeterminate color="main" />
       ) : (
