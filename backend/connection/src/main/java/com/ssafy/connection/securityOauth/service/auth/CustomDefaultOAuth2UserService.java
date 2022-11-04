@@ -53,6 +53,8 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = userOptional.get();
             DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
             user = updateExistingUser(user, oAuth2UserInfo);
+
+            if(!user.isIsmember())organizationService.joinOrganization(user.getUserId());
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
             organizationService.joinOrganization(user.getUserId());
