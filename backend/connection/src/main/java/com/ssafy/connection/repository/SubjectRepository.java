@@ -26,7 +26,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
             "\t\tand a.problem_id = sv.problem_id\n" +
             "where sv.status = 0 or isnull(sv.status) \n" +
             "group by a.user_id, a.problem_id\n" +
-            "order by a.deadline desc, a.problem_id, a.user_id;", nativeQuery = true)
+            "order by a.deadline, a.problem_id, a.user_id;", nativeQuery = true)
     List<Object[]> getTeamStatus(long studyId);
 
     @Query(value = "select count(s.subjcet_id) from subject s where s.study_id =?1 group by s.deadline order by deadline desc;", nativeQuery = true)
