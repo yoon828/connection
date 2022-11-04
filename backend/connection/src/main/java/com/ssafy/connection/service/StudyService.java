@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.SolveStudyMemberStatsListDto;
 import com.ssafy.connection.dto.SolveStudyStatsDto;
 import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
@@ -25,6 +26,6 @@ public interface StudyService {
 
     Map<String, Object> getStudyRanking();
 
-    Map<String, Object> getStudyMember(long userId);
+    List<SolveStudyMemberStatsListDto> getStudyMember(long userId);
 
 }

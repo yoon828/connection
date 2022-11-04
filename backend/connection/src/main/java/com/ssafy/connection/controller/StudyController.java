@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.SolveStudyMemberStatsListDto;
 import com.ssafy.connection.dto.SolveStudyStatsDto;
 import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
@@ -135,9 +136,9 @@ public class StudyController {
 
     @ApiOperation(value = "", notes = "")
     @GetMapping("member")
-    public ResponseEntity<Map<String, Object>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+    public ResponseEntity<List<SolveStudyMemberStatsListDto>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
-        Map<String, Object> result = studyService.getStudyMember(userId);
+        List<SolveStudyMemberStatsListDto> result = studyService.getStudyMember(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
