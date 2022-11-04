@@ -20,4 +20,6 @@ public interface ConnWorkbookRepository extends JpaRepository<ConnWorkbook, Long
 
     @Query(value = "SELECT problem_id problemId, count(problem_id) count FROM conn_workbook GROUP BY problem_id", nativeQuery = true)
     List<WorkbookCountInterface> findGroupByProblem();
+
+    void deleteAllByWorkbook(Workbook workbook);
 }
