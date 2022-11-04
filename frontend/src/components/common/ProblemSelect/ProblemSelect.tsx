@@ -126,7 +126,8 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
                       toast({
                         title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
                         position: "top",
-                        isClosable: true
+                        isClosable: true,
+                        status: "error"
                       });
                       return;
                     }
@@ -152,7 +153,8 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
                       toast({
                         title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
                         position: "top",
-                        isClosable: true
+                        isClosable: true,
+                        status: "error"
                       });
                       return;
                     }

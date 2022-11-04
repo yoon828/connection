@@ -23,7 +23,8 @@ function Collection() {
     toast({
       title: `${problemId}번 문제를 삭제했습니다`,
       position: "top",
-      isClosable: true
+      isClosable: true,
+      status: "warning"
     });
   };
   const addProblem = async (problem: Problem) => {

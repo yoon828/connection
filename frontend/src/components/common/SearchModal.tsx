@@ -13,6 +13,7 @@ import {
 import { Search2Icon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 
+import { stat } from "fs";
 import ProblemCard from "./ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
 import { searchProblem } from "../../api/problem";
@@ -91,17 +92,29 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
                 ) >= 0
                   ? () => {
                       dispatch(removeProblem(problem));
+                      toast({
+                        title: `${problem.problemInfo.problemId}번 문제를 삭제했습니다.`,
+                        position: "top",
+                        isClosable: true,
+                        status: "warning"
+                      });
                     }
                   : () => {
                       if (appSelector.cnt >= maxCnt) {
                         toast({
                           title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
                           position: "top",
-                          isClosable: true
+                          isClosable: true,
+                          status: "error"
                         });
                         return;
                       }
                       dispatch(addProblem(problem));
+                      toast({
+                        title: `${problem.problemInfo.problemId}번 문제를 추가했습니다.`,
+                        position: "top",
+                        isClosable: true
+                      });
                     }
               }
             />
