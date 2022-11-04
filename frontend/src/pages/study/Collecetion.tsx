@@ -6,8 +6,8 @@ import StudyLayout from "../../components/layout/StudyLayout";
 import BackButton from "../../components/common/BackButton";
 import ProblemCard from "../../components/common/ProblemCard";
 import SearchModal from "../../components/collection/SearchModal";
-import { Problem } from "../Recommend";
 import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
+import { Problem } from "../../@types/Problem";
 
 function Collection() {
   const [workbook, setWorkbook] = useState<Problem[]>([]);

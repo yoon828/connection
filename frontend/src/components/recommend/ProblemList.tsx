@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Grid, useToast } from "@chakra-ui/react";
 
 import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
-import { Problem } from "../../pages/Recommend";
 import { useAppSelector } from "../../store/hooks";
 import ProblemCard from "../common/ProblemCard";
+import { Problem } from "../../@types/Problem";
 
 interface ProblemListProps {
   problemList: Problem[];

@@ -1,4 +1,4 @@
-import { Problem } from "../../../pages/Recommend";
+import { Problem } from "../../../@types/Problem";
 
 export interface InitialStateType {
   selectedProblemList: Problem[];

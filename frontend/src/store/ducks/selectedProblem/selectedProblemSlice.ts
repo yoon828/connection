@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { Problem } from "../../../pages/Recommend";
+import { Problem } from "../../../@types/Problem";
 import { InitialStateType, ProblemActionType } from "./selectedProblem.type";
 import { getMyWorkbook, getRecommends } from "./selectedProblemThunk";
 

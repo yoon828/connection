@@ -6,42 +6,12 @@ import StudyLayout from "../components/layout/StudyLayout";
 import SideComponent, {
   RECOMMEND_TAPS
 } from "../components/recommend/SideComponent";
-import { getRecommend } from "../api/problem";
+import { getRecommend, GetRecommendRes } from "../api/problem";
 import ProblemList from "../components/recommend/ProblemList";
-
-interface Tag {
-  tagId: string;
-  en: string;
-  ko: string;
-}
-
-interface ProblemInfo {
-  problemId: number;
-  title: string;
-  solvable: true;
-  accepted: number;
-  level: number;
-  tries: string;
-}
-export interface Problem {
-  problemInfo: ProblemInfo;
-  tagList: Tag[];
-  difficulty: number;
-}
-
-interface Stat {
-  type: string;
-  cnt: number;
-}
-interface RecommendsType {
-  popular: Problem[];
-  workbook: Problem[];
-  weak: Problem[];
-  stat: Stat[];
-}
+import { Problem } from "../@types/Problem";
 
 function Recommend() {
-  const [recommends, setRecommends] = useState<null | RecommendsType>(null);
+  const [recommends, setRecommends] = useState<null | GetRecommendRes>(null);
   const [selectedTap, setSelectedTap] = useState(0);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -117,7 +87,7 @@ function Recommend() {
         <ProblemList
           problemList={
             recommends[
-              RECOMMEND_TAPS[selectedTap].category as keyof RecommendsType
+              RECOMMEND_TAPS[selectedTap].category as keyof GetRecommendRes
             ] as Problem[]
           }
         />

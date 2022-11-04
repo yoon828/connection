@@ -1,6 +1,18 @@
-import { api } from "./api";
+import { AxiosResponse } from "axios";
 
-export const getRecommend = async () => {
+import { api } from "./api";
+import { Problem, Stat } from "../@types/Problem";
+
+export interface GetRecommendRes {
+  popular: Problem[];
+  workbook: Problem[];
+  weak: Problem[];
+  stat: Stat[];
+}
+
+export const getRecommend = async (): Promise<
+  AxiosResponse<GetRecommendRes, null>
+> => {
   const res = await api.get("/problem/recommend");
   return res;
 };

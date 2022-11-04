@@ -1,12 +1,7 @@
 import React from "react";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, LinkIcon } from "@chakra-ui/icons";
-import { Problem } from "../../pages/Recommend";
-
-export interface Tag {
-  id: number;
-  title: string;
-}
+import { Problem } from "../../@types/Problem";
 
 interface CardButtonProps {
   btnType: "delete" | "add";
