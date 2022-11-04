@@ -14,6 +14,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findAllByStudy(Study studyEntity);
     List<Subject> findAllByStudyAndDeadlineAfter(Study studyEntity, LocalDateTime localDateTime);
 
+    void deleteAllByStudy(Study study);
+
     @Query(value = "select a.user_id, a.name, a.problem_id, a.title, COUNT(solve_id) as solve, a.deadline\n" +
             "from (select u.user_id, u.name, s.problem_id, s.deadline , p.title \n" +
             "\tfrom user u, conn_study cs, subject s, problem p\n" +

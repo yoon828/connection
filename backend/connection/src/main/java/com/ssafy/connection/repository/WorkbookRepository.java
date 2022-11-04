@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkbookRepository extends JpaRepository<Workbook, Long> {
     Workbook findByStudy(Study studyEntity);
+    void deleteAllByStudy(Study study);
 }

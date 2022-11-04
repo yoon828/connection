@@ -1,10 +1,8 @@
 package com.ssafy.connection.securityOauth.service.auth;
 
 import com.ssafy.connection.dto.SolvedacUserDto;
-import com.ssafy.connection.entity.ConnStudy;
-import com.ssafy.connection.entity.Study;
-import com.ssafy.connection.repository.ConnStudyRepository;
-import com.ssafy.connection.repository.StudyRepository;
+import com.ssafy.connection.entity.*;
+import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.advice.assertThat.DefaultAssert;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.securityOauth.domain.entity.user.*;
@@ -18,8 +16,10 @@ import com.ssafy.connection.securityOauth.payload.response.AuthResponse;
 import com.ssafy.connection.securityOauth.payload.response.Message;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import com.ssafy.connection.service.StudyServiceImpl;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jdbc.Work;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NameTokenizers;
@@ -37,6 +37,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.*;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -46,11 +47,16 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final CustomTokenProviderService customTokenProviderService;
+    private final StudyServiceImpl studyService;
     
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final ConnStudyRepository connStudyRepository;
     private final StudyRepository studyRepository;
+    private final WorkbookRepository workbookRepository;
+    private final SubjectRepository subjectRepository;
+    private final SolveRepository solveRepository;
+    private final ConnWorkbookRepository connWorkbookRepository;
     private WebClient solvedac = WebClient.create("https://solved.ac/api");
 
     @Transactional
@@ -121,76 +127,101 @@ public class AuthService {
         return true;
     }
 
+    @Transactional
     public ResponseEntity<?> delete(UserPrincipal userPrincipal){
         Optional<User> user = userRepository.findById(userPrincipal.getId());
         DefaultAssert.isTrue(user.isPresent(), "유저가 올바르지 않습니다.");
-
         Optional<Token> token = tokenRepository.findByGithubId(user.get().getGithubId());
         DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
 
-        userRepository.delete(user.get());
-        tokenRepository.delete(token.get());
+        if(user.isPresent()) {
+            Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userPrincipal.getId());
+            List<Solve> solveList = solveRepository.findAllByUser(user.get());
+
+            if(connStudy.isPresent()) {
+                Study study = studyRepository.findByConnStudy(connStudy.get());
+
+                Workbook workbook = workbookRepository.findByStudy(study);
+
+                //workbook optional로 받지 않아도 괜찮은가
+                connWorkbookRepository.deleteAllByWorkbook(workbook);
+                workbookRepository.deleteAllByStudy(study);
+                //============
+                subjectRepository.deleteAllByStudy(study);
+
+
+                studyService.quitStudy(user.get().getUserId(), null);
+
+            }
+            solveRepository.deleteAllByUser(user.get());
+
+            userRepository.delete(user.get());
+            tokenRepository.delete(token.get());
+        }
+
+        
+        //에러핸들링 레포지토리 탈퇴구현 필요
 
         ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원 탈퇴하셨습니다.").build()).build();
 
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> modify(UserPrincipal userPrincipal, ChangePasswordRequest passwordChangeRequest){
-        Optional<User> user = userRepository.findById(userPrincipal.getId());
-        boolean passwordCheck = passwordEncoder.matches(passwordChangeRequest.getOldPassword(),user.get().getPassword());
-        DefaultAssert.isTrue(passwordCheck, "잘못된 비밀번호 입니다.");
-
-        boolean newPasswordCheck = passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getReNewPassword());
-        DefaultAssert.isTrue(newPasswordCheck, "신규 등록 비밀번호 값이 일치하지 않습니다.");
-
-
-        passwordEncoder.encode(passwordChangeRequest.getNewPassword());
-
-        return ResponseEntity.ok(true);
-    }
-
-    public ResponseEntity<?> signin(SignInRequest signInRequest){
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                signInRequest.getEmail(),
-                signInRequest.getPassword()
-            )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
-        Token token = Token.builder()
-                            .refreshToken(tokenMapping.getRefreshToken())
-                            .githubId(tokenMapping.getGithubId())
-                            .build();
-        tokenRepository.save(token);
-        AuthResponse authResponse = AuthResponse.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(token.getRefreshToken()).build();
-        
-        return ResponseEntity.ok(authResponse);
-    }
-
-    public ResponseEntity<?> signup(SignUpRequest signUpRequest){
-        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getEmail()), "해당 이메일이 존재하지 않습니다.");
-
-        User user = User.builder()
-                        .name(signUpRequest.getName())
-                        .email(signUpRequest.getEmail())
-                        .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                        .provider(Provider.local)
-                        .role(Role.ADMIN)
-                        .build();
-
-        userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/auth/")
-                .buildAndExpand(user.getUserId()).toUri();
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원가입에 성공하였습니다.").build()).build();
-
-        return ResponseEntity.created(location).body(apiResponse);
-    }
+//    public ResponseEntity<?> modify(UserPrincipal userPrincipal, ChangePasswordRequest passwordChangeRequest){
+//        Optional<User> user = userRepository.findById(userPrincipal.getId());
+//        boolean passwordCheck = passwordEncoder.matches(passwordChangeRequest.getOldPassword(),user.get().getPassword());
+//        DefaultAssert.isTrue(passwordCheck, "잘못된 비밀번호 입니다.");
+//
+//        boolean newPasswordCheck = passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getReNewPassword());
+//        DefaultAssert.isTrue(newPasswordCheck, "신규 등록 비밀번호 값이 일치하지 않습니다.");
+//
+//
+//        passwordEncoder.encode(passwordChangeRequest.getNewPassword());
+//
+//        return ResponseEntity.ok(true);
+//    }
+//
+//    public ResponseEntity<?> signin(SignInRequest signInRequest){
+//        Authentication authentication = authenticationManager.authenticate(
+//            new UsernamePasswordAuthenticationToken(
+//                signInRequest.getEmail(),
+//                signInRequest.getPassword()
+//            )
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
+//        Token token = Token.builder()
+//                            .refreshToken(tokenMapping.getRefreshToken())
+//                            .githubId(tokenMapping.getGithubId())
+//                            .build();
+//        tokenRepository.save(token);
+//        AuthResponse authResponse = AuthResponse.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(token.getRefreshToken()).build();
+//
+//        return ResponseEntity.ok(authResponse);
+//    }
+//
+//    public ResponseEntity<?> signup(SignUpRequest signUpRequest){
+//        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getEmail()), "해당 이메일이 존재하지 않습니다.");
+//
+//        User user = User.builder()
+//                        .name(signUpRequest.getName())
+//                        .email(signUpRequest.getEmail())
+//                        .password(passwordEncoder.encode(signUpRequest.getPassword()))
+//                        .provider(Provider.local)
+//                        .role(Role.ADMIN)
+//                        .build();
+//
+//        userRepository.save(user);
+//
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentContextPath().path("/auth/")
+//                .buildAndExpand(user.getUserId()).toUri();
+//        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원가입에 성공하였습니다.").build()).build();
+//
+//        return ResponseEntity.created(location).body(apiResponse);
+//    }
 
     public ResponseEntity<?> refresh(String refreshToken){
         //1차 검증
