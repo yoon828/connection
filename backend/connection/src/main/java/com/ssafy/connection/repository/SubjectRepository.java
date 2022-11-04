@@ -17,8 +17,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     void deleteAllByStudy(Study study);
 
-    @Query(value = "select a.user_id, a.name, a.problem_id, a.title, COUNT(solve_id) as solve, a.deadline\n" +
-            "from (select u.user_id, u.name, s.problem_id, s.deadline , p.title \n" +
+    @Query(value = "select a.user_id, a.name, a.problem_id, a.title, COUNT(solve_id) as solve, a.deadline, a.start\n" +
+            "from (select u.user_id, u.name, s.problem_id, s.deadline , p.title, s.start \n" +
             "\tfrom user u, conn_study cs, subject s, problem p\n" +
             "\twhere u.user_id = cs.user_id\n" +
             "\t\t\tand cs.study_id = s.study_id\n" +
