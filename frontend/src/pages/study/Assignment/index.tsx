@@ -1,23 +1,16 @@
-import React, { useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Text,
-  useDisclosure,
-  useToast
-} from "@chakra-ui/react";
+import React, { ChangeEvent, useRef, useState } from "react";
+import { Box, Flex, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 
-import StudyLayout from "../../components/layout/StudyLayout";
-import BackButton from "../../components/common/BackButton";
-import ProblemSelect from "../../components/common/ProblemSelect/ProblemSelect";
-import SearchModal from "../../components/common/SearchModal";
-import { cmpDate, getDate } from "../../utils/getDate";
-import { useAppSelector } from "../../store/hooks";
-import { postSubject } from "../../api/subject";
+import StudyLayout from "../../../components/layout/StudyLayout";
+import BackButton from "../../../components/common/BackButton";
+import ProblemSelect from "../../../components/common/ProblemSelect/ProblemSelect";
+import SearchModal from "../../../components/common/SearchModal";
+import { cmpDate, getDate } from "../../../utils/getDate";
+import { useAppSelector } from "../../../store/hooks";
+import { postSubject } from "../../../api/subject";
+import Style from "./index.style";
 
 function Assignment() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,7 +21,9 @@ function Assignment() {
   const appSelector = useAppSelector(state => state.selectedProblem);
   const navigate = useNavigate();
 
-  const onEndDateChange = (date: string) => {
+  // const onEndDateChange = (date: string) => {
+  const onEndDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const date = e.target.value;
     if (cmpDate(startDate, date)) {
       toast({
         title: `날짜를 똑바로 선택해주세요!`,
@@ -81,43 +76,22 @@ function Assignment() {
             <Text fontSize="lg" fontWeight="bold" flexShrink={0}>
               과제 기간
             </Text>
-            <Input
-              type="date"
-              bg="dep_1"
-              cursor="pointer"
-              value={startDate}
-              readOnly
-            />
+            <Style.DurationInput type="date" value={startDate} readOnly />
             <Text fontWeight="bold">~</Text>
-            <Input
+            <Style.DurationInput
               type="date"
-              bg="dep_1"
-              cursor="pointer"
               value={endDate}
-              onChange={e => onEndDateChange(e.target.value)}
+              onChange={onEndDateChange}
               ref={endDateRef}
             />
           </Flex>
-          <Box
-            bg="dep_1"
-            p={2}
-            borderRadius="10px"
-            cursor="pointer"
-            onClick={onOpen}
-          >
+          <Style.SearchIconBox onClick={onOpen}>
             <Search2Icon w={6} h={6} />
-          </Box>
+          </Style.SearchIconBox>
         </Flex>
         <ProblemSelect maxCnt={5} />
         <Box mt={4} ml="auto" w="fit-content">
-          <Button
-            bg="gra"
-            _hover={{ transform: "scale(1.05)" }}
-            _active={{ transform: "scale(1.05)" }}
-            onClick={submit}
-          >
-            등록하기
-          </Button>
+          <Style.SubmitBtn onClick={submit}>등록하기</Style.SubmitBtn>
         </Box>
       </StudyLayout>
       <SearchModal isOpen={isOpen} onClose={onClose} maxCnt={5} />
