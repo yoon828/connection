@@ -28,4 +28,6 @@ public interface StudyService {
 
     List<SolveStudyMemberStatsListDto> getStudyMember(long userId);
 
+    void ckeckStudy(long userId, String studyName);
+
 }
