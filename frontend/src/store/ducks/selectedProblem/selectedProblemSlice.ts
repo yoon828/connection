@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { Problem } from "../../../pages/Recommend";
 import { getMyWorkbook, getRecommends } from "./selectedProblemThunk";
 
@@ -22,17 +23,19 @@ const initialState: InitialStateType = {
   cnt: 0
 };
 
+const filter = (list: Problem[], problemId: number) =>
+  list.filter(problem => problem.problemInfo.problemId !== problemId);
+
+const isExist = (list: Problem[], problemId: number) =>
+  list.findIndex(problem => problem.problemInfo.problemId === problemId) >= 0;
+
 export const selectedProblemSlice = createSlice({
   name: "selectedProblem",
   initialState,
   reducers: {
     addProblem: (state, action) => {
       if (
-        state.selectedProblemList.findIndex(
-          problem =>
-            problem.problemInfo.problemId ===
-            action.payload.problemInfo.problemId
-        ) >= 0
+        isExist(state.selectedProblemList, action.payload.problemInfo.problemId)
       )
         return;
       state.selectedProblemList = [
@@ -40,27 +43,18 @@ export const selectedProblemSlice = createSlice({
         action.payload
       ];
       state.showedRecommends = [
-        ...state.showedRecommends.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
-        )
+        ...filter(state.showedRecommends, action.payload.problemInfo.problemId)
       ];
       state.showedMyWorkbook = [
-        ...state.showedMyWorkbook.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
-        )
+        ...filter(state.showedMyWorkbook, action.payload.problemInfo.problemId)
       ];
       state.cnt = state.selectedProblemList.length;
     },
     removeProblem: (state, action) => {
       state.selectedProblemList = [
-        ...state.selectedProblemList.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
+        ...filter(
+          state.selectedProblemList,
+          action.payload.problemInfo.problemId
         )
       ];
       const recommendItem = state.recommends.find(
