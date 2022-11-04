@@ -7,6 +7,7 @@ import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.repository.ConnStudyRepository;
 import com.ssafy.connection.repository.SolveRepository;
 import com.ssafy.connection.repository.StudyRepository;
+import com.ssafy.connection.repository.SubjectRepository;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
@@ -33,19 +34,20 @@ public class StudyServiceImpl implements StudyService {
     private final ConnStudyRepository connStudyRepository;
     private final TokenRepository tokenRepository;
     private final SolveRepository solveRepository;
+    private final SubjectRepository subjectRepository;
 
-    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository, SolveRepository solveRepository) {
+    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository, SolveRepository solveRepository, SubjectRepository subjectRepository) {
         this.userRepository = userRepository;
         this.studyRepository = studyRepository;
         this.connStudyRepository = connStudyRepository;
         this.tokenRepository = tokenRepository;
         this.solveRepository = solveRepository;
-
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
     @Transactional
-    public void createStudy(long userId, String studyName) {
+    public StudyInfoReturnDto createStudy(long userId, String studyName) {
         try {
             if (!userRepository.findById(userId).get().isIsmember()) // 깃허브 미연동한 경우
                 throw new RestException(HttpStatus.I_AM_A_TEAPOT, "Github is not connected");
@@ -123,6 +125,9 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
             connStudyRepository.save(connStudy);
+            StudyInfoReturnDto createdStudy = StudyInfoReturnDto.of(study);
+
+            return createdStudy;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -387,7 +392,9 @@ public class StudyServiceImpl implements StudyService {
         List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
         ArrayList<SolveStudyMemberStatsListDto> result = new ArrayList<>();
         int num = 1;
-
+        //////////////////////
+        ////////////subjectRepository.findStudySubject(studyEntity.getStudyId());
+        ////////////////////
         for (ConnStudy connStudy : studyMemberList) {
             long selectUserId = connStudy.getUser().getUserId();
             User selectUserEntity = userRepository.findById(selectUserId).get();

@@ -1,9 +1,6 @@
 package com.ssafy.connection.controller;
 
-import com.ssafy.connection.dto.SolveStudyMemberStatsListDto;
-import com.ssafy.connection.dto.SolveStudyStatsDto;
-import com.ssafy.connection.dto.SolveStudyStatsInterface;
-import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.dto.*;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
@@ -66,11 +63,11 @@ public class StudyController {
             @ApiImplicitParam(name = "study_name", value = "생성할 스터디명", required = true)
     })
     @PostMapping
-    public ResponseEntity<String> createStudy(@RequestParam(value = "study_name") String studyName, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity<StudyInfoReturnDto> createStudy(@RequestParam(value = "study_name") String studyName, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         long userId = userPrincipal.getId();
-        studyService.createStudy(userId, studyName);
+        StudyInfoReturnDto result = studyService.createStudy(userId, studyName);
 
-        return new ResponseEntity<String>("success",HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @ApiOperation(value = "스터디 해체")

@@ -1,16 +1,13 @@
 package com.ssafy.connection.service;
 
-import com.ssafy.connection.dto.SolveStudyMemberStatsListDto;
-import com.ssafy.connection.dto.SolveStudyStatsDto;
-import com.ssafy.connection.dto.SolveStudyStatsInterface;
-import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.dto.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 
 import java.util.List;
 import java.util.Map;
 
 public interface StudyService {
-    void createStudy(long userId, String studyName);
+    StudyInfoReturnDto createStudy(long userId, String studyName);
 
     StudyDto getStudy(long userId, String studyCode);
 
