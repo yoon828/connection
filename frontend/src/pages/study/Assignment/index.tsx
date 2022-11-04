@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useRef, useState } from "react";
-import { Box, Flex, Text, useDisclosure, useToast } from "@chakra-ui/react";
-import { Search2Icon } from "@chakra-ui/icons";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import StudyLayout from "../../../components/layout/StudyLayout";
