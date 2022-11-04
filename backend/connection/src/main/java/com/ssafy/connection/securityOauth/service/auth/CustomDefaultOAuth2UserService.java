@@ -12,6 +12,8 @@ import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import com.ssafy.connection.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -53,8 +55,12 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = userOptional.get();
             DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
             user = updateExistingUser(user, oAuth2UserInfo);
+            if(!user.isIsmember()){
+                ResponseEntity responseEntity = organizationService.checkOrganization(user.getUserId());
+                if(!responseEntity.getStatusCode().equals(HttpStatus.OK))
+                    organizationService.joinOrganization(user.getUserId());
+            }
 
-            if(!user.isIsmember())organizationService.joinOrganization(user.getUserId());
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
             organizationService.joinOrganization(user.getUserId());
