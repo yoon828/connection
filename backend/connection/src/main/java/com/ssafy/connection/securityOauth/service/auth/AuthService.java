@@ -16,6 +16,7 @@ import com.ssafy.connection.securityOauth.payload.response.AuthResponse;
 import com.ssafy.connection.securityOauth.payload.response.Message;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import com.ssafy.connection.service.StudyServiceImpl;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.jdbc.Work;
@@ -46,6 +47,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final CustomTokenProviderService customTokenProviderService;
+    private final StudyServiceImpl studyService;
     
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -125,33 +127,38 @@ public class AuthService {
         return true;
     }
 
+    @Transactional
     public ResponseEntity<?> delete(UserPrincipal userPrincipal){
         Optional<User> user = userRepository.findById(userPrincipal.getId());
         DefaultAssert.isTrue(user.isPresent(), "유저가 올바르지 않습니다.");
-
         Optional<Token> token = tokenRepository.findByGithubId(user.get().getGithubId());
         DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
 
-        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userPrincipal.getId());
-        List<Solve> solveList = solveRepository.findAllByUser(user.get());
+        if(user.isPresent()) {
+            Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userPrincipal.getId());
+            List<Solve> solveList = solveRepository.findAllByUser(user.get());
 
-        Study study = studyRepository.findByConnStudy(connStudy.get());
+            if(connStudy.isPresent()) {
+                Study study = studyRepository.findByConnStudy(connStudy.get());
 
-//        Optional<Subject> subject = subjectRepository;
-        Workbook workbook = workbookRepository.findByStudy(study);
+                Workbook workbook = workbookRepository.findByStudy(study);
 
-        connWorkbookRepository.deleteAllByWorkbook(workbook);
+                //workbook optional로 받지 않아도 괜찮은가
+                connWorkbookRepository.deleteAllByWorkbook(workbook);
+                workbookRepository.deleteAllByStudy(study);
+                //============
+                subjectRepository.deleteAllByStudy(study);
 
-        subjectRepository.deleteAllByStudy(study);
-        workbookRepository.deleteAllByStudy(study);
 
-        studyRepository.delete(study);
+                studyService.quitStudy(user.get().getUserId(), null);
 
-        connStudyRepository.delete(connStudy.get());
-        solveRepository.deleteAllByUser(user.get());
+            }
+            solveRepository.deleteAllByUser(user.get());
 
-        userRepository.delete(user.get());
-        tokenRepository.delete(token.get());
+            userRepository.delete(user.get());
+            tokenRepository.delete(token.get());
+        }
+
         
         //에러핸들링 레포지토리 탈퇴구현 필요
 

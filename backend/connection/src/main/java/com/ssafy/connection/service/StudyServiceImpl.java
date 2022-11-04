@@ -212,7 +212,7 @@ public class StudyServiceImpl implements StudyService {
                     throw new RestException(HttpStatus.BAD_REQUEST, "No study participated");
 
                 connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
-                studyLeaderEntity = userRepository.findById(connStudyRepository.findByStudy_StudyIdAndRole(connStudyEntity.getStudy().getStudyId(), "LEADER").get().getUser().getUserId()).get();
+//안쓰길래                studyLeaderEntity = userRepository.findById(connStudyRepository.findByStudy_StudyIdAndRole(connStudyEntity.getStudy().getStudyId(), "LEADER").get().getUser().getUserId()).get();
                 studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
                 if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, studyEntity.getStudyId(), "READER").isPresent()) // userId,studyId,role과 일치하는 결과가 있는 경우 예외처리(탈퇴하려는 사용자가 스터디장인 경우)
@@ -231,7 +231,7 @@ public class StudyServiceImpl implements StudyService {
                 if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, connStudyEntity.getStudy().getStudyId(), "READER").isEmpty())
                     throw new RestException(HttpStatus.BAD_REQUEST, "Not study reader");
 
-                studyLeaderEntity = userRepository.findById(userId).get();
+//안쓰길래                studyLeaderEntity = userRepository.findById(userId).get();
                 studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
             }
 
