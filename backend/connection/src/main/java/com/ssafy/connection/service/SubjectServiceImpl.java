@@ -98,13 +98,13 @@ public class SubjectServiceImpl implements SubjectService{
         long userCnt = connStudy.get().getStudy().getConnStudy().size();    //스터디 유저 수
         List<Long> subjectCnts = subjectRepository.getTeamSubjectCount(studyId);//스터디 과제 수(데드라인별로 내림차순)
 
-        /* result print
+        // result print
         for (int i = 0; i < result.size(); i++) {
             for (int j = 0; j < result.get(0).length; j++) {
-                System.out.print(result.get(i)[j] + " ");
+                System.out.print(result.get(i)[j] + ",, ");
             }
             System.out.println();
-        }*/
+        }
 
         int startIdx = 0;
 
@@ -149,7 +149,7 @@ public class SubjectServiceImpl implements SubjectService{
             DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
             DateTimeFormatter returnFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            LocalDateTime startDate = LocalDateTime.parse(result.get(startIdx)[5].toString(), parseFormat).minusHours(9).minusDays(2);
+            LocalDateTime startDate = LocalDateTime.parse(result.get(startIdx)[6].toString(), parseFormat).minusHours(9);
             LocalDateTime endDate = LocalDateTime.parse(result.get(startIdx)[5].toString(), parseFormat).minusHours(9);
 
             deadline.add(startDate.format(returnFormat));
