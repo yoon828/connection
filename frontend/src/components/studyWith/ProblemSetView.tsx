@@ -1,7 +1,7 @@
 import { Search2Icon } from "@chakra-ui/icons";
 import { Box, Button, Center, useDisclosure } from "@chakra-ui/react";
 import React from "react";
-import { UserInfoType } from "../../store/ducks/auth/auth.type";
+import { UserProfileType } from "../../asset/data/socket.type";
 import { useAppSelector } from "../../store/hooks";
 import ProblemSelect from "../common/ProblemSelect/ProblemSelect";
 import SearchModal from "../common/SearchModal";
@@ -11,7 +11,7 @@ import ViewTitle from "./ViewTitle";
 
 type ProblemSetViewProps = {
   onBtnClick: () => void;
-  participants: Pick<UserInfoType, "name" | "imageUrl">[];
+  participants: UserProfileType[];
 };
 
 function ProblemSetView({ onBtnClick, participants }: ProblemSetViewProps) {
