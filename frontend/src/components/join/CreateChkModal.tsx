@@ -1,6 +1,6 @@
 import {
-  Box,
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,11 +8,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Text,
   useToast
 } from "@chakra-ui/react";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateUserInfo } from "../../store/ducks/auth/authSlice";
 import { useAppDispatch } from "../../store/hooks";
@@ -28,8 +29,10 @@ function CreateChkModal({ isOpen, onClose, studyName }: CreateChkModalProps) {
   const toast = useToast();
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateBtn = async () => {
+    setIsLoading(true);
     const res = await createStudy(studyName);
     if (axios.isAxiosError(res)) {
       if (res.response?.status === 409) {
@@ -69,21 +72,41 @@ function CreateChkModal({ isOpen, onClose, studyName }: CreateChkModalProps) {
         <ModalHeader fontSize="32px">스터디 생성</ModalHeader>
         <ModalCloseButton />
         <ModalBody fontSize="24px">
-          <Box>
+          <Flex dir="column">
             <Text fontWeight="700">스터디명</Text>
             <Text ml="12px">{studyName}</Text>
-          </Box>
+          </Flex>
           <Text fontSize="16px" mt="24px" color="red">
             스터디는 최대 1개만 가입가능합니다.
           </Text>
-          <ModalFooter p="20px 0">
+          <ModalFooter h="32px" p="20px 0">
             <Button
               borderRadius="12px"
               bg="gra"
               _hover={{ opacity: 0.6 }}
-              onClick={handleCreateBtn}
+              onClick={
+                isLoading
+                  ? () =>
+                      toast({
+                        title: "스터디 생성중",
+                        description:
+                          "스터디 생성중입니다. 잠시만 기다려주세요..",
+                        status: "warning",
+                        duration: 1500,
+                        position: "top",
+                        isClosable: true
+                      })
+                  : handleCreateBtn
+              }
             >
-              생성하기
+              {isLoading ? (
+                <>
+                  <Text mr="8px">생성중</Text>
+                  <Spinner color="main" size="sm" />
+                </>
+              ) : (
+                "생성하기"
+              )}
             </Button>
           </ModalFooter>
         </ModalBody>
