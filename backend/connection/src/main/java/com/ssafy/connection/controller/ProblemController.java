@@ -131,13 +131,11 @@ public class ProblemController {
         return null;
     }
 
-    @ApiOperation(value = "문제 풀이 시간 추천", notes = "{")
-    @PostMapping("/time")
-    public ResponseEntity<Map<String, Object>> getTime(@RequestBody Map<String, List<Long>> map){
-        Map<Long, Long> returnList = new HashMap<>();
+    @ApiOperation(value = "문제 풀이 시간 추천")
+    @GetMapping("/time")
+    public ResponseEntity<Map<String, Object>> getTime(@RequestParam List<Long> problemIdList){
         Map<String, Object> returnMap = new HashMap<>();
-        System.out.println(map.get("problemIdList").toString());
-        returnMap.put("time", problemService.getTime((List<Long>) map.get("problemIdList")));
+        returnMap.put("time", problemService.getTime(problemIdList));
         returnMap.put("msg", "success");
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
