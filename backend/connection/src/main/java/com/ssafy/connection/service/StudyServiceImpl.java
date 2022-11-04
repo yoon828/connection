@@ -375,19 +375,33 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
-    public List<User> getStudyUser(Long userId) {
-        List<User> userList = new ArrayList<>();
-        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
-        if(connStudy.isPresent()){
-            Study studyEntity = studyRepository.findByConnStudy(connStudy.get());
-            List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
-            for(ConnStudy conn : connStudyList){
-                userList.add(conn.getUser());
+    @Transactional
+    public Map<String, Object> getStudyMember(long userId) {
+        User userEntity = userRepository.findById(userId).get();
+        ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userEntity.getUserId()).get();
+        Study studyEntity = studyRepository.findByConnStudy(connStudyEntity);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map_sub = new HashMap<>();
+        List<StudyMemberInfoDto> studyMemberInfoList = new ArrayList<>();
+        List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
+
+        for (ConnStudy connStudy : studyMemberList) {
+            long selectUserId = connStudy.getUser().getUserId();
+            User selectUserEntity = userRepository.findById(selectUserId).get();
+            List<SolveStudyMemberStatsDto> solveStudyMemberStatsList = new ArrayList<>();
+            List<SolveStudyMemberStatsInterface> solveStudyMemberStats = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId);
+            studyMemberInfoList.add(new StudyMemberInfoDto(connStudy.getUser().getUserId(), connStudy.getUser().getName()));
+
+            for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : solveStudyMemberStats) {
+                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
             }
-        } else {
-            return null;
+
+            map_sub.put(selectUserEntity.getName(), solveStudyMemberStatsList);
         }
-        return userList;
+        map.put("memberInfo", studyMemberInfoList);
+        map.put("data", map_sub);
+        return map;
     }
 
 }

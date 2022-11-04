@@ -133,11 +133,13 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("temp")
-    public ResponseEntity<Map<String, Object>> temp(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        List<User> userList = studyService.getStudyUser(userPrincipal.getId());
-        List<Subject> totalSubjectList = subjectService.getTotalSubjectList(userPrincipal.getId());
-        Map<String, Integer> subjectCountByMonth = subjectService.getSubjectCountByMonth(totalSubjectList, userList);
-        return null;
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("member")
+    public ResponseEntity<Map<String, Object>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+        long userId = userPrincipal.getId();
+        Map<String, Object> result = studyService.getStudyMember(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
 }

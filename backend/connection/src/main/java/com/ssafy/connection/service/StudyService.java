@@ -25,5 +25,6 @@ public interface StudyService {
 
     Map<String, Object> getStudyRanking();
 
-    List<User> getStudyUser(Long id);
+    Map<String, Object> getStudyMember(long userId);
+
 }
