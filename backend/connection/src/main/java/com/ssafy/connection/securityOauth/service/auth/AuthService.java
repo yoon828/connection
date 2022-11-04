@@ -1,5 +1,6 @@
 package com.ssafy.connection.securityOauth.service.auth;
 
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SolvedacUserDto;
 import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
@@ -58,6 +59,7 @@ public class AuthService {
     private final SolveRepository solveRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
     private WebClient solvedac = WebClient.create("https://solved.ac/api");
+    private WebClient github = WebClient.create("https://solved.ac/api");
 
     @Transactional
     public ResponseEntity whoAmI(UserPrincipal userPrincipal){
@@ -68,7 +70,7 @@ public class AuthService {
 //        ApiResponse apiResponse = ApiResponse.builder().information(userDto).build();
 
 //        return ResponseEntity.ok(userDto);
-        return new ResponseEntity<UserDto>(userDto,HttpStatus.OK);
+        return new ResponseEntity(userDto,HttpStatus.OK);
     }
 
     public ResponseEntity getAuthBoj(String code, String baekjoonId, long userId){
@@ -81,7 +83,7 @@ public class AuthService {
                     .block();
         }
         catch (Exception e){
-            return new ResponseEntity<String>("empty", HttpStatus.CONFLICT);
+            return new ResponseEntity(new ResponseDto("empty"), HttpStatus.CONFLICT);
         }
 
         if(solvedacUserDto.getBio().length() >= code.length()){ //상태메세지가 난수보다 짧음 안 됨
@@ -95,6 +97,7 @@ public class AuthService {
                 user.setEmail(u.getEmail());
                 user.setImageUrl(u.getImageUrl());
                 user.setTier(u.getTier());
+                user.setIsmember(u.isIsmember());
                 user.setPassword(u.getPassword());
                 user.setProvider(u.getProvider());
                 user.setRole(u.getRole());
@@ -103,11 +106,30 @@ public class AuthService {
                 user.setBackjoonId(baekjoonId);
 
                 userRepository.save(user);
-                return new ResponseEntity<String>(solvedacUserDto.getHandle() + " : authentication complete", HttpStatus.OK);
+                return new ResponseEntity(new ResponseDto("success"), HttpStatus.OK);
             }
         }
 
-        return new ResponseEntity<String>("fail", HttpStatus.CONFLICT);
+        return new ResponseEntity(new ResponseDto("fail"), HttpStatus.CONFLICT);
+    }
+
+    public ResponseEntity getAuthGithub(long userId, String githubId){
+        User user = userRepository.getById(userId);
+
+//        try {
+//            solvedacUserDto = solvedac.get()
+//                    .uri("/v3/user/show?handle={baekjoonId}", baekjoonId)
+//                    .retrieve()
+//                    .bodyToMono(SolvedacUserDto.class)
+//                    .block();
+//        }
+//        catch (Exception e){
+//            return new ResponseEntity(new ResponseDto("empty"), HttpStatus.CONFLICT);
+//        }
+
+
+
+        return new ResponseEntity(new ResponseDto("fail"), HttpStatus.CONFLICT);
     }
 
     private boolean valid(String refreshToken){
@@ -158,9 +180,6 @@ public class AuthService {
             userRepository.delete(user.get());
             tokenRepository.delete(token.get());
         }
-
-        
-        //에러핸들링 레포지토리 탈퇴구현 필요
 
         ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원 탈퇴하셨습니다.").build()).build();
 

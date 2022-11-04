@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
 import com.ssafy.connection.service.OrganizationService;
@@ -39,10 +40,8 @@ public class OrganizationController {
             @ApiResponse(code = 404, message = "동의하지 않은 경우")
     })
     @GetMapping
-    public ResponseEntity<String> checkOrganization(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity<ResponseDto> checkOrganization(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         long userId = userPrincipal.getId();
-        organizationService.checkOrganization(userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body("");
+        return organizationService.checkOrganization(userId);
     }
 }
