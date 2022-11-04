@@ -2,6 +2,7 @@ package com.ssafy.connection.securityOauth.controller.auth;
 
 
 import com.ssafy.connection.dto.BaekjoonAuthDto;
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.StudyDto;
 import com.ssafy.connection.securityOauth.advice.payload.ErrorResponse;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
@@ -60,7 +61,7 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "토큰 없거나 잘못됨, 토큰 만료(추가 핸들링 예정)"),
     })
     @GetMapping
-    public ResponseEntity whoAmI(
+    public ResponseEntity<UserDto> whoAmI(
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         if(userPrincipal == null) {
@@ -78,11 +79,26 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "토큰 없음")
     })
     @PostMapping("/baekjoon")
-    public ResponseEntity getAuthBoj(
+    public ResponseEntity<ResponseDto> getAuthBoj(
             @RequestBody BaekjoonAuthDto baekjoonAuthDto
             , @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         ResponseEntity responseEntity = authService.getAuthBoj(baekjoonAuthDto.getCode(), baekjoonAuthDto.getBaekjoonId(), userPrincipal.getId());
+        return responseEntity;
+    }
+
+    @Operation(summary = "깃헙연동확인", description = "깃헙 organization에 초대되었는지 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success : 유저 연동 성공"),
+            @ApiResponse(responseCode = "409", description = "fail : 상태 메세지가 다름<br>" +
+                    "empty : 해당 유저가 없음"),
+            @ApiResponse(responseCode = "401", description = "토큰 없음")
+    })
+    @PostMapping("/github")
+    public ResponseEntity<ResponseDto> getAuthGithub(
+            @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        ResponseEntity responseEntity = authService.getAuthGithub(userPrincipal.getId(), userPrincipal.getGithubId());
         return responseEntity;
     }
 

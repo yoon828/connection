@@ -1,7 +1,9 @@
 package com.ssafy.connection.service;
 
+import org.springframework.http.ResponseEntity;
+
 public interface OrganizationService {
     void joinOrganization(long userId);
 
-    void checkOrganization(long userId);
+    ResponseEntity checkOrganization(long userId);
 }

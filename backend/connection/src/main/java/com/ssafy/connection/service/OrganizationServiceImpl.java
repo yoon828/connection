@@ -2,13 +2,16 @@ package com.ssafy.connection.service;
 
 import com.ssafy.connection.advice.RestException;
 import com.ssafy.connection.dto.GithubUserDto;
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService{
@@ -51,7 +54,47 @@ public class OrganizationServiceImpl implements OrganizationService{
             throw new RuntimeException(e);
         }
     }
+    @Override
+    @Transactional
+    public ResponseEntity checkOrganization(long userId) {
+        User userEntity = userRepository.findById(userId).get(); // 로그인 한 사용자 정보
 
+        try {
+            webClient.get()
+                    .uri("/orgs/{org}/members/{username}", "co-nnection", userEntity.getGithubId())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
+                    .retrieve()
+                    .bodyToMono(void.class)
+                    .block()
+                    ;
+        }
+        catch (WebClientResponseException e){
+            System.out.println(e);
+            if(e.getStatusCode()== HttpStatus.NOT_FOUND) return new ResponseEntity(new ResponseDto("fail"),HttpStatus.CONFLICT);
+        }
+
+        User user = new User();
+        user.setUserId(userEntity.getUserId());
+        user.setName(userEntity.getName());
+        user.setGithubId(userEntity.getGithubId());
+        user.setBackjoonId(userEntity.getBackjoonId());
+        user.setEmail(userEntity.getEmail());
+        user.setImageUrl(userEntity.getImageUrl());
+        user.setTier(userEntity.getTier());
+        user.setIsmember(true);
+        user.setPassword(userEntity.getPassword());
+        user.setProvider(userEntity.getProvider());
+        user.setRole(userEntity.getRole());
+        user.setConnStudy(userEntity.getConnStudy());
+        user.setSolve(userEntity.getSolve());
+
+        try {
+            userRepository.save(user);
+        }catch (Exception e) {return new ResponseEntity(new ResponseDto("empty"),HttpStatus.OK);}
+
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
+/* 우건이형거
     @Override
     @Transactional
     public void checkOrganization(long userId) {
@@ -68,5 +111,5 @@ public class OrganizationServiceImpl implements OrganizationService{
                         throw new RestException(HttpStatus.NOT_FOUND, "Organization join incomplete");
                     }})
                 .block();
-    }
+    }*/
 }

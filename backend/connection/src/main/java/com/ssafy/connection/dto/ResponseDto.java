@@ -11,5 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ResponseDto {
+    @Schema(description = "메세지")
     String msg;
 }
