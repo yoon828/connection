@@ -81,7 +81,7 @@ public class AuthService {
                     .block();
         }
         catch (Exception e){
-            return new ResponseEntity<String>(baekjoonId + " : user not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("empty", HttpStatus.CONFLICT);
         }
 
         if(solvedacUserDto.getBio().length() >= code.length()){ //상태메세지가 난수보다 짧음 안 됨
@@ -107,7 +107,7 @@ public class AuthService {
             }
         }
 
-        return new ResponseEntity<String>(solvedacUserDto.getHandle() + " : cannot find code in bio", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("fail", HttpStatus.CONFLICT);
     }
 
     private boolean valid(String refreshToken){
