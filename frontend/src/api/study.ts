@@ -12,8 +12,28 @@ export const getMyActivity = async () => {
   return res;
 };
 
+// 스터디 탈퇴/추방
+export const quitStudy = async (userId?: number) => {
+  let res;
+  if (userId) res = await api.delete(`/study/quit?user_id=${userId}`);
+  else res = await api.delete(`/study/quit`);
+  return res;
+};
+
+// 스터디 해체
+export const deleteStudy = async () => {
+  const res = await api.delete(`/study`);
+  return res;
+};
+
 // 스터디 랭킹
 export const getRank = async () => {
   const res = await api.get("/study/ranking");
+  return res;
+};
+
+// 스터디 멤버
+export const getMember = async () => {
+  const res = await api.get("/study/member");
   return res;
 };
