@@ -8,7 +8,7 @@ export interface UserInfoType {
   tier: number;
   role: string;
   studyId: number;
-  studyRole: string;
+  studyRole: "USER" | "LEADER" | "MEMBER";
   studyName: string;
   studyRepository: string;
   studyCode: string;
