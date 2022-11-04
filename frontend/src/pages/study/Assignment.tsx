@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-
 import {
   Box,
   Button,
@@ -10,13 +9,13 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
-
 import { useNavigate } from "react-router-dom";
+
 import StudyLayout from "../../components/layout/StudyLayout";
 import BackButton from "../../components/common/BackButton";
 import ProblemSelect from "../../components/common/ProblemSelect/ProblemSelect";
 import SearchModal from "../../components/common/SearchModal";
-import getDate from "../../utils/getDate";
+import { cmpDate, getDate } from "../../utils/getDate";
 import { useAppSelector } from "../../store/hooks";
 import { postSubject } from "../../api/subject";
 
@@ -28,28 +27,20 @@ function Assignment() {
   const toast = useToast();
   const appSelector = useAppSelector(state => state.selectedProblem);
   const navigate = useNavigate();
-  const checkDate = (start: string, end: string) => {
-    if (
-      new Date(start) > new Date(end) ||
-      new Date(start).getTime() / 1000 / 60 / 60 / 24 <
-        Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24)
-    ) {
+
+  const onEndDateChange = (date: string) => {
+    if (cmpDate(startDate, date)) {
       toast({
         title: `날짜를 똑바로 선택해주세요!`,
         position: "top",
         isClosable: true
       });
-      return false;
-    }
-    return true;
-  };
-  const onEndDateChange = (date: string) => {
-    if (!checkDate(startDate, date)) {
       endDateRef?.current?.focus();
       return;
     }
     setEndDate(date);
   };
+
   const submit = async () => {
     if (appSelector.selectedProblemList.length === 0) {
       toast({
