@@ -9,7 +9,7 @@ import Recommend from "../Recommend";
 import StudyJoin from "../StudyJoin";
 import Header from "../Header";
 import StudyWith from "../StudyWith";
-import Collection from "../study/Collecetion";
+import Collection from "../study/Collection.tsx";
 import StudyTotal from "../study/StudyTotal";
 import Assignment from "../study/Assignment";
 import Management from "../study/Management";
