@@ -1,17 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { Problem } from "../../../pages/Recommend";
+import { InitialStateType, ProblemActionType } from "./selectedProblem.type";
 import { getMyWorkbook, getRecommends } from "./selectedProblemThunk";
-
-interface InitialStateType {
-  selectedProblemList: Problem[];
-  recommends: Problem[];
-  showedRecommends: Problem[];
-  myWorkbook: Problem[];
-  showedMyWorkbook: Problem[];
-  selectedTab: number;
-  cnt: number;
-}
 
 const initialState: InitialStateType = {
   selectedProblemList: [],
@@ -33,7 +24,7 @@ export const selectedProblemSlice = createSlice({
   name: "selectedProblem",
   initialState,
   reducers: {
-    addProblem: (state, action) => {
+    addProblem: (state, action: ProblemActionType) => {
       const { problemId } = action.payload.problemInfo;
 
       if (isExist(state.selectedProblemList, problemId)) return;
@@ -46,7 +37,7 @@ export const selectedProblemSlice = createSlice({
       state.showedMyWorkbook = [...filter(state.showedMyWorkbook, problemId)];
       state.cnt = state.selectedProblemList.length;
     },
-    removeProblem: (state, action) => {
+    removeProblem: (state, action: ProblemActionType) => {
       const { problemId } = action.payload.problemInfo;
 
       state.selectedProblemList = [
