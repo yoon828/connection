@@ -3,35 +3,12 @@ import { Box } from "@chakra-ui/react";
 import { QuestionIcon, RepeatIcon } from "@chakra-ui/icons";
 
 import StudyLayout from "../components/layout/StudyLayout";
-import SideComponent from "../components/recommend/SideComponent";
+import SideComponent, {
+  RECOMMEND_TAPS
+} from "../components/recommend/SideComponent";
 import { getRecommend } from "../api/problem";
 import ProblemList from "../components/recommend/ProblemList";
 
-const TABS = [
-  {
-    id: 0,
-    label: "많이 푼 문제",
-    msg: "자주 출제되는 유형 중/다른 사람들이 많이 푼 문제들을 추천해 줄게요. ",
-    category: "popular"
-  },
-  {
-    id: 1,
-    label: "많이 담은 문제",
-    msg: "어떤 문제를 같이 풀지 모르겠어요?/다른 스터디가 문제집에 담아놓은 문제들을 추천해 줄게요. ",
-    category: "workbook"
-  },
-  {
-    id: 2,
-    label: "많이 안 푼 유형",
-    msg: "자주 출제되는 유형 중/많이 안 푼 유형의 문제들을 추천해 줄게요. ",
-    category: "weak"
-  }
-];
-
-export interface Tab {
-  id: number;
-  label: string;
-}
 interface Tag {
   tagId: string;
   en: string;
@@ -90,14 +67,10 @@ function Recommend() {
   return (
     <StudyLayout
       sideComponent={
-        <SideComponent
-          tabs={TABS}
-          selectedTap={selectedTap}
-          onTabClick={onTabClick}
-        />
+        <SideComponent selectedTap={selectedTap} onTabClick={onTabClick} />
       }
-      title={TABS[selectedTap].label}
-      description={TABS[selectedTap].msg}
+      title={RECOMMEND_TAPS[selectedTap].label}
+      description={RECOMMEND_TAPS[selectedTap].msg}
     >
       <RepeatIcon
         w={10}
@@ -110,7 +83,7 @@ function Recommend() {
         _hover={{ transform: "rotate(90deg)" }}
         transition="transform .6s"
       />
-      {TABS[selectedTap].category === "weak" && (
+      {RECOMMEND_TAPS[selectedTap].category === "weak" && (
         <>
           <QuestionIcon
             w={10}
@@ -142,7 +115,7 @@ function Recommend() {
         <ProblemList
           problemList={
             recommends[
-              TABS[selectedTap].category as keyof RecommendsType
+              RECOMMEND_TAPS[selectedTap].category as keyof RecommendsType
             ] as Problem[]
           }
         />
