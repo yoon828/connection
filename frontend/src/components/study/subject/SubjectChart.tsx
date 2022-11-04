@@ -9,12 +9,11 @@ type ChartProps = {
 };
 
 function HomeworkChart({ series, labels }: ChartProps) {
-  const seriess = [2, 4, 5, 5, 6, 4];
   const options: ApexOptions = {
     chart: {
       type: "polarArea"
     },
-    labels: ["김윤민", "김윤민", "김윤민", "김윤민", "김윤민", "김윤민"],
+    labels,
     colors: ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0", "#fc00fd"],
     yaxis: {
       show: false

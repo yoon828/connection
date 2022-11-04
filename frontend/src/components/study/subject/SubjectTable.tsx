@@ -12,7 +12,7 @@ import {
   Tr
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
-import { ProblemProps, UserProps } from "./HomeworkView";
+import { ProblemProps, UserProps } from "./SubjectView";
 
 type HomeworkTableProps = {
   problems: ProblemProps[];

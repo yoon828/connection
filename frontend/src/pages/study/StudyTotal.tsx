@@ -10,13 +10,11 @@ import {
   Image,
   Link,
   Text,
-  Toast,
   useClipboard,
   useColorMode,
   useToast
 } from "@chakra-ui/react";
 import TotalLayout from "../../components/layout/TotalLayout";
-import Homework from "../../components/study/HomeworkView";
 import Ranking from "../../components/study/Ranking";
 import GithubL from "../../asset/img/githubL.svg";
 import GithubD from "../../asset/img/githubD.svg";
@@ -24,6 +22,7 @@ import MyActivity from "../../components/study/MyActivity";
 import Challenge from "../../components/study/Challenge";
 import { useAppSelector } from "../../store/hooks";
 import { UserInfoType } from "../../store/ducks/auth/auth.type";
+import SubjectView from "../../components/study/subject/SubjectView";
 
 function StudyTotal() {
   const { colorMode } = useColorMode();
@@ -97,7 +96,7 @@ function StudyTotal() {
           </TotalLayout>
         </Flex>
         <TotalLayout title="과제 현황" height="300px">
-          <Homework />
+          <SubjectView />
         </TotalLayout>
         <TotalLayout title="내 풀이 현황" height="300px">
           <MyActivity />

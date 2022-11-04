@@ -17,3 +17,9 @@ export const getRank = async () => {
   const res = await api.get("/study/ranking");
   return res;
 };
+
+// 스터디 팀 과제
+export const getSubject = async () => {
+  const res = await api.get("/subject/team");
+  return res;
+};
