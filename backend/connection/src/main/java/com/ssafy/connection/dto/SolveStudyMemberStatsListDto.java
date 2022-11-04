@@ -11,7 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class SolveStudyMemberStatsListDto {
+    private long userId;
+
     private String name;
 
-    private List<SolveStudyMemberStatsDto> trackingDetails = new ArrayList<>();
+    private List<SolveStudyMemberStatsDto> series = new ArrayList<>();
 }

@@ -376,32 +376,36 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public Map<String, Object> getStudyMember(long userId) {
+    public List<SolveStudyMemberStatsListDto> getStudyMember(long userId) {
         User userEntity = userRepository.findById(userId).get();
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userEntity.getUserId()).get();
         Study studyEntity = studyRepository.findByConnStudy(connStudyEntity);
 
-        Map<String, Object> map = new HashMap<>();
+        Map<Object, Object> map = new HashMap<>();
         Map<String, Object> map_sub = new HashMap<>();
         List<StudyMemberInfoDto> studyMemberInfoList = new ArrayList<>();
         List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
+        ArrayList<SolveStudyMemberStatsListDto> result = new ArrayList<>();
+        int num = 1;
 
         for (ConnStudy connStudy : studyMemberList) {
             long selectUserId = connStudy.getUser().getUserId();
             User selectUserEntity = userRepository.findById(selectUserId).get();
             List<SolveStudyMemberStatsDto> solveStudyMemberStatsList = new ArrayList<>();
             List<SolveStudyMemberStatsInterface> solveStudyMemberStats = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId);
-            studyMemberInfoList.add(new StudyMemberInfoDto(connStudy.getUser().getUserId(), connStudy.getUser().getName()));
+            //studyMemberInfoList.add(new StudyMemberInfoDto(connStudy.getUser().getUserId(), connStudy.getUser().getName()));
 
             for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : solveStudyMemberStats) {
                 solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
             }
-
-            map_sub.put(selectUserEntity.getName(), solveStudyMemberStatsList);
+            SolveStudyMemberStatsListDto solveStudyMemberStatsListDto = new SolveStudyMemberStatsListDto(selectUserId, selectUserEntity.getName(), solveStudyMemberStatsList);
+            result.add(solveStudyMemberStatsListDto);
+            //map.put(num++,solveStudyMemberStatsListDto);
+            //map_sub.put(selectUserEntity.getName(), solveStudyMemberStatsList);
         }
-        map.put("memberInfo", studyMemberInfoList);
-        map.put("data", map_sub);
-        return map;
+        //map.put("memberInfo", studyMemberInfoList);
+        //map.put("data", map_sub);
+        return result;
     }
 
 }
