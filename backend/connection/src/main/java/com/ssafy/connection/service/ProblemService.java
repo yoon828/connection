@@ -37,4 +37,6 @@ public interface ProblemService {
     List<Map.Entry<String, Integer>> getUserStat(Long id);
 
     List<UserStatDto> getUserStatList(List<Map.Entry<String, Integer>> userStat);
+
+    Map<Long, Long> getTime(List<Long> problemIdList);
 }

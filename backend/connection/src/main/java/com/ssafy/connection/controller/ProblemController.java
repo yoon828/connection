@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -128,6 +129,17 @@ public class ProblemController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("wrong parameter value"));
         }
         return null;
+    }
+
+    @ApiOperation(value = "문제 풀이 시간 추천")
+    @GetMapping("/time")
+    public ResponseEntity<Map<String, Object>> getTime(@RequestBody Map<String, List<Long>> map){
+        Map<Long, Long> returnList = new HashMap<>();
+        Map<String, Object> returnMap = new HashMap<>();
+        System.out.println(map.get("problemIdList").toString());
+        returnMap.put("time", problemService.getTime((List<Long>) map.get("problemIdList")));
+        returnMap.put("msg", "success");
+        return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
 

@@ -261,6 +261,21 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
+    public Map<Long, Long> getTime(List<Long> problemIdList) {
+        Map<Long, Long> returnMap = new HashMap<>();
+        int baseTime = 40;
+
+        for(Long problemId : problemIdList){
+            Optional<Problem> problem = problemRepository.findById(problemId);
+            if(problem.isPresent()){
+                long difficulty = problem.get().getLevel();
+                returnMap.put(problemId, baseTime + (difficulty * 5));
+            }
+        }
+        return returnMap;
+    }
+
+    @Override
     public List<ProblemReturnDto> getWeakProblemList(List<Entry<String, Integer>> entryList) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
             for(int i = 0; i < 4; i++){

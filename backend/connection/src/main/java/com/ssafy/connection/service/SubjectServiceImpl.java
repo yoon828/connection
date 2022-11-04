@@ -54,9 +54,11 @@ public class SubjectServiceImpl implements SubjectService{
         List<Subject> list = new ArrayList<>();
         List<Long> problemList = subjectDto.getProblemList();
 
+        LocalDateTime now = LocalDateTime.now();
+
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
-            subject.setStart(subjectDto.getStart());
+            subject.setStart(now);
             subject.setDeadline(subjectDto.getDeadline());
             subject.setStudy(study);
             try {
