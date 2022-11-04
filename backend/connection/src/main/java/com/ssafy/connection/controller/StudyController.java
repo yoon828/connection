@@ -3,9 +3,13 @@ package com.ssafy.connection.controller;
 import com.ssafy.connection.dto.SolveStudyStatsDto;
 import com.ssafy.connection.dto.SolveStudyStatsInterface;
 import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.entity.Study;
+import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
+import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.service.StudyService;
+import com.ssafy.connection.service.SubjectService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +25,12 @@ import java.util.Map;
 public class StudyController {
 
     private final StudyService studyService;
+    private final SubjectService subjectService;
 
     @Autowired
-    public StudyController(StudyService studyService) {
+    public StudyController(StudyService studyService, SubjectService subjectService) {
         this.studyService = studyService;
+        this.subjectService = subjectService;
     }
 
     @ApiOperation(value = "스터디 Repository 생성", notes = "study_name을 입력받아 새로운 스터디 생성(Github team&repository)")

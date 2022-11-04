@@ -32,4 +32,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "select count(s.subjcet_id) from subject s where s.study_id =?1 group by s.deadline order by deadline desc;", nativeQuery = true)
     List<Long> getTeamSubjectCount(long studyId);
 
+    @Query(value = "select * from subject where study_id = :studyId order by deadline desc limit 4", nativeQuery = true)
+    List<Subject> findAllByStudyDesc(long studyId);
 }

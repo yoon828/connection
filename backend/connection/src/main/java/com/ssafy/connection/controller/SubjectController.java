@@ -102,7 +102,7 @@ public class SubjectController {
     }
 
     @ApiOperation(value = "내 과제 현황", notes = "유저가 푼 과제 개수, 스터디문제(같이 푼) 개수와 전체 과제개수, 전체 스터디문제 개수를 반환")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Map<String, Object>> getMyStatus(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         Map<String, Object> returnMap = new HashMap<>();
 

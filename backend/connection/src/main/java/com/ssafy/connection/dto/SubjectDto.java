@@ -18,6 +18,7 @@ import java.util.List;
 public class SubjectDto {
     @ApiModelProperty(readOnly = true)
     private long subjectId;
+    private LocalDateTime start;    // 시작일
     private LocalDateTime deadline; // 제출 기한
     private List<Long> problemList;
     @ApiModelProperty(readOnly = true)
