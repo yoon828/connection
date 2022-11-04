@@ -71,28 +71,26 @@ function Assignment() {
         description="스터디원들과 같이 풀 문제와 기간을 설정해주세요."
         bg="bg"
       >
-        <Flex justifyContent="space-between" alignItems="center" mb={8}>
-          <Flex alignItems="center" gap={4}>
-            <Text fontSize="lg" fontWeight="bold" flexShrink={0}>
-              과제 기간
-            </Text>
+        <Style.Container>
+          <Style.Top>
+            <Style.TopText>과제 기간</Style.TopText>
             <Style.DurationInput type="date" value={startDate} readOnly />
-            <Text fontWeight="bold">~</Text>
+            <Style.TopText>~</Style.TopText>
             <Style.DurationInput
               type="date"
               value={endDate}
               onChange={onEndDateChange}
               ref={endDateRef}
             />
-          </Flex>
+          </Style.Top>
           <Style.SearchIconBox onClick={onOpen}>
-            <Search2Icon w={6} h={6} />
+            <Style.SearchIcon />
           </Style.SearchIconBox>
-        </Flex>
+        </Style.Container>
         <ProblemSelect maxCnt={5} />
-        <Box mt={4} ml="auto" w="fit-content">
+        <Style.SubmitBtnBox mt={4} ml="auto" w="fit-content">
           <Style.SubmitBtn onClick={submit}>등록하기</Style.SubmitBtn>
-        </Box>
+        </Style.SubmitBtnBox>
       </StudyLayout>
       <SearchModal isOpen={isOpen} onClose={onClose} maxCnt={5} />
     </>

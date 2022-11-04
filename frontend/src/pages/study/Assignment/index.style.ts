@@ -1,4 +1,35 @@
-import { Box, Button, Input, styled } from "@chakra-ui/react";
+import { Search2Icon } from "@chakra-ui/icons";
+import { Box, Button, Flex, Input, styled, Text } from "@chakra-ui/react";
+
+const Container = styled(Flex, {
+  baseStyle: {
+    justifyContent: "space-between",
+    alignItems: "center",
+    mb: 8
+  }
+});
+
+const Top = styled(Flex, {
+  baseStyle: {
+    alignItems: "center",
+    gap: 4
+  }
+});
+
+const TopText = styled(Text, {
+  baseStyle: {
+    fontSize: "lg",
+    fontWeight: "bold",
+    flexShrink: 0
+  }
+});
+
+const SearchIcon = styled(Search2Icon, {
+  baseStyle: {
+    w: 6,
+    h: 6
+  }
+});
 
 const DurationInput = styled(Input, {
   baseStyle: {
@@ -16,6 +47,14 @@ const SearchIconBox = styled(Box, {
   }
 });
 
+const SubmitBtnBox = styled(Box, {
+  baseStyle: {
+    mt: 4,
+    ml: "auto",
+    w: "fit-content"
+  }
+});
+
 const SubmitBtn = styled(Button, {
   baseStyle: {
     bg: "gra",
@@ -25,7 +64,12 @@ const SubmitBtn = styled(Button, {
 });
 
 export default {
+  Container,
+  Top,
+  TopText,
+  SearchIcon,
   DurationInput,
   SearchIconBox,
+  SubmitBtnBox,
   SubmitBtn
 };
