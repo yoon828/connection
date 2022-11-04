@@ -15,7 +15,8 @@ import { deleteStudy, getMember, quitStudy } from "../../api/study";
 import BackButton from "../../components/common/BackButton";
 import Confirm from "../../components/common/Confirm";
 import StudyLayout from "../../components/layout/StudyLayout";
-import { useAppSelector } from "../../store/hooks";
+import { getUserInfo } from "../../store/ducks/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 interface StatSeriesType {
   date: string;
@@ -93,6 +94,7 @@ function Management() {
     [colorMode]
   );
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [confirmState, setConfirmState] = useState<ConfirmStateType>({
     msg: "",
@@ -123,6 +125,7 @@ function Management() {
         }
         const res = await quitStudy();
         console.log(res);
+        dispatch(getUserInfo());
         navigate("/");
       }
     });
