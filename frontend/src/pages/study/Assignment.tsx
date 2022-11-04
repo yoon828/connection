@@ -33,7 +33,8 @@ function Assignment() {
       toast({
         title: `날짜를 똑바로 선택해주세요!`,
         position: "top",
-        isClosable: true
+        isClosable: true,
+        status: "error"
       });
       endDateRef?.current?.focus();
       return;
@@ -46,7 +47,8 @@ function Assignment() {
       toast({
         title: `문제를 선택해주세요!`,
         position: "top",
-        isClosable: true
+        isClosable: true,
+        status: "error"
       });
       return;
     }
