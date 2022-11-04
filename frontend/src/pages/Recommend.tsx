@@ -44,26 +44,28 @@ function Recommend() {
   const [recommends, setRecommends] = useState<null | RecommendsType>(null);
   const [selectedTap, setSelectedTap] = useState(0);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
   const onTabClick: React.MouseEventHandler<HTMLDivElement> = e => {
     if (e.target instanceof HTMLDivElement && e.target.dataset.id) {
       const targetId = Number(e.target.dataset.id);
       setSelectedTap(targetId);
     }
   };
-  const showTooltip = () => {
-    setTooltipOpen(true);
+
+  const toggleTooltip = () => {
+    setTooltipOpen(prev => !prev);
   };
-  const hideTooltip = () => {
-    setTooltipOpen(false);
-  };
+
   const getAndSetRecommend = async () => {
     const res = await getRecommend();
     setRecommends(res.data);
     console.log(res);
   };
+
   useEffect(() => {
     getAndSetRecommend();
   }, []);
+
   return (
     <StudyLayout
       sideComponent={
@@ -79,7 +81,7 @@ function Recommend() {
         top={120}
         right={12}
         cursor="pointer"
-        onClick={() => getAndSetRecommend()}
+        onClick={getAndSetRecommend}
         _hover={{ transform: "rotate(90deg)" }}
         transition="transform .6s"
       />
@@ -95,8 +97,8 @@ function Recommend() {
             top={10}
             right={12}
             cursor="help"
-            onMouseEnter={showTooltip}
-            onMouseLeave={hideTooltip}
+            onMouseEnter={toggleTooltip}
+            onMouseLeave={toggleTooltip}
           />
           <Box
             position="absolute"
