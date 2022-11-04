@@ -90,7 +90,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
         try {
             userRepository.save(user);
-        }catch (Exception e) {return new ResponseEntity(new ResponseDto("empty"),HttpStatus.OK);}
+        }catch (Exception e) {return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);}
 
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
