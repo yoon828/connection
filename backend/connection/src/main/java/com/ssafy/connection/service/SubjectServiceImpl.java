@@ -8,11 +8,14 @@ import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
+import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -30,15 +33,20 @@ public class SubjectServiceImpl implements SubjectService{
     private final ConnStudyRepository  connStudyRepository;
     private final UserRepository userRepository;
     private final SolveRepository solveRepository;
+    private final TokenRepository tokenRepository;
+
+    private WebClient webClient = WebClient.create("https://api.github.com");
+
 
     public SubjectServiceImpl(SubjectRepository subjectRepository, StudyRepository studyRepository, ProblemRepository problemRepository,
-                              ConnStudyRepository connStudyRepository, UserRepository userRepository, SolveRepository solveRepository){
+                              ConnStudyRepository connStudyRepository, UserRepository userRepository, SolveRepository solveRepository, TokenRepository tokenRepository){
         this.subjectRepository = subjectRepository;
         this.studyRepository = studyRepository;
         this.problemRepository = problemRepository;
         this.connStudyRepository = connStudyRepository;
         this.userRepository = userRepository;
         this.solveRepository = solveRepository;
+        this.tokenRepository = tokenRepository;
     }
 
 //    @Override
@@ -237,4 +245,36 @@ public class SubjectServiceImpl implements SubjectService{
 
         return null;
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity submitSubject(Long userId){
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
+        long studyId = connStudy.get().getStudy().getStudyId();
+        String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
+        String githubId = connStudy.get().getUser().getGithubId();
+        String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
+
+        System.out.println(githubToken);
+
+        String createFileRequest = "{\"message\":\"" + "메세지" + "\"," +
+                "\"content\":\""+ "bXkgbmV3IGZpbGUgY29udGVudHM=" +"\"}";
+
+        try {
+            webClient.put()
+                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, githubId, "test.md")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(createFileRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.OK);
+        }
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
+
 }

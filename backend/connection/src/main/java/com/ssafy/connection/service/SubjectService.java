@@ -14,4 +14,5 @@ public interface SubjectService {
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
     List<Subject> getTotalSubjectList(Long userId);
     Map<String, Integer> getSubjectCountByMonth(List<Subject> totalSubjectList, List<User> userList);
+    ResponseEntity submitSubject(Long userId);
 }

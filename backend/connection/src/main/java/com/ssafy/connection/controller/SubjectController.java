@@ -113,4 +113,12 @@ public class SubjectController {
 
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
+
+    @ApiOperation(value = "과제 제출 개발중", notes = "")
+    @ApiResponse(responseCode = "200", description = "success : 성공<br>" +
+            "example : <br>")
+    @PostMapping("/submit")
+    public ResponseEntity submitSubject(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        return subjectService.submitSubject(userPrincipal.getId());
+    }
 }
