@@ -56,7 +56,7 @@ public class AuthController {
             "}")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class) ) } ),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+        @ApiResponse(responseCode = "409", description = "잘못된 요청", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
         @ApiResponse(responseCode = "401", description = "토큰 없거나 잘못됨, 토큰 만료(추가 핸들링 예정)"),
     })
     @GetMapping
@@ -73,9 +73,9 @@ public class AuthController {
     @Operation(summary = "백준연동확인", description = "백준 아이디와 프론트에서 생성한 난수를 보내주세요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 연동 성공"),
-            @ApiResponse(responseCode = "400", description = "상태 메세지가 다름"),
-            @ApiResponse(responseCode = "401", description = "토큰 없음"),
-            @ApiResponse(responseCode = "404", description = "해당 유저가 없음"),
+            @ApiResponse(responseCode = "409", description = "fail : 상태 메세지가 다름<br>" +
+                                                            "empty : 해당 유저가 없음"),
+            @ApiResponse(responseCode = "401", description = "토큰 없음")
     })
     @PostMapping("/baekjoon")
     public ResponseEntity getAuthBoj(
