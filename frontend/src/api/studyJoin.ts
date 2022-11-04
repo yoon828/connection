@@ -14,11 +14,35 @@ export interface GetStudyInfoRes {
   studyRepository: string;
 }
 
+export interface createStudyRes {
+  studyId: number;
+  studyName: string;
+  studyRepository: string;
+  studyCode: string;
+}
+
 export const createStudy = async (
+  name: string
+): Promise<
+  AxiosResponse<createStudyRes, null> | AxiosError<ErrMsgTpye, null>
+> => {
+  try {
+    const res = await api.post(`/study?study_name=${name}`);
+    return res;
+  } catch (error) {
+    const e = error as AxiosError | Error;
+    if (axios.isAxiosError(e)) {
+      return e;
+    }
+    throw e;
+  }
+};
+
+export const dupliChkStudy = async (
   name: string
 ): Promise<AxiosResponse<string, null> | AxiosError<ErrMsgTpye, null>> => {
   try {
-    const res = await api.post(`/study?study_name=${name}`);
+    const res = await api.get(`/study?study_name=${name}`);
     return res;
   } catch (error) {
     const e = error as AxiosError | Error;
