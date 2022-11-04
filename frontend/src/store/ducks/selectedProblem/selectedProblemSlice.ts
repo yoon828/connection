@@ -77,15 +77,7 @@ export const selectedProblemSlice = createSlice({
         state.showedMyWorkbook = [myWorkbookItem, ...state.showedMyWorkbook];
       state.cnt = state.selectedProblemList.length;
     },
-    reset: state => {
-      state.selectedProblemList = [];
-      state.recommends = [];
-      state.showedRecommends = [];
-      state.myWorkbook = [];
-      state.showedMyWorkbook = [];
-      state.selectedTab = 0;
-      state.cnt = 0;
-    }
+    reset: () => initialState
   },
   extraReducers: builder => {
     builder.addCase(getRecommends.fulfilled, (state, { payload }) => {
