@@ -1,5 +1,6 @@
 package com.ssafy.connection.repository;
 
+import com.ssafy.connection.dto.SolveStudyMemberStatsInterface;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,4 +37,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "select * from subject where study_id = :studyId order by deadline desc limit 4", nativeQuery = true)
     List<Subject> findAllByStudyDesc(long studyId);
+
+    @Query(value = "SELECT DATE_FORMAT(s.deadline, '%Y-%m-01') AS date, COUNT(s.deadline) AS count FROM subject s WHERE s.study_id =?1 GROUP BY DATE;", nativeQuery = true)
+    List<SolveStudyMemberStatsInterface> findStudySubject(long studyId);
 }
