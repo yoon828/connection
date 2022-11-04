@@ -34,39 +34,34 @@ export const selectedProblemSlice = createSlice({
   initialState,
   reducers: {
     addProblem: (state, action) => {
-      if (
-        isExist(state.selectedProblemList, action.payload.problemInfo.problemId)
-      )
-        return;
+      const { problemId } = action.payload.problemInfo;
+
+      if (isExist(state.selectedProblemList, problemId)) return;
+
       state.selectedProblemList = [
         ...state.selectedProblemList,
         action.payload
       ];
-      state.showedRecommends = [
-        ...filter(state.showedRecommends, action.payload.problemInfo.problemId)
-      ];
-      state.showedMyWorkbook = [
-        ...filter(state.showedMyWorkbook, action.payload.problemInfo.problemId)
-      ];
+      state.showedRecommends = [...filter(state.showedRecommends, problemId)];
+      state.showedMyWorkbook = [...filter(state.showedMyWorkbook, problemId)];
       state.cnt = state.selectedProblemList.length;
     },
     removeProblem: (state, action) => {
+      const { problemId } = action.payload.problemInfo;
+
       state.selectedProblemList = [
-        ...filter(
-          state.selectedProblemList,
-          action.payload.problemInfo.problemId
-        )
+        ...filter(state.selectedProblemList, problemId)
       ];
+
       const recommendItem = state.recommends.find(
-        problem =>
-          problem.problemInfo.problemId === action.payload.problemInfo.problemId
-      );
-      const myWorkbookItem = state.myWorkbook.find(
-        problem =>
-          problem.problemInfo.problemId === action.payload.problemInfo.problemId
+        problem => problem.problemInfo.problemId === problemId
       );
       if (recommendItem)
         state.showedRecommends = [recommendItem, ...state.showedRecommends];
+
+      const myWorkbookItem = state.myWorkbook.find(
+        problem => problem.problemInfo.problemId === problemId
+      );
       if (myWorkbookItem)
         state.showedMyWorkbook = [myWorkbookItem, ...state.showedMyWorkbook];
       state.cnt = state.selectedProblemList.length;
