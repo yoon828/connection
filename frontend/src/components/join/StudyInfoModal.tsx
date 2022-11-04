@@ -64,7 +64,14 @@ function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
     }
 
     if (!axios.isAxiosError(res)) {
-      dispatch(updateUserInfo({ studyCode: studyInfo.studyCode }));
+      dispatch(
+        updateUserInfo({
+          studyCode: studyInfo.studyCode,
+          studyId: studyInfo.studyId,
+          studyRepository: studyInfo.studyRepository,
+          studyName: studyInfo.studyName
+        })
+      );
       navigator("/study", { replace: true });
     }
   };

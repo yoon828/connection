@@ -14,7 +14,7 @@ const initialState: InitialStateType = {
     tier: 0,
     role: "",
     studyId: 0,
-    studyRole: "",
+    studyRole: "USER",
     studyName: "",
     studyRepository: "",
     studyCode: "",
