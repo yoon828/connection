@@ -391,27 +391,67 @@ public class StudyServiceImpl implements StudyService {
         List<StudyMemberInfoDto> studyMemberInfoList = new ArrayList<>();
         List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
         ArrayList<SolveStudyMemberStatsListDto> result = new ArrayList<>();
-        int num = 1;
+        //int num = 1;
         //////////////////////
-        ////////////subjectRepository.findStudySubject(studyEntity.getStudyId());
+        Map<String, SubjectStudyStatsDto> studySubjectStatsMap = new HashMap<>();
+        Map<String, SubjectStudyStatsDto> studyProblemStatsMap = new HashMap<>();
+
+        List<SolveStudyMemberStatsInterface> studySubjectStats = subjectRepository.findStudySubject(studyEntity.getStudyId());
+        for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : studySubjectStats) {
+            studySubjectStatsMap.put(solveStudyMemberStatsInterface.getDate().toString(), new SubjectStudyStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
+        }
+        List<SolveStudyMemberStatsInterface> studyProblemStats = solveRepository.findStudyProblem(studyEntity.getStudyId());
+        for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : studyProblemStats) {
+            studyProblemStatsMap.put(solveStudyMemberStatsInterface.getDate().toString(), new SubjectStudyStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
+        }
         ////////////////////
         for (ConnStudy connStudy : studyMemberList) {
             long selectUserId = connStudy.getUser().getUserId();
             User selectUserEntity = userRepository.findById(selectUserId).get();
             List<SolveStudyMemberStatsDto> solveStudyMemberStatsList = new ArrayList<>();
             List<SolveStudyMemberStatsInterface> solveStudyMemberStats = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId);
-            //studyMemberInfoList.add(new StudyMemberInfoDto(connStudy.getUser().getUserId(), connStudy.getUser().getName()));
 
             for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : solveStudyMemberStats) {
-                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
+                SubjectStudyStatsDto subjectStudyStatsDto = null;
+                SubjectStudyStatsDto studyProblemStatsDto = null;
+
+                if (studySubjectStatsMap.containsKey(solveStudyMemberStatsInterface.getDate().toString())) {
+                    subjectStudyStatsDto = studySubjectStatsMap.get(solveStudyMemberStatsInterface.getDate().toString());
+                }
+                else { // DB에 더미 데이터 떄문에 사용한거라 실제는 필요 없을듯!
+                    subjectStudyStatsDto = new SubjectStudyStatsDto(LocalDate.now(), 0);
+                }
+                if (studyProblemStatsMap.containsKey(solveStudyMemberStatsInterface.getDate().toString())) {
+                    studyProblemStatsDto = studyProblemStatsMap.get(solveStudyMemberStatsInterface.getDate().toString());
+                }
+                else { // DB에 더미 데이터 떄문에 사용한거라 실제는 필요 없을듯!
+                    studyProblemStatsDto = new SubjectStudyStatsDto(LocalDate.now(), 0);
+                }
+
+                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount(), subjectStudyStatsDto.getCount()+studyProblemStatsDto.getCount()));
+            }
+
+            for (String key : studySubjectStatsMap.keySet()) {
+                boolean check= false;
+                for (int i=0; i<solveStudyMemberStatsList.size(); i++) {
+                    System.out.println(key+"/////////////////////////"+solveStudyMemberStatsList.get(i).getDate().toString());
+                    if(key.equals(solveStudyMemberStatsList.get(i).getDate().toString())) {
+                        System.out.println("건너뜀");
+                        check = true;
+                        break;
+                    }
+                }
+                System.out.println("key값 ::::::::::::::"+key);
+
+                if (!check) {
+                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(studySubjectStatsMap.get(key).getDate(), 0, studySubjectStatsMap.get(key).getCount()));
+                }
             }
             SolveStudyMemberStatsListDto solveStudyMemberStatsListDto = new SolveStudyMemberStatsListDto(selectUserId, selectUserEntity.getName(), solveStudyMemberStatsList);
             result.add(solveStudyMemberStatsListDto);
-            //map.put(num++,solveStudyMemberStatsListDto);
-            //map_sub.put(selectUserEntity.getName(), solveStudyMemberStatsList);
+
         }
-        //map.put("memberInfo", studyMemberInfoList);
-        //map.put("data", map_sub);
+
         return result;
     }
 

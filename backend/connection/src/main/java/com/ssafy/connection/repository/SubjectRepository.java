@@ -38,6 +38,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "select * from subject where study_id = :studyId order by deadline desc limit 4", nativeQuery = true)
     List<Subject> findAllByStudyDesc(long studyId);
 
-    @Query(value = "SELECT DATE_FORMAT(s.deadline, '%Y-%m-01') AS date, COUNT(s.deadline) AS count FROM subject s WHERE s.study_id =?1 GROUP BY DATE;", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(s.deadline, '%Y-%m-01') AS date, COUNT(s.deadline) AS count FROM subject s WHERE s.study_id =?1 AND s.deadline BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY DATE;", nativeQuery = true)
     List<SolveStudyMemberStatsInterface> findStudySubject(long studyId);
 }

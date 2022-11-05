@@ -33,4 +33,7 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
     List<SolveStudyMemberStatsInterface> findStudyMember(long studyId, long userId);
 
     void deleteAllByUser(User user);
+
+    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count  FROM solve s LEFT OUTER JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id=?1 AND s.status =1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY date;", nativeQuery = true) // 스터디에서 함께 푼 문제
+    List<SolveStudyMemberStatsInterface> findStudyProblem(long studyId);
 }
