@@ -186,6 +186,32 @@ public class AuthService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @Transactional
+    public ResponseEntity joinOrQuitOrganization(String githubId, boolean joq){
+        Optional<User> optionalUser = userRepository.findByGithubId(githubId);
+        if(!optionalUser.isPresent()) return new ResponseEntity(new ResponseDto("empty"), HttpStatus.CONFLICT);
+
+        User u = optionalUser.get();
+        User user = new User();
+        user.setUserId(u.getUserId());
+        user.setName(u.getName());
+        user.setGithubId(u.getGithubId());
+        user.setBackjoonId(u.getBackjoonId());
+        user.setEmail(u.getEmail());
+        user.setImageUrl(u.getImageUrl());
+        user.setTier(u.getTier());
+        user.setIsmember(joq);
+        user.setPassword(u.getPassword());
+        user.setProvider(u.getProvider());
+        user.setRole(u.getRole());
+        user.setConnStudy(u.getConnStudy());
+        user.setSolve(u.getSolve());
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ResponseDto("success"));
+    }
+
 //    public ResponseEntity<?> modify(UserPrincipal userPrincipal, ChangePasswordRequest passwordChangeRequest){
 //        Optional<User> user = userRepository.findById(userPrincipal.getId());
 //        boolean passwordCheck = passwordEncoder.matches(passwordChangeRequest.getOldPassword(),user.get().getPassword());
