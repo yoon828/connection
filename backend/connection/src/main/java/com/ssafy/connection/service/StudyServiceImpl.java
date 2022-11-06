@@ -326,7 +326,7 @@ public class StudyServiceImpl implements StudyService {
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
         List<SolveStudyDto> solveStudyList = new ArrayList<>();
-        List<SolveStudyInterface> solveStudy = solveRepository.findByStudyStreak(studyEntity.getStudyId());
+        List<SolveStudyInterface> solveStudy = solveRepository.findStudyStreakByStudyId(studyEntity.getStudyId());
         Map<String, Object> map = new HashMap<>();
 
         for (SolveStudyInterface solveStudyInterface : solveStudy) {
@@ -396,13 +396,13 @@ public class StudyServiceImpl implements StudyService {
         }
 
         Map<String, GetDateAndCountDto> studyProblemMap = new HashMap<>(); // 월별 스터디 함께 푼 문제 수 정보 저장
-        List<GetDateAndCountInterface> studyProblem = solveRepository.findStudyProblem(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
+        List<GetDateAndCountInterface> studyProblem = solveRepository.findStudyProblemByStudyId(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
         for (GetDateAndCountInterface getDateAndCountInterface : studyProblem) {
             studyProblemMap.put(getDateAndCountInterface.getDate().toString(), new GetDateAndCountDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount()));
         }
 
         Map<String, GetDateAndCountFloatDto> studyAvgSolveMap = new HashMap<>(); // 월별 스터디원 평균 해결 문제 수 정보 저장
-        List<GetDateAndCountFloatInterface> studyAvgSolve = solveRepository.findStudyAvgSolve(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
+        List<GetDateAndCountFloatInterface> studyAvgSolve = solveRepository.findStudyAvgSolveByStudyId(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
         for (GetDateAndCountFloatInterface getDateAndCountFloatInterface : studyAvgSolve) {
             studyAvgSolveMap.put(getDateAndCountFloatInterface.getDate().toString(), new GetDateAndCountFloatDto(getDateAndCountFloatInterface.getDate(), getDateAndCountFloatInterface.getCount()));
         }
@@ -412,7 +412,7 @@ public class StudyServiceImpl implements StudyService {
             User selectUserEntity = userRepository.findById(selectUserId).get(); // 현재 스터디원 정보
 
             List<SolveStudyMemberDto> solveStudyMemberList = new ArrayList<>(); // 월별 스터디원 문제풀이 현황 정보 저장
-            List<GetDateAndCountInterface> solveStudyMember = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId); // DB에서 월별 스터디원 문제풀이 현황 정보 가져오기
+            List<GetDateAndCountInterface> solveStudyMember = solveRepository.findStudyMemberRecordByStudyIdAndUserId(studyEntity.getStudyId(), selectUserId); // DB에서 월별 스터디원 문제풀이 현황 정보 가져오기
 
             for (GetDateAndCountInterface getDateAndCountInterface : solveStudyMember) {
                 // 월별 Total 갯수 구하기 위한 logic

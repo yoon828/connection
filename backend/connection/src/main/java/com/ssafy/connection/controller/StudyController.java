@@ -119,7 +119,7 @@ public class StudyController {
             @ApiResponse(code = 400, message = "탈퇴 or 추방하려는 회원의 정보가 없거나 / 참여중인 스터디가 없거나 / 해당 스터디원이 아니거나 / (추방시킬 때) 스터디장이 아닌 경우 경우")
     })
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "user_id", value = "추방하려는 사용자id", required = false)
+            @ApiImplicitParam(name = "user_id", value = "추방하려는 사용자id(본인 탈퇴시 null값)", required = false)
     })
     @DeleteMapping("/quit")
     public ResponseEntity<String> quitStudy(@RequestParam(value = "user_id", required = false) Long quitUserId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
@@ -141,7 +141,10 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "", notes = "")
+    @ApiOperation(value = "스터디 랭킹", notes = "각 스터디의 랭킹 정보 반환")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공")
+    })
     @GetMapping("ranking")
     public ResponseEntity<Map<String, Object>> getStudyRanking(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
@@ -150,7 +153,10 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "", notes = "")
+    @ApiOperation(value = "스터디원 활동 현황", notes = "현재 참가한 스터디의 스터디원별 활동 현황 반환")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공")
+    })
     @GetMapping("member")
     public ResponseEntity<List<SolveStudyMemberListDto>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
