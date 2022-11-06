@@ -1,25 +1,11 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
-import { Link as ReactLink } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Center,
-  Container,
-  Flex,
-  Link,
-  Text
-} from "@chakra-ui/react";
 import { v4 } from "uuid";
-import AliceCarousel from "react-alice-carousel";
-import Slider, { Settings } from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { getSubject } from "../../../api/study";
 import { useAppSelector } from "../../../store/hooks";
 import Subject from "./Subject";
 import NoSubject from "./NoSubject";
-import { SampleNextArrow, SamplePrevArrow } from "./Button";
+import SliderLayout from "../../layout/SliderLayout";
 
 export type ProblemProps = {
   problem_id: number;
@@ -41,7 +27,6 @@ export type SubjectProps = {
 function SubjectkView() {
   const studyRole = useAppSelector(state => state.auth.information.studyRole);
   const [isProgress, setIsProgress] = useState(false);
-  const [lastIdx, setLastIdx] = useState(0);
   const [subjectList, setSubjectList] = useState<SubjectProps[]>([]);
 
   const getSubjectApi = async () => {
@@ -56,41 +41,11 @@ function SubjectkView() {
     getSubjectApi();
   }, []);
 
-  useEffect(() => {
-    setLastIdx(subjectList.length + 1);
-  }, [subjectList]);
-
-  const settings: Settings = {
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    initialSlide: lastIdx,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />
-  };
-  const items = [
-    <div className="item" data-value="1">
-      1
-    </div>,
-    <div className="item" data-value="2">
-      2
-    </div>,
-    <div className="item" data-value="3">
-      3
-    </div>,
-    <div className="item" data-value="4">
-      4
-    </div>,
-    <div className="item" data-value="5">
-      5
-    </div>
-  ];
-
-  return (
-    <Flex w="100%" h="100%" flexDir="column" p="0 35px" justifyContent="center">
-      <AliceCarousel mouseTracking items={items} controlsStrategy="alternate" />
-      {/* <Slider {...settings}>
+  if (subjectList.length !== 0) {
+    return (
+      <SliderLayout
+        total={isProgress ? subjectList.length - 1 : subjectList.length}
+      >
         {subjectList.map(subject => {
           return (
             <Subject
@@ -102,9 +57,10 @@ function SubjectkView() {
           );
         })}
         {!isProgress && <NoSubject studyRole={studyRole} />}
-      </Slider> */}
-    </Flex>
-  );
+      </SliderLayout>
+    );
+  }
+  return <> </>;
 }
 
 export default SubjectkView;

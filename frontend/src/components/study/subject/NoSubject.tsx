@@ -8,8 +8,8 @@ type NoSubjectProps = {
 
 function NoSubject({ studyRole }: NoSubjectProps) {
   return (
-    <Center h="280px">
-      {studyRole !== "LEADER" ? (
+    <Center w="100%" flex="none">
+      {studyRole === "LEADER" ? (
         <Center flexDir="column">
           새로운 과제를 등록해주세요😀
           <Link as={ReactLink} to="/study/assignment" _hover={{}} mt="6px">
@@ -19,7 +19,7 @@ function NoSubject({ studyRole }: NoSubjectProps) {
           </Link>
         </Center>
       ) : (
-        <Box
+        <Center
           as="span"
           bg="sub"
           p="10px 20px"
@@ -27,7 +27,7 @@ function NoSubject({ studyRole }: NoSubjectProps) {
           boxShadow="md"
         >
           등록된 과제가 없어요😥
-        </Box>
+        </Center>
       )}
     </Center>
   );

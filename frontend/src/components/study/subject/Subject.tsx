@@ -19,7 +19,7 @@ function Subject({ problems, users, deadline }: SubjectProps) {
   }, []);
 
   return (
-    <Flex w="100%" flexDir="column">
+    <Flex w="100%" flexDir="column" flex="none" p="6px 30px">
       <Flex m="12px" fontSize="14px" flexDir="column">
         <Text fontWeight="bold" mb="5px">
           총 문제수 : {problems.length}문제
