@@ -10,10 +10,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SubjectStudyStatsDto {
+public class GetDateAndCountFloatDto {
     //@DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM", timezone = "Asia/Seoul")
     private LocalDate date;
 
-    private long count;
+    private float count;
 }

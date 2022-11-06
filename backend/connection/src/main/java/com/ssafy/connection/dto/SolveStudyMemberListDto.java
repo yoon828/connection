@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SolveStudyMemberStatsListDto {
+public class SolveStudyMemberListDto {
     private long userId;
 
     private String name;
 
-    private List<SolveStudyMemberStatsDto> series = new ArrayList<>();
+    private List<SolveStudyMemberDto> series = new ArrayList<>();
 }

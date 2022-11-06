@@ -1,6 +1,6 @@
 package com.ssafy.connection.repository;
 
-import com.ssafy.connection.dto.SolveStudyMemberStatsInterface;
+import com.ssafy.connection.dto.GetDateAndCountInterface;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,5 +39,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findAllByStudyDesc(long studyId);
 
     @Query(value = "SELECT DATE_FORMAT(s.deadline, '%Y-%m-01') AS date, COUNT(s.deadline) AS count FROM subject s WHERE s.study_id =?1 AND s.deadline BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY DATE;", nativeQuery = true)
-    List<SolveStudyMemberStatsInterface> findStudySubject(long studyId);
+    List<GetDateAndCountInterface> findStudySubject(long studyId);
 }

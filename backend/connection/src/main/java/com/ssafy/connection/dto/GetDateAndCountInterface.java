@@ -1,9 +1,8 @@
 package com.ssafy.connection.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public interface SolveStudyStatsInterface {
+public interface GetDateAndCountInterface {
     LocalDate getDate();
     Long getCount();
 }
