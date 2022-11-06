@@ -55,11 +55,13 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = userOptional.get();
             DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
             user = updateExistingUser(user, oAuth2UserInfo);
-            if(!user.isIsmember()){
-                ResponseEntity responseEntity = organizationService.checkOrganization(user.getUserId());
-                if(!responseEntity.getStatusCode().equals(HttpStatus.OK))
-                    organizationService.joinOrganization(user.getUserId());
-            }
+
+//            멤버여부 동기화 이제 필요없음 웹훅덕분에
+//            if(!user.isIsmember()){
+//                ResponseEntity responseEntity = organizationService.checkOrganization(user.getUserId());
+//                if(!responseEntity.getStatusCode().equals(HttpStatus.OK))
+//                    organizationService.joinOrganization(user.getUserId());
+//            }
 
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
