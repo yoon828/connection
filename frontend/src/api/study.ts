@@ -35,6 +35,7 @@ export const getRank = async () => {
 // 스터디 멤버
 export const getMember = async () => {
   const res = await api.get("/study/member");
+  return res;
 };
 
 // 스터디 팀 과제
