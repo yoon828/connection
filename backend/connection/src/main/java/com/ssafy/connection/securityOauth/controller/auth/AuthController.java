@@ -25,11 +25,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Tag(name = "Authorization", description = "Authorization API")
 @RequiredArgsConstructor
@@ -112,6 +114,34 @@ public class AuthController {
         @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ){
         return authService.delete(userPrincipal);
+    }
+
+    @Operation(summary = "webhook api테스트중", description = "webhook.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "409", description = "유저 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    @PostMapping(value = "/webhook")
+    public ResponseEntity<?> webhook(@RequestBody Map<String, Object> map){
+        System.out.println(map);
+        System.out.println(map.get("action"));
+
+        if(map.get("action").equals("member_added")){
+            Map<String, Object> membership = (Map<String, Object>)(map.get("membership"));
+            Map<String, Object> user = (Map<String, Object>)membership.get("user");
+            String login = user.get("login").toString();
+            System.out.println("누구세요" + login);
+            authService.joinOrQuitOrganization(login, true);
+        }
+        else if(map.get("action").equals("member_removed")){
+            Map<String, Object> membership = (Map<String, Object>)(map.get("membership"));
+            Map<String, Object> user = (Map<String, Object>)membership.get("user");
+            String login = user.get("login").toString();
+            System.out.println("잘가세요" + login);
+            authService.joinOrQuitOrganization(login, false);
+        }
+
+        return new ResponseEntity(new ResponseDto("webhook ok"), HttpStatus.OK);
     }
 
 //    @Operation(summary = "유저 정보 갱신", description = "현제 접속된 유저의 비밀번호를 새로 지정합니다.")
