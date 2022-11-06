@@ -1,8 +1,8 @@
-import { Button, ButtonGroup, Center, Highlight, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup, Center } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useAppSelector } from "../../store/hooks";
-import NextBtn from "./NextBtn";
-import ViewTitle from "./ViewTitle";
+import { useAppSelector } from "../../../store/hooks";
+import NextBtn from "../NextBtn";
+import ViewTitle from "../ViewTitle";
 
 type NumberSetViewProps = {
   onBtnClick: () => void;
