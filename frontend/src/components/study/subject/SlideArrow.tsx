@@ -15,8 +15,9 @@ export default function SlideArrow({
   return (
     <Button
       onClick={onClick}
-      style={{ all: "unset" }}
-      cursor={isDisabled ? "default" : "pointer"}
+      w="30px"
+      style={{ background: "none" }}
+      cursor={isDisabled ? "pointer" : "pointer"}
       disabled={isDisabled}
     >
       <Icon
