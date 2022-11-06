@@ -1,11 +1,8 @@
 package com.ssafy.connection.controller;
 
 import com.ssafy.connection.dto.*;
-import com.ssafy.connection.entity.Study;
-import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
-import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.service.StudyService;
 import com.ssafy.connection.service.SubjectService;
 import io.swagger.annotations.*;
@@ -155,9 +152,9 @@ public class StudyController {
 
     @ApiOperation(value = "", notes = "")
     @GetMapping("member")
-    public ResponseEntity<List<SolveStudyMemberStatsListDto>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
+    public ResponseEntity<List<SolveStudyMemberListDto>> getStudyMember(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) {
         long userId = userPrincipal.getId();
-        List<SolveStudyMemberStatsListDto> result = studyService.getStudyMember(userId);
+        List<SolveStudyMemberListDto> result = studyService.getStudyMember(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

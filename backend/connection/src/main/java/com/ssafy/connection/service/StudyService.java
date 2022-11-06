@@ -1,7 +1,6 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.*;
-import com.ssafy.connection.securityOauth.domain.entity.user.User;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ public interface StudyService {
 
     Map<String, Object> getStudyRanking();
 
-    List<SolveStudyMemberStatsListDto> getStudyMember(long userId);
+    List<SolveStudyMemberListDto> getStudyMember(long userId);
 
     void ckeckStudy(long userId, String studyName);
 

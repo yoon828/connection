@@ -325,12 +325,12 @@ public class StudyServiceImpl implements StudyService {
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userId).get();
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
 
-        List<SolveStudyStatsDto> solveStudyStatsList = new ArrayList<>();
-        List<SolveStudyStatsInterface> solveStudyStats = solveRepository.findByStudyStreak(studyEntity.getStudyId());
+        List<SolveStudyDto> solveStudyList = new ArrayList<>();
+        List<SolveStudyInterface> solveStudy = solveRepository.findByStudyStreak(studyEntity.getStudyId());
         Map<String, Object> map = new HashMap<>();
 
-        for (SolveStudyStatsInterface solveStudyStatsInterface : solveStudyStats) {
-            solveStudyStatsList.add(new SolveStudyStatsDto(solveStudyStatsInterface.getDate(), solveStudyStatsInterface.getCount()));
+        for (SolveStudyInterface solveStudyInterface : solveStudy) {
+            solveStudyList.add(new SolveStudyDto(solveStudyInterface.getDate(), solveStudyInterface.getCount()));
         }
 
         LocalDate endDate = LocalDate.now();
@@ -340,7 +340,7 @@ public class StudyServiceImpl implements StudyService {
         map.put("studyPersonnel", studyEntity.getStudyPersonnel());
         map.put("startDate", startDate.format(formatter));
         map.put("endDate", endDate.format(formatter));
-        map.put("data", solveStudyStatsList);
+        map.put("data", solveStudyList);
 
         return map;
     }
@@ -357,10 +357,10 @@ public class StudyServiceImpl implements StudyService {
         int add = 0;
         int beforeScore = 0;
 
-        for (StudyRankingInterface studyStatsInterface : studyRanking) {
-            StudyRankingDto studyRankingDto = new StudyRankingDto(studyStatsInterface.getStudyName(), studyStatsInterface.getStudyId(), studyStatsInterface.getStudyScore(), studyStatsInterface.getHomeworkScore(), studyStatsInterface.getTotalScore(), ranking + add, studyStatsInterface.getStudyRepository());
+        for (StudyRankingInterface studyInterface : studyRanking) {
+            StudyRankingDto studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking + add, studyInterface.getStudyRepository());
 
-            if (beforeScore != studyStatsInterface.getTotalScore()) {
+            if (beforeScore != studyInterface.getTotalScore()) {
                 ranking++;
                 studyRankingDto.setRanking(ranking + add);
                 add = 0;
@@ -370,7 +370,7 @@ public class StudyServiceImpl implements StudyService {
                 add++;
             }
 
-            beforeScore = studyStatsInterface.getTotalScore();
+            beforeScore = studyInterface.getTotalScore();
             studyRankingList.add(studyRankingDto);
         }
 
@@ -381,75 +381,94 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public List<SolveStudyMemberStatsListDto> getStudyMember(long userId) {
+    public List<SolveStudyMemberListDto> getStudyMember(long userId) {
         User userEntity = userRepository.findById(userId).get();
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserId(userEntity.getUserId()).get();
         Study studyEntity = studyRepository.findByConnStudy(connStudyEntity);
 
-        Map<Object, Object> map = new HashMap<>();
-        Map<String, Object> map_sub = new HashMap<>();
-        List<StudyMemberInfoDto> studyMemberInfoList = new ArrayList<>();
-        List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
-        ArrayList<SolveStudyMemberStatsListDto> result = new ArrayList<>();
-        //int num = 1;
-        //////////////////////
-        Map<String, SubjectStudyStatsDto> studySubjectStatsMap = new HashMap<>();
-        Map<String, SubjectStudyStatsDto> studyProblemStatsMap = new HashMap<>();
+        List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId()); // 스터디의 스터디원 정보 리스트로 저장
+        ArrayList<SolveStudyMemberListDto> result = new ArrayList<>(); // 최종적으로 반환할 결과값
 
-        List<SolveStudyMemberStatsInterface> studySubjectStats = subjectRepository.findStudySubject(studyEntity.getStudyId());
-        for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : studySubjectStats) {
-            studySubjectStatsMap.put(solveStudyMemberStatsInterface.getDate().toString(), new SubjectStudyStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
+        Map<String, GetDateAndCountDto> studySubjectMap = new HashMap<>(); // 월별 스터디 과제 수 정보 저장
+        List<GetDateAndCountInterface> studySubject = subjectRepository.findStudySubject(studyEntity.getStudyId()); // DB에서 월별 스터디 과제 수 가져오기
+        for (GetDateAndCountInterface getDateAndCountInterface : studySubject) {
+            studySubjectMap.put(getDateAndCountInterface.getDate().toString(), new GetDateAndCountDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount()));
         }
-        List<SolveStudyMemberStatsInterface> studyProblemStats = solveRepository.findStudyProblem(studyEntity.getStudyId());
-        for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : studyProblemStats) {
-            studyProblemStatsMap.put(solveStudyMemberStatsInterface.getDate().toString(), new SubjectStudyStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount()));
+
+        Map<String, GetDateAndCountDto> studyProblemMap = new HashMap<>(); // 월별 스터디 함께 푼 문제 수 정보 저장
+        List<GetDateAndCountInterface> studyProblem = solveRepository.findStudyProblem(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
+        for (GetDateAndCountInterface getDateAndCountInterface : studyProblem) {
+            studyProblemMap.put(getDateAndCountInterface.getDate().toString(), new GetDateAndCountDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount()));
         }
-        ////////////////////
-        for (ConnStudy connStudy : studyMemberList) {
-            long selectUserId = connStudy.getUser().getUserId();
-            User selectUserEntity = userRepository.findById(selectUserId).get();
-            List<SolveStudyMemberStatsDto> solveStudyMemberStatsList = new ArrayList<>();
-            List<SolveStudyMemberStatsInterface> solveStudyMemberStats = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId);
 
-            for (SolveStudyMemberStatsInterface solveStudyMemberStatsInterface : solveStudyMemberStats) {
-                SubjectStudyStatsDto subjectStudyStatsDto = null;
-                SubjectStudyStatsDto studyProblemStatsDto = null;
+        Map<String, GetDateAndCountFloatDto> studyAvgSolveMap = new HashMap<>(); // 월별 스터디원 평균 해결 문제 수 정보 저장
+        List<GetDateAndCountFloatInterface> studyAvgSolve = solveRepository.findStudyAvgSolve(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
+        for (GetDateAndCountFloatInterface getDateAndCountFloatInterface : studyAvgSolve) {
+            studyAvgSolveMap.put(getDateAndCountFloatInterface.getDate().toString(), new GetDateAndCountFloatDto(getDateAndCountFloatInterface.getDate(), getDateAndCountFloatInterface.getCount()));
+        }
 
-                if (studySubjectStatsMap.containsKey(solveStudyMemberStatsInterface.getDate().toString())) {
-                    subjectStudyStatsDto = studySubjectStatsMap.get(solveStudyMemberStatsInterface.getDate().toString());
-                }
-                else { // DB에 더미 데이터 떄문에 사용한거라 실제는 필요 없을듯!
-                    subjectStudyStatsDto = new SubjectStudyStatsDto(LocalDate.now(), 0);
-                }
-                if (studyProblemStatsMap.containsKey(solveStudyMemberStatsInterface.getDate().toString())) {
-                    studyProblemStatsDto = studyProblemStatsMap.get(solveStudyMemberStatsInterface.getDate().toString());
-                }
-                else { // DB에 더미 데이터 떄문에 사용한거라 실제는 필요 없을듯!
-                    studyProblemStatsDto = new SubjectStudyStatsDto(LocalDate.now(), 0);
-                }
+        for (ConnStudy connStudy : studyMemberList) { // 각각의 스터디원별로
+            long selectUserId = connStudy.getUser().getUserId(); // 현재 스터디원의 userId
+            User selectUserEntity = userRepository.findById(selectUserId).get(); // 현재 스터디원 정보
 
-                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(solveStudyMemberStatsInterface.getDate(), solveStudyMemberStatsInterface.getCount(), subjectStudyStatsDto.getCount()+studyProblemStatsDto.getCount()));
+            List<SolveStudyMemberDto> solveStudyMemberList = new ArrayList<>(); // 월별 스터디원 문제풀이 현황 정보 저장
+            List<GetDateAndCountInterface> solveStudyMember = solveRepository.findStudyMember(studyEntity.getStudyId(), selectUserId); // DB에서 월별 스터디원 문제풀이 현황 정보 가져오기
+
+            for (GetDateAndCountInterface getDateAndCountInterface : solveStudyMember) {
+                // 월별 Total 갯수 구하기 위한 logic
+                GetDateAndCountDto studySubjectDto = null;
+                GetDateAndCountDto studyProblemDto = null;
+
+                // DB에 더미 데이터에서 발생한 오류 때문에 사용한거라 실제는 필요 없을듯!
+                if (studySubjectMap.containsKey(getDateAndCountInterface.getDate().toString())) {
+                    studySubjectDto = studySubjectMap.get(getDateAndCountInterface.getDate().toString());
+                }
+                else {
+                    studySubjectDto = new GetDateAndCountDto(LocalDate.now(), 0);
+                }
+                if (studyProblemMap.containsKey(getDateAndCountInterface.getDate().toString())) {
+                    studyProblemDto = studyProblemMap.get(getDateAndCountInterface.getDate().toString());
+                }
+                else {
+                    studyProblemDto = new GetDateAndCountDto(LocalDate.now(), 0);
+                }
+                //
+
+                // 월별 평균 Solve 갯수 구하기 위한 logic
+                GetDateAndCountFloatDto studyAvgSolveDto = null;
+                if (studyAvgSolveMap.containsKey(getDateAndCountInterface.getDate().toString())) {
+                    studyAvgSolveDto = studyAvgSolveMap.get(getDateAndCountInterface.getDate().toString());
+                }
+                else {
+                    studyAvgSolveDto = new GetDateAndCountFloatDto(LocalDate.now(), 0);
+                }
+                //
+
+                solveStudyMemberList.add(new SolveStudyMemberDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount(), studySubjectDto.getCount()+studyProblemDto.getCount(), studyAvgSolveDto.getCount()));
             }
 
-            for (String key : studySubjectStatsMap.keySet()) {
-                boolean check= false;
-                for (int i=0; i<solveStudyMemberStatsList.size(); i++) {
-                    System.out.println(key+"/////////////////////////"+solveStudyMemberStatsList.get(i).getDate().toString());
-                    if(key.equals(solveStudyMemberStatsList.get(i).getDate().toString())) {
-                        System.out.println("건너뜀");
-                        check = true;
-                        break;
+            // 해당 월에 과제가 존재하는데 들어가지 않은 경우 체크하기 위한 logic
+            for (String key : studySubjectMap.keySet()) {
+                boolean check= false; // 정보가 있는지 체크하기 위한 변수
+
+                for (int i=0; i<solveStudyMemberList.size(); i++) {
+                    //System.out.println(key+"/////////////////////////"+solveStudyMemberStatsList.get(i).getDate().toString());
+                    if(key.equals(solveStudyMemberList.get(i).getDate().toString())) { // 해당 정보가 있는 경우
+                        //System.out.println("건너뜀");
+                        check = true; // 상태 변경
+                        break; // 종료
                     }
                 }
-                System.out.println("key값 ::::::::::::::"+key);
+                //System.out.println("key값 ::::::::::::::"+key);
 
-                if (!check) {
-                solveStudyMemberStatsList.add(new SolveStudyMemberStatsDto(studySubjectStatsMap.get(key).getDate(), 0, studySubjectStatsMap.get(key).getCount()));
+                if (!check) { // 해당 정보가 없는 경우
+                solveStudyMemberList.add(new SolveStudyMemberDto(studySubjectMap.get(key).getDate(), 0, studySubjectMap.get(key).getCount(), 0));
                 }
             }
-            SolveStudyMemberStatsListDto solveStudyMemberStatsListDto = new SolveStudyMemberStatsListDto(selectUserId, selectUserEntity.getName(), solveStudyMemberStatsList);
-            result.add(solveStudyMemberStatsListDto);
+            //
 
+            SolveStudyMemberListDto solveStudyMemberListDto = new SolveStudyMemberListDto(selectUserId, selectUserEntity.getName(), solveStudyMemberList);
+            result.add(solveStudyMemberListDto);
         }
 
         return result;
