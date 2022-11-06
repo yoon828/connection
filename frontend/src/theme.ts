@@ -72,6 +72,10 @@ const semanticTokens = {
     },
     custom_red: {
       default: "#ff6464"
+    },
+    solved: {
+      _light: "#6fb2ff",
+      _dark: "#1581FF"
     }
   }
 };

@@ -1,4 +1,4 @@
-import { Box, Center, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Center, Container, Flex, Heading, Text } from "@chakra-ui/react";
 import React, { ReactNode } from "react";
 
 interface TotalLayoutProps {
@@ -19,37 +19,33 @@ function TotalLayout({
   end
 }: TotalLayoutProps) {
   return (
-    <Box
-      maxW="900px"
-      w="100%"
-      h="300px"
-      bg="dep_2"
-      borderRadius="10px"
-      boxShadow="md"
-      flex={flex}
-      height={height}
-      position="relative"
-      mr={mr}
-      mb="50px"
-    >
-      <Text
-        as="span"
-        bg="white"
-        p="5px 15px"
-        borderRadius=" 10px"
+    <Box maxW="900px" w="100%">
+      <Heading mb="14px">
+        <Text
+          as="span"
+          bg="white"
+          _dark={{ bg: "dep_2" }}
+          p="6px 15px"
+          borderRadius=" 10px"
+          boxShadow="md"
+          fontSize="18px"
+          fontWeight="bold"
+          color="main"
+        >
+          {title}
+        </Text>
+      </Heading>
+      <Center
+        h="300px"
+        bg="dep_2"
+        borderRadius="10px"
         boxShadow="md"
-        position="absolute"
-        top="-15px"
-        left="50%"
-        transform="translate(-50%, 0%)"
-        zIndex="1"
-        fontSize="20px"
-        fontWeight="bold"
-        color="main"
+        flex={flex}
+        height={height}
+        mr={mr}
+        mb="40px"
+        alignItems={end}
       >
-        {title}
-      </Text>
-      <Center h="100%" alignItems={end}>
         {children}
       </Center>
     </Box>
