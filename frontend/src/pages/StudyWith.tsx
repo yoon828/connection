@@ -1,22 +1,23 @@
 import { Center, CircularProgress } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import NumberSetView from "../components/studyWith/NumberSetView";
-import ProblemSetView from "../components/studyWith/ProblemSetView";
-import ResultView from "../components/studyWith/ResultView";
-import ReviewView from "../components/studyWith/ReviewView";
-import SolvingView from "../components/studyWith/SolvingView";
-import TimeSetView from "../components/studyWith/TimeSetView";
+import NumberSetView from "../components/studyWith/NumberSet/NumberSetView";
+import ProblemSetView from "../components/studyWith/ProblemSet/ProblemSetView";
+import ResultView from "../components/studyWith/Result/ResultView";
+import ReviewView from "../components/studyWith/Review/ReviewView";
+import SolvingView from "../components/studyWith/Solving/SolvingView";
+import TimeSetView from "../components/studyWith/TimeSet/TimeSetView";
 import {
   ClientToServerEvents,
   PageViewState,
   ServerToClientEvents,
   UserProfileType
 } from "../asset/data/socket.type";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { reset } from "../store/ducks/selectedProblem/selectedProblemSlice";
 
 function StudyWith() {
-  const socket: Socket<ServerToClientEvents, ClientToServerEvents> =
+  const [socket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>(
     process.env.NODE_ENV === "development"
       ? io("ws://localhost:8000", {
           autoConnect: false,
@@ -32,11 +33,14 @@ function StudyWith() {
           reconnectionDelayMax: 5000,
           reconnectionAttempts: 3,
           transports: ["websocket"]
-        });
+        })
+  );
+
   const { studyId, name, imageUrl } = useAppSelector(
     ({ auth: { information } }) => information
   );
 
+  const dispatch = useAppDispatch();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
@@ -57,10 +61,12 @@ function StudyWith() {
       onBtnClick={() => setStep(PageViewState.Solving)}
       onPrevBtnClick={() => setStep(PageViewState.ProblemSet)}
       participants={participants}
+      socket={socket}
     />,
     <SolvingView
       key={PageViewState.Solving}
       onBtnClick={() => setStep(PageViewState.Result)}
+      socket={socket}
     />,
     <ResultView
       key={PageViewState.Result}
@@ -90,7 +96,15 @@ function StudyWith() {
       setPartcipants(prev => prev.filter(user => user.name !== targetName));
     });
 
+    socket.on("endStudy", () => {
+      setStep(PageViewState.Result);
+    });
+
+    socket.on("startSolve", () => {
+      setStep(PageViewState.Solving);
+    });
     return () => {
+      dispatch(reset());
       socket.disconnect();
     };
   }, []);
