@@ -40,7 +40,7 @@ function TimeSetView({
     ({ selectedProblem }) => selectedProblem.selectedProblemList
   );
   const [problems, setProblems] = useState<
-    { recommendTime: number; problemId: number; title: string }[]
+    { recommendTime: number; problemId: number; title: string; level: number }[]
   >(selectedProblems.map(p => ({ ...p.problemInfo, recommendTime: 0 })));
 
   const totalTime = useMemo(() => {
@@ -71,7 +71,8 @@ function TimeSetView({
       studyId,
       problems.map(problem => ({
         problemId: problem.problemId,
-        title: problem.title
+        title: problem.title,
+        level: problem.level
       })),
       duringTime,
       () => onBtnClick()

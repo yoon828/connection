@@ -1,6 +1,7 @@
 import { Center, CircularProgress } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 import NumberSetView from "../components/studyWith/NumberSet/NumberSetView";
 import ProblemSetView from "../components/studyWith/ProblemSet/ProblemSetView";
 import ResultView from "../components/studyWith/Result/ResultView";
@@ -45,6 +46,7 @@ function StudyWith() {
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
   const [participants, setPartcipants] = useState<UserProfileType[]>([]);
+  const navigate = useNavigate();
 
   const bossView: React.FunctionComponentElement<undefined>[] = [
     <NumberSetView
@@ -71,8 +73,13 @@ function StudyWith() {
     <ResultView
       key={PageViewState.Result}
       onBtnClick={() => setStep(PageViewState.Review)}
+      socket={socket}
     />,
-    <ReviewView key={PageViewState.Review} onBtnClick={() => setStep(1)} />
+    <ReviewView
+      key={PageViewState.Review}
+      socket={socket}
+      onBtnClick={() => navigate("/study", { replace: true })}
+    />
   ];
 
   useEffect(() => {

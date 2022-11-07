@@ -1,11 +1,13 @@
-import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Image, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
+import { v4 } from "uuid";
 import getTime from "../../../utils/getTime";
 
 export type ResultBarProps = {
+  imageUrl: string;
   name: string;
   problem: number;
-  time: number;
+  time: number | null;
 };
 
 function ResultBar({
@@ -13,7 +15,8 @@ function ResultBar({
   problem,
   time,
   rank,
-  isMe
+  isMe,
+  imageUrl
 }: ResultBarProps & { rank: number; isMe: boolean }) {
   return (
     <Center
@@ -25,16 +28,30 @@ function ResultBar({
       fontSize="20px"
       mb="20px"
       pl="8px"
+      opacity={time ? 1 : 0.25}
     >
       <Center borderRight="1px solid #b8b8b8" w="72px" h="64px" p="16px">
         {rank}위
       </Center>
+      <Tooltip key={v4()} label={name}>
+        <Image
+          ml="8px"
+          src={imageUrl}
+          borderRadius="50px"
+          minW="35px"
+          w="35px"
+        />
+      </Tooltip>
       <Box flexDir="column" p="0 16px" w="600px">
         <Box fontWeight="700">{name}</Box>
-        <Flex w="320px" justifyContent="space-between">
-          <Text>푼 문제수 : {problem}개</Text>
-          <Text>시간 : {getTime(time)}</Text>
-        </Flex>
+        {time ? (
+          <Flex w="320px" justifyContent="space-between">
+            <Text>푼 문제수 : {problem}개</Text>
+            <Text>시간 : {getTime(time)}</Text>
+          </Flex>
+        ) : (
+          <Text>진행중</Text>
+        )}
       </Box>
     </Center>
   );

@@ -19,6 +19,7 @@ export type UserProfileType = Pick<UserInfoType, "name" | "imageUrl">;
 export interface ProblemType {
   problemId: number;
   title: string;
+  level: number;
   isSolved: boolean;
 }
 /* eslint-disable no-shadow */
@@ -45,12 +46,22 @@ export interface ClientToServerEvents {
   ) => void;
   startStudy: (
     studyId: UserInfoType["studyId"],
-    problemList: Pick<ProblemType, "problemId" | "title">[],
+    problemList: Pick<ProblemType, "problemId" | "title" | "level">[],
     time: number,
     callback: () => void
   ) => void;
   getSolvingInfo: (
     callback: (problemList: ProblemType[], endTime: number) => void
+  ) => void;
+  getResult: (
+    callback: (
+      results: {
+        name: string;
+        problem: number;
+        time: number | null;
+        imageUrl: string;
+      }[]
+    ) => void
   ) => void;
 }
 
