@@ -10,13 +10,16 @@ import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -248,7 +251,7 @@ public class SubjectServiceImpl implements SubjectService{
 
     @Override
     @Transactional
-    public ResponseEntity submitSubject(Long userId){
+    public ResponseEntity submitSubject(Long userId, MultipartFile file) throws IOException {
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         long studyId = connStudy.get().getStudy().getStudyId();
@@ -256,14 +259,19 @@ public class SubjectServiceImpl implements SubjectService{
         String githubId = connStudy.get().getUser().getGithubId();
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
-        System.out.println(githubToken);
-
+//        System.out.println(githubToken);
+        //파일 처리
+        byte[] fileByte = Base64.encodeBase64(file.getBytes());
+        String fileEncoded = new String(fileByte);
+        String fileName = file.getOriginalFilename();
+        
         String createFileRequest = "{\"message\":\"" + "메세지" + "\"," +
-                "\"content\":\""+ "bXkgbmV3IGZpbGUgY29udGVudHM=" +"\"}";
+                "\"content\":\""+ fileEncoded +"\"}";
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, githubId, "test.md")
+//                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, githubId, "test.md")
+                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "giddId", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
                     .retrieve()

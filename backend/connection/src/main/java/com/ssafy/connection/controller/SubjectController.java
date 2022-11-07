@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.Problem;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,9 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -117,8 +121,20 @@ public class SubjectController {
     @ApiOperation(value = "과제 제출 개발중", notes = "")
     @ApiResponse(responseCode = "200", description = "success : 성공<br>" +
             "example : <br>")
+    @ApiResponse(responseCode = "409", description = "empty : 가입된 스터디정보 없음<br>")
     @PostMapping("/submit")
-    public ResponseEntity submitSubject(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        return subjectService.submitSubject(userPrincipal.getId());
+    public ResponseEntity submitSubject(
+            GitPushDto gitPushDto
+            , @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) throws IOException
+    {
+        if(gitPushDto.getFile() == null || gitPushDto.getProblemId() == null)
+            return new ResponseEntity(new ResponseDto("머라할까"),HttpStatus.CONFLICT);
+
+        MultipartFile file = gitPushDto.getFile();
+        System.out.println("파일 이름 : " + file.getOriginalFilename());
+        System.out.println("파일 크기 : " + file.getSize());
+        System.out.println("문제 번호 : " + gitPushDto.getProblemId());
+
+        return subjectService.submitSubject(userPrincipal.getId(), file);
     }
 }

@@ -4,7 +4,9 @@ import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,5 +16,5 @@ public interface SubjectService {
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
     List<Subject> getTotalSubjectList(Long userId);
     Map<String, Integer> getSubjectCountByMonth(List<Subject> totalSubjectList, List<User> userList);
-    ResponseEntity submitSubject(Long userId);
+    ResponseEntity submitSubject(Long userId, MultipartFile file) throws IOException;
 }
