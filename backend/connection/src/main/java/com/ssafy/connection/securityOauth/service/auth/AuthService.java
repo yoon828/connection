@@ -113,25 +113,6 @@ public class AuthService {
         return new ResponseEntity(new ResponseDto("fail"), HttpStatus.CONFLICT);
     }
 
-    public ResponseEntity getAuthGithub(long userId, String githubId){
-        User user = userRepository.getById(userId);
-
-//        try {
-//            solvedacUserDto = solvedac.get()
-//                    .uri("/v3/user/show?handle={baekjoonId}", baekjoonId)
-//                    .retrieve()
-//                    .bodyToMono(SolvedacUserDto.class)
-//                    .block();
-//        }
-//        catch (Exception e){
-//            return new ResponseEntity(new ResponseDto("empty"), HttpStatus.CONFLICT);
-//        }
-
-
-
-        return new ResponseEntity(new ResponseDto("fail"), HttpStatus.CONFLICT);
-    }
-
     private boolean valid(String refreshToken){
 
         //1. 토큰 형식 물리적 검증

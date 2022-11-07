@@ -89,20 +89,6 @@ public class AuthController {
         return responseEntity;
     }
 
-    @Operation(summary = "깃헙연동확인", description = "깃헙 organization에 초대되었는지 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "success : 유저 연동 성공"),
-            @ApiResponse(responseCode = "409", description = "fail : 상태 메세지가 다름<br>" +
-                    "empty : 해당 유저가 없음"),
-            @ApiResponse(responseCode = "401", description = "토큰 없음")
-    })
-    @PostMapping("/github")
-    public ResponseEntity<ResponseDto> getAuthGithub(
-            @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        if(userPrincipal == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        ResponseEntity responseEntity = authService.getAuthGithub(userPrincipal.getId(), userPrincipal.getGithubId());
-        return responseEntity;
-    }
 
     @Operation(summary = "유저 정보 삭제", description = "현제 접속된 유저정보를 삭제합니다.")
     @ApiResponses(value = {
@@ -116,10 +102,10 @@ public class AuthController {
         return authService.delete(userPrincipal);
     }
 
-    @Operation(summary = "webhook api테스트중", description = "webhook.")
+    @Operation(summary = "webhook api", description = "webhook.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "유저 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "409", description = "유저 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "웹훅 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "409", description = "실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping(value = "/webhook")
     public ResponseEntity<?> webhook(@RequestBody Map<String, Object> map){
