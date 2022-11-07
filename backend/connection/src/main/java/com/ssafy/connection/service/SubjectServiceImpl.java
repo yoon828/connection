@@ -259,7 +259,7 @@ public class SubjectServiceImpl implements SubjectService{
 
 //        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
-        if(user == null) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         long studyId = connStudy.get().getStudy().getStudyId();
