@@ -12,6 +12,8 @@ public class StudyRankingDto {
 
     private long studyId;
 
+    private int studyPersonnel;
+
     private int studyScore;
 
     private int homeworkScore;
