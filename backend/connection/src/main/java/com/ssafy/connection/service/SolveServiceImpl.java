@@ -115,17 +115,22 @@ public class SolveServiceImpl implements SolveService{
     @Override
     public boolean saveSolveList(List<Integer> list, Long userId) {
         for(Integer problemId : list){
-            Solve solveEntity = new Solve();
-            solveEntity.setUser(userRepository.findById(userId).get());
-            Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(problemId));
-            if(problemEntity.isPresent()){
-                solveEntity.setProblem(problemEntity.get());
+            Optional<Solve> prevSolveEntity = solveRepository.findNormalByUserAndProblem(userId, Long.valueOf(problemId));
+            if(prevSolveEntity.isPresent()){
+                continue;
             } else {
-                return false;
+                Solve solveEntity = new Solve();
+                solveEntity.setUser(userRepository.findById(userId).get());
+                Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(problemId));
+                if(problemEntity.isPresent()){
+                    solveEntity.setProblem(problemEntity.get());
+                } else {
+                    return false;
+                }
+                solveEntity.setStatus(2);
+                solveEntity.setTime(LocalDateTime.now());
+                solveRepository.save(solveEntity);
             }
-            solveEntity.setStatus(2);
-            solveEntity.setTime(LocalDateTime.now());
-            solveRepository.save(solveEntity);
         }
         return true;
     }
