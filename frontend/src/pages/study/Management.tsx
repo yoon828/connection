@@ -76,7 +76,8 @@ function Management() {
           style: {
             colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
           }
-        }
+        },
+        max: 100
       },
       legend: {
         show: true,
@@ -164,7 +165,7 @@ function Management() {
           <Box bg="dep_1" key={member.userId}>
             <Flex bg="dep_2" p={2} textAlign="center">
               <Text flexGrow={1} borderRight="1px" borderColor="border_gray">
-                No {idx}
+                No {idx + 1}
               </Text>
               <Text flexGrow={3}>{member.name}</Text>
               {isBoss && (
@@ -197,7 +198,7 @@ function Management() {
                       goals: [
                         {
                           name: "평균",
-                          value: data.avg,
+                          value: data.avg * 100,
                           strokeColor: "#775DD0"
                         }
                       ]
