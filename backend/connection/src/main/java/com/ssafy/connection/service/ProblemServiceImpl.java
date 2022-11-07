@@ -155,6 +155,65 @@ public class ProblemServiceImpl implements ProblemService{
         return returnList;
     }
 
+    @Transactional
+    public List<ProblemReturnDto> searchProblemByTitle(String title){
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<ProblemSearchInterface> problemSearchList = problemRepository.findAllByTitle2(title);
+
+        System.out.println(problemSearchList.get(0).getProblemId());
+
+        long curProblemId = -1;
+        ProblemReturnDto returnDto = new ProblemReturnDto();
+        List<TagDto> tagDtoList = new ArrayList<>();
+        for(ProblemSearchInterface temp : problemSearchList){
+            if(curProblemId == -1){
+                curProblemId = temp.getProblemId();
+                ProblemDto problemDto = new ProblemDto();
+                problemDto.setProblemId(temp.getProblemId());
+                problemDto.setAccepted(temp.getAccepted());
+                problemDto.setLevel(temp.getLevel());
+                problemDto.setTitle(temp.getTitle());
+                problemDto.setTries(temp.getTries());
+                returnDto.setProblemInfo(problemDto);
+                TagDto tagDto = new TagDto();
+                tagDto.setTagId(temp.getTagId());
+                tagDto.setKo(temp.getKo());
+                tagDto.setEn(temp.getEn());
+                tagDtoList.add(tagDto);
+                continue;
+            } else if(temp.getProblemId() != curProblemId){
+                returnDto.setTagList(tagDtoList);
+                returnList.add(returnDto);
+                returnDto = new ProblemReturnDto();
+                tagDtoList.clear();
+
+                curProblemId = temp.getProblemId();
+                ProblemDto problemDto = new ProblemDto();
+                problemDto.setProblemId(temp.getProblemId());
+                problemDto.setAccepted(temp.getAccepted());
+                problemDto.setLevel(temp.getLevel());
+                problemDto.setTitle(temp.getTitle());
+                problemDto.setTries(temp.getTries());
+                returnDto.setProblemInfo(problemDto);
+                TagDto tagDto = new TagDto();
+                tagDto.setTagId(temp.getTagId());
+                tagDto.setKo(temp.getKo());
+                tagDto.setEn(temp.getEn());
+                tagDtoList.add(tagDto);
+                continue;
+            } else {
+                TagDto tagDto = new TagDto();
+                tagDto.setTagId(temp.getTagId());
+                tagDto.setKo(temp.getKo());
+                tagDto.setEn(temp.getEn());
+                tagDtoList.add(tagDto);
+                continue;
+            }
+        }
+
+        return returnList;
+    }
+
     @Override
     @Transactional
     public List<ProblemReturnDto> getProblemByTag(String ko) {
@@ -174,7 +233,7 @@ public class ProblemServiceImpl implements ProblemService{
             return new ArrayList<>();
         }
         // 우선 제목으로 검색
-        List<ProblemReturnDto> returnList = this.getProblem(keyword);
+        List<ProblemReturnDto> returnList = this.searchProblemByTitle(keyword);
 
         // 검색어에 숫자만 있는지 검증
         final String REGEX = "[0-9]+";
