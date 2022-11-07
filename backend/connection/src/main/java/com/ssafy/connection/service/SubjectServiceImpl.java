@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.ConnStudy;
@@ -10,13 +11,17 @@ import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -248,32 +253,45 @@ public class SubjectServiceImpl implements SubjectService{
 
     @Override
     @Transactional
-    public ResponseEntity submitSubject(Long userId){
-        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+    public ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException {
+
+//        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
+        if(user == null) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         long studyId = connStudy.get().getStudy().getStudyId();
         String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
         String githubId = connStudy.get().getUser().getGithubId();
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
-        System.out.println(githubToken);
-
+        //파일 처리
+        String problemNo = gitPushDto.getProblemNo();
+        String code = new String(Base64.encodeBase64(gitPushDto.getCode().getBytes()));
+        String fileName = problemNo + "_" + githubId + "." + gitPushDto.getLang();
+        
         String createFileRequest = "{\"message\":\"" + "메세지" + "\"," +
-                "\"content\":\""+ "bXkgbmV3IGZpbGUgY29udGVudHM=" +"\"}";
+                "\"content\":\""+ code +"\"}";
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, githubId, "test.md")
+                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+//                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
         }
-        catch (Exception e) {
+        catch (WebClientResponseException e) {
             System.out.println(e);
-            return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.OK);
+            if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
+                //422 터졌으니 레포에서 Get 가져오자요 번호있는지
+            }
+            else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
         }
+
+
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
 
