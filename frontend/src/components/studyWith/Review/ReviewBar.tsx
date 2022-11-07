@@ -1,13 +1,21 @@
 import { Center, Flex, Select, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
+import BOJ_LEVEL from "../../../asset/data/baekjoon";
 
 type ReviewBarProps = {
   name: string;
   id: number;
+  level: number;
   setTiers: (id: number, tier: string) => void;
 };
 
-function ReviewBar({ id, name, setTiers }: ReviewBarProps) {
+function ReviewBar({ id, name, level, setTiers }: ReviewBarProps) {
+  const defaultLevel = level < 2 ? 2 : level > 29 ? 29 : level;
+  const optArr = Array(5)
+    .fill(defaultLevel - 2)
+    .map((n, idx) => n + idx);
+  const [defaultValue, setDefaultValue] = useState(level);
+
   return (
     <Flex
       w="640px"
@@ -27,10 +35,22 @@ function ReviewBar({ id, name, setTiers }: ReviewBarProps) {
         <Text>{name}</Text>
       </Center>
       <Center>
-        <Select w="120px" bg="dep_2" borderRadius="12px" cursor="pointer">
-          <option value="브">브</option>
-          <option value="실">실</option>
-          <option value="골">골</option>
+        <Select
+          w="120px"
+          bg="dep_2"
+          borderRadius="12px"
+          cursor="pointer"
+          value={defaultValue}
+          onChange={e => {
+            setTiers(id, e.target.value);
+            setDefaultValue(+e.target.value);
+          }}
+        >
+          {optArr.map(opt => (
+            <option value={opt} key={opt}>
+              {BOJ_LEVEL[opt]}
+            </option>
+          ))}
         </Select>
       </Center>
     </Flex>

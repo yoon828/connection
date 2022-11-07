@@ -1,21 +1,53 @@
 import { Center } from "@chakra-ui/react";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Socket } from "socket.io-client";
+import axios from "axios";
 import NextBtn from "../NextBtn";
 import ReviewBar from "./ReviewBar";
 import ViewTitle from "../ViewTitle";
+import {
+  ClientToServerEvents,
+  ProblemType,
+  ServerToClientEvents
+} from "../../../asset/data/socket.type";
+import { registReview } from "../../../api/studyJoin";
 
 type ReviewViewProps = {
   onBtnClick: () => void;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 };
 
-function ReviewView({ onBtnClick }: ReviewViewProps) {
-  const dummy = [
-    { name: "지뢰를 찾아서", id: 212 },
-    { name: "미로탈출", id: 2321 },
-    { name: "무슨 열차 999", id: 726 }
-  ];
+function ReviewView({ onBtnClick, socket }: ReviewViewProps) {
   const [tiers, setTiers] = useState<Map<number, string>>(new Map());
+  const [problems, setProblems] = useState<ProblemType[]>();
+
+  useEffect(() => {
+    socket.emit("getSolvingInfo", (problemList, _) => {
+      setProblems(problemList);
+      const initTier = new Map<number, string>();
+      problemList.map(problem =>
+        initTier.set(problem.problemId, `${problem.level}`)
+      );
+      setTiers(initTier);
+    });
+  }, []);
+
+  const handleOnBtnClick = async () => {
+    const reviews: { problemId: string; difficulty: string }[] = [];
+    tiers.forEach((value, key) => {
+      reviews.push({ problemId: `${key}`, difficulty: value });
+    });
+    const res = await registReview(reviews);
+    // if(!axios.re)
+    if (!axios.isAxiosError(res)) {
+      // console.log(res.data);
+      if (res.data.msg === "success") {
+        onBtnClick();
+      }
+    }
+    // console.log(reviews);
+  };
 
   return (
     <Center w="1200px" m="auto" flexDir="column">
@@ -27,18 +59,19 @@ function ReviewView({ onBtnClick }: ReviewViewProps) {
         highLight=""
         desSize={20}
       />
-      {dummy &&
-        dummy.map((d, ind) => (
+      {problems &&
+        problems.map(problem => (
           <ReviewBar
-            key={d.name}
-            name={d.name}
-            id={d.id}
+            level={problem.level}
+            key={problem.problemId}
+            name={problem.title}
+            id={problem.problemId}
             setTiers={(id: number, tier: string) =>
               setTiers(prev => new Map(prev).set(id, tier))
             }
           />
         ))}
-      <NextBtn text="다음" mt={40} onBtnClick={onBtnClick} />
+      <NextBtn text="완료" mt={40} onBtnClick={handleOnBtnClick} />
     </Center>
   );
 }
