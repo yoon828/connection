@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -31,8 +30,7 @@ public class ProblemController {
     private final ReviewService reviewService;
 
     @Autowired
-    public ProblemController(ProblemService problemService, TagService tagService, SolveService solveService,
-                                ReviewService reviewService){
+    public ProblemController(ProblemService problemService, TagService tagService, SolveService solveService, ReviewService reviewService){
         this.problemService = problemService;
         this.tagService = tagService;
         this.solveService = solveService;
@@ -64,7 +62,6 @@ public class ProblemController {
             returnMap.put("popular", problemService.getPopularProblemList());
         }
 
-        // 스터디 문제집에 많이 담긴 문제 추천
         returnMap.put("workbook", problemService.getWorkBookProblemList());
 
         List<Map.Entry<String, Integer>> userStat = problemService.getUserStat(userPrincipal.getId());
@@ -102,6 +99,17 @@ public class ProblemController {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
+    }
+
+    @ApiOperation(value = "문제 제출 2", notes = "스터디 같이 풀기 후 node 서버에서 problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
+    @PostMapping("/test")
+    public ResponseEntity<ResponseDto> submitProblem2(@RequestBody List<Map<String, Object>> list){
+        for(Map<String, Object> map : list){
+            long userId = (long) (int) map.get("userId");
+            List<Long> problemIdList = (List<Long>) map.get("problemIdList");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @ApiOperation(value = "문제 풀이 등록", notes = "유저 회원가입 시, 유저의 문제 풀이 목록을 저장")
@@ -146,20 +154,20 @@ public class ProblemController {
 //    public ResponseEntity<List<ProblemReturnDto>> getSolvedProblemList(@RequestParam("baekjoonId") String baekjoonId){
 //        return ResponseEntity.status(HttpStatus.OK).body(problemService.getSolvedProblemList(baekjoonId));
 //    }
-//
+
 //    @ApiOperation(value = "백준 전체 문제 데이터 반환(사용 안함)")
 //    @GetMapping("/all")
 //    public ResponseEntity<List<ProblemReturnDto>> getProblemList(){
 //        return ResponseEntity.status(HttpStatus.OK).body(problemService.getProblemList());
 //    }
-//\
+
 //    @ApiOperation(value = "백준 전체 문제 DB에 저장(호출 금지)")
 //    @GetMapping("/api/load")
 //    public void loadAllProblemFromApi(){
 //        problemService.loadAllProblemFromApi();
 //    }
 
-    //    @ApiOperation(value = "문제 검색 (제목은 포함, 문제번호는 일치)")
+//    @ApiOperation(value = "문제 검색 (제목은 포함, 문제번호는 일치)")
 //    @GetMapping("/")
 //    public ResponseEntity<List<ProblemReturnDto>> getProblem(@RequestParam(value = "problemId", required = false) Long problemId, @RequestParam(value = "title", required = false) String title){
 //        List<ProblemReturnDto> returnList = new ArrayList<>();

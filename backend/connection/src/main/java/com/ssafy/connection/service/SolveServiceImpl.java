@@ -74,12 +74,14 @@ public class SolveServiceImpl implements SolveService{
 
             if(subject.getProblem().getProblemId() == Long.parseLong(problemId) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
                 solveEntity.setStatus(0);
+                study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
+                studyRepository.save(study);
                 break;
             } else {
                 solveEntity.setStatus(2);
+                solveRepository.save(solveEntity);
             }
         }
-
 
         solveRepository.save(solveEntity);
         return true;

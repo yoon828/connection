@@ -37,7 +37,6 @@ public class WorkbookController {
             @ApiResponse(code = 200, message = "success : 성공"),
             @ApiResponse(code = 409, message = "already exist : 이미 문제집에 해당 문제가 있음<br>" +
                                                 "wrong parameter value : 번호에 해당되는 문제가 DB에 없음")
-                                            
     })
     @PostMapping("")
     public ResponseEntity<ResponseDto> addProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
