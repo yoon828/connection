@@ -118,9 +118,9 @@ public class SubjectController {
         return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
-    @ApiOperation(value = "과제 제출 개발중", notes = "")
+    @ApiOperation(value = "과제 제출", notes = "")
     @ApiResponse(responseCode = "200", description = "{msg : success} 성공")
-    @ApiResponse(responseCode = "409", description = "{msg : empty} 가입된 스터디정보 없거나 백준 연동 안됨")
+    @ApiResponse(responseCode = "409", description = "{msg : empty} 가입된 스터디정보 없거나 백준 or 깃헙 연동 안됨")
     @PostMapping("/submit")
     public ResponseEntity submitSubject(@RequestBody GitPushDto gitPushDto) throws IOException
     {
