@@ -2,6 +2,7 @@ package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.ResponseDto;
+import com.ssafy.connection.dto.SolvedacUserDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.Solve;
@@ -11,6 +12,7 @@ import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -284,9 +286,46 @@ public class SubjectServiceImpl implements SubjectService{
                     .block();
         }
         catch (WebClientResponseException e) {
-            System.out.println(e);
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get 가져오자요 번호있는지
+                List<Map<String, Object>> contents = (List<Map<String, Object>>)webClient.get()
+                                            .uri("repos/{owner}/{repo}/contents/{path}", "co-nnection", repositoryName, problemNo)
+                                            .retrieve()
+                                            .bodyToMono(Object.class)
+                                            .block();
+
+                int cnt = 0;
+                for (Map<String,Object> map:contents) {
+                    String name_t = map.get("name").toString();
+//                    name_t.substring(0,problemNo.length());
+
+                    String fname = name_t.substring(0,problemNo.length()+githubId.length()+1);
+                    String noext = FilenameUtils.getBaseName(name_t);
+                    String ext = FilenameUtils.getExtension(name_t);
+                    if(fname.equals(problemNo + "_" + githubId) && ext.equals(gitPushDto.getLang())){
+                        int no = 0;
+                        if(noext.length() <= problemNo.length()+githubId.length()+1)
+                            no = 1;
+                        else
+                            no = Integer.parseInt(noext.substring(problemNo.length()+githubId.length()+2));
+                        if(no>=cnt) cnt = no+1;
+                    }
+                }
+
+                String fileName_alt = problemNo + "_" + githubId + "_" + cnt + "." + gitPushDto.getLang();
+                try {
+                    webClient.put()
+                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName_alt)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                            .bodyValue(createFileRequest)
+                            .retrieve()
+                            .bodyToMono(Void.class)
+                            .block();
+                }
+                catch (WebClientResponseException e2) {
+                    System.out.println("답이없네용");
+                }
+
             }
             else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
         }
