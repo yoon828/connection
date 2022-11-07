@@ -452,17 +452,24 @@ public class StudyServiceImpl implements StudyService {
                 boolean check= false; // 정보가 있는지 체크하기 위한 변수
 
                 for (int i=0; i<solveStudyMemberList.size(); i++) {
-                    //System.out.println(key+"/////////////////////////"+solveStudyMemberStatsList.get(i).getDate().toString());
                     if(key.equals(solveStudyMemberList.get(i).getDate().toString())) { // 해당 정보가 있는 경우
-                        //System.out.println("건너뜀");
                         check = true; // 상태 변경
                         break; // 종료
                     }
                 }
-                //System.out.println("key값 ::::::::::::::"+key);
 
                 if (!check) { // 해당 정보가 없는 경우
-                solveStudyMemberList.add(new SolveStudyMemberDto(studySubjectMap.get(key).getDate(), 0, studySubjectMap.get(key).getCount(), 0));
+                    // 월별 평균 Solve 갯수 구하기 위한 logic
+                    GetDateAndCountFloatDto studyAvgSolveDto = null;
+                    if (studyAvgSolveMap.containsKey(studySubjectMap.get(key).getDate().toString())) {
+                        studyAvgSolveDto = studyAvgSolveMap.get(studySubjectMap.get(key).getDate().toString());
+                    }
+                    else {
+                        studyAvgSolveDto = new GetDateAndCountFloatDto(LocalDate.now(), 0);
+                    }
+                    //
+
+                    solveStudyMemberList.add(new SolveStudyMemberDto(studySubjectMap.get(key).getDate(), 0, studySubjectMap.get(key).getCount(), studyAvgSolveDto.getCount()));
                 }
             }
             //
