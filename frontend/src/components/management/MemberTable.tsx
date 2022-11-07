@@ -51,7 +51,7 @@ function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
                     goals: [
                       {
                         name: "평균",
-                        value: data.avg * 100,
+                        value: (100 * data.avg) / data.total,
                         strokeColor: "#775DD0"
                       }
                     ]
