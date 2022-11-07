@@ -17,6 +17,7 @@ import com.ssafy.connection.securityOauth.payload.response.AuthResponse;
 import com.ssafy.connection.securityOauth.payload.response.Message;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import com.ssafy.connection.service.OrganizationService;
 import com.ssafy.connection.service.StudyServiceImpl;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,7 @@ public class AuthService {
     private final SubjectRepository subjectRepository;
     private final SolveRepository solveRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
+    private final OrganizationService organizationService;
     private WebClient solvedac = WebClient.create("https://solved.ac/api");
     private WebClient github = WebClient.create("https://solved.ac/api");
 
@@ -189,6 +191,15 @@ public class AuthService {
         user.setSolve(u.getSolve());
 
         userRepository.save(user);
+
+        if(!joq){
+            try {
+                organizationService.joinOrganization(user.getUserId());
+            }
+            catch (Exception e) {
+                System.out.println("초대실패");
+            }
+        }
 
         return ResponseEntity.ok(new ResponseDto("success"));
     }
