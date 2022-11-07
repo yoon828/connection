@@ -62,7 +62,6 @@ public class SolveServiceImpl implements SolveService{
 
         ConnStudy connStudy = connStudyRepository.findByUser(user);
         Study study = studyRepository.findByConnStudy(connStudy);
-        System.out.println(study.getStudyId());
         List<Subject> curSubjectList = subjectRepository.findAllByStudyDesc(study.getStudyId());
         LocalDateTime curDeadLine = curSubjectList.get(0).getDeadline();
 
@@ -73,17 +72,43 @@ public class SolveServiceImpl implements SolveService{
             }
 
             if(subject.getProblem().getProblemId() == Long.parseLong(problemId) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
-                solveEntity.setStatus(0);
-                study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
-                studyRepository.save(study);
-                break;
+
+                Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+                if(solveEntityPrev.isPresent()){
+                    Solve temp = solveEntityPrev.get();
+
+                    if(!temp.getTime().isAfter(subject.getStart())){
+                        temp.setTime(LocalDateTime.now());
+                        solveRepository.save(temp);
+                        study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
+                        studyRepository.save(study);
+                        break;
+                    } else {
+                        temp.setTime(LocalDateTime.now());
+                        solveRepository.save(temp);
+                        break;
+                    }
+                } else {
+                    solveEntity.setStatus(0);
+                    study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
+                    solveRepository.save(solveEntity);
+                    studyRepository.save(study);
+                    break;
+                }
             } else {
-                solveEntity.setStatus(2);
-                solveRepository.save(solveEntity);
+                Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+                if(solveEntityPrev.isPresent()){
+                    Solve temp = solveEntityPrev.get();
+                    temp.setTime(LocalDateTime.now());
+                    temp.setStatus(2);
+                    solveRepository.save(temp);
+                } else {
+                    solveEntity.setStatus(2);
+                    solveRepository.save(solveEntity);
+                }
             }
         }
 
-        solveRepository.save(solveEntity);
         return true;
     }
 
