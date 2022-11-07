@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.SubjectDto;
 import com.ssafy.connection.entity.Subject;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
@@ -16,5 +17,5 @@ public interface SubjectService {
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
     List<Subject> getTotalSubjectList(Long userId);
     Map<String, Integer> getSubjectCountByMonth(List<Subject> totalSubjectList, List<User> userList);
-    ResponseEntity submitSubject(Long userId, MultipartFile file) throws IOException;
+    ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException;
 }

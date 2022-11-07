@@ -4,13 +4,16 @@ import com.ssafy.connection.entity.Workbook;
 import com.ssafy.connection.util.ModelMapperUtils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
+@ToString
 public class GitPushDto {
-    private String problemId;
-
-    private MultipartFile file;
-
+    private String submitNo;
+    private String userId;
+    private String problemNo;
+    private String code;
+    private String lang;
 }
