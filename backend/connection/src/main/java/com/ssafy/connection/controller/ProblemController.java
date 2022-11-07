@@ -102,8 +102,8 @@ public class ProblemController {
     }
 
     @ApiOperation(value = "문제 제출 2", notes = "스터디 같이 풀기 후 node 서버에서 problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
-    @PostMapping("/test")
-    public ResponseEntity<ResponseDto> submitProblem2(@RequestBody List<Map<String, Object>> list){
+    @PostMapping("/submit/study")
+    public ResponseEntity<ResponseDto> submitStudyProblem(@RequestBody List<Map<String, Object>> list){
         for(Map<String, Object> map : list){
             long userId = (long) (int) map.get("userId");
             List<Long> problemIdList = (List<Long>) map.get("problemIdList");
@@ -119,7 +119,7 @@ public class ProblemController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDto> saveSolve(@RequestBody Map<String, Object> map,
                                                 @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
-        boolean result = solveService.saveSolveList((List<String>) map.get("list"), userPrincipal.getId());
+        boolean result = solveService.saveSolveList((List<Integer>) map.get("list"), userPrincipal.getId());
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
     }
 
