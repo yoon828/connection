@@ -160,27 +160,14 @@ public class ProblemServiceImpl implements ProblemService{
         List<ProblemReturnDto> returnList = new ArrayList<>();
         List<ProblemSearchInterface> problemSearchList = problemRepository.findAllByTitle2(title);
 
-        System.out.println(problemSearchList.get(0).getProblemId());
-
         long curProblemId = -1;
         ProblemReturnDto returnDto = new ProblemReturnDto();
         List<TagDto> tagDtoList = new ArrayList<>();
         for(ProblemSearchInterface temp : problemSearchList){
             if(curProblemId == -1){
                 curProblemId = temp.getProblemId();
-                ProblemDto problemDto = new ProblemDto();
-                problemDto.setProblemId(temp.getProblemId());
-                problemDto.setAccepted(temp.getAccepted());
-                problemDto.setLevel(temp.getLevel());
-                problemDto.setTitle(temp.getTitle());
-                problemDto.setTries(temp.getTries());
-                returnDto.setProblemInfo(problemDto);
-                TagDto tagDto = new TagDto();
-                tagDto.setTagId(temp.getTagId());
-                tagDto.setKo(temp.getKo());
-                tagDto.setEn(temp.getEn());
-                tagDtoList.add(tagDto);
-                continue;
+                returnDto.setProblemInfo(new ProblemDto(temp.getProblemId(), temp.getTitle(), temp.getAccepted(), temp.getLevel(), temp.getTitle()));
+                tagDtoList.add(new TagDto(temp.getTagId(), temp.getKo(), temp.getEn()));
             } else if(temp.getProblemId() != curProblemId){
                 returnDto.setTagList(tagDtoList);
                 returnList.add(returnDto);
@@ -188,26 +175,10 @@ public class ProblemServiceImpl implements ProblemService{
                 tagDtoList.clear();
 
                 curProblemId = temp.getProblemId();
-                ProblemDto problemDto = new ProblemDto();
-                problemDto.setProblemId(temp.getProblemId());
-                problemDto.setAccepted(temp.getAccepted());
-                problemDto.setLevel(temp.getLevel());
-                problemDto.setTitle(temp.getTitle());
-                problemDto.setTries(temp.getTries());
-                returnDto.setProblemInfo(problemDto);
-                TagDto tagDto = new TagDto();
-                tagDto.setTagId(temp.getTagId());
-                tagDto.setKo(temp.getKo());
-                tagDto.setEn(temp.getEn());
-                tagDtoList.add(tagDto);
-                continue;
+                returnDto.setProblemInfo(new ProblemDto(temp.getProblemId(), temp.getTitle(), temp.getAccepted(), temp.getLevel(), temp.getTitle()));
+                tagDtoList.add(new TagDto(temp.getTagId(), temp.getKo(), temp.getEn()));
             } else {
-                TagDto tagDto = new TagDto();
-                tagDto.setTagId(temp.getTagId());
-                tagDto.setKo(temp.getKo());
-                tagDto.setEn(temp.getEn());
-                tagDtoList.add(tagDto);
-                continue;
+                tagDtoList.add(new TagDto(temp.getTagId(), temp.getKo(), temp.getEn()));
             }
         }
 
