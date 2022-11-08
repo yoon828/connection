@@ -20,6 +20,9 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
   const [results, setResults] = useState<ResultBarProps[]>();
   useEffect(() => {
     socket.emit("getResult", setResults);
+    socket.on("newResult", newResult => {
+      setResults(newResult);
+    });
   }, []);
   return (
     <Center w="1200px" m="auto" flexDir="column">
