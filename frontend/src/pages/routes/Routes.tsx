@@ -30,7 +30,7 @@ export default function Routes() {
       <Header />
       <ReactRouterRoutes>
         <Route path="/" element={<Main />} />
-        <Route path="/recommend" element={<Recommend />} />
+        {/* <Route path="/recommend" element={<Recommend />} />
         <Route path="/study">
           <Route index element={<StudyTotal />} />
           <Route path="join" element={<StudyJoin />} />
@@ -39,9 +39,9 @@ export default function Routes() {
           <Route path="management" element={<Management />} />
         </Route>
         <Route path="/study-with" element={<StudyWith />} />
-        <Route path="/oauth2/redirect" element={<Callback />} />
+        <Route path="/oauth2/redirect" element={<Callback />} /> */}
 
-        {/* <Route
+        <Route
           path="/recommend"
           element={
             <PrivateRoute
@@ -74,7 +74,7 @@ export default function Routes() {
             />
           }
         />
-        <Route path="/oauth2/redirect" element={<Callback />} /> */}
+        <Route path="/oauth2/redirect" element={<Callback />} />
       </ReactRouterRoutes>
     </BrowserRouter>
   );
