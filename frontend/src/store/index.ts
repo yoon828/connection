@@ -4,7 +4,7 @@ import {
   PreloadedState
 } from "@reduxjs/toolkit";
 import logger from "redux-logger";
-import storage from "redux-persist/lib/storage";
+import storage from "redux-persist/lib/storage/session";
 import { persistReducer } from "redux-persist";
 import authSlice from "./ducks/auth/authSlice";
 import selectedProblemSlice from "./ducks/selectedProblem/selectedProblemSlice";
