@@ -1,5 +1,6 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
@@ -25,15 +26,18 @@ public class SolveServiceImpl implements SolveService{
     private final ConnStudyRepository connStudyRepository;
     private final StudyRepository studyRepository;
     private final SubjectRepository subjectRepository;
+    private final SubjectService subjectService;
 
     public SolveServiceImpl(UserRepository userRepository, ProblemRepository problemRepository, SolveRepository solveRepository,
-                            ConnStudyRepository connStudyRepository, StudyRepository studyRepository, SubjectRepository subjectRepository){
+                            ConnStudyRepository connStudyRepository, StudyRepository studyRepository, SubjectRepository subjectRepository,
+                            SubjectService subjectService){
         this.userRepository = userRepository;
         this.problemRepository = problemRepository;
         this.solveRepository = solveRepository;
         this.connStudyRepository = connStudyRepository;
         this.studyRepository = studyRepository;
         this.subjectRepository = subjectRepository;
+        this.subjectService = subjectService;
     }
 
     @Override
@@ -48,11 +52,11 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
-    public boolean saveSolve(String problemId, String baekjoonId) {
+    public boolean saveSolve(GitPushDto gitPushDto) {
         Solve solveEntity = new Solve();
-        User user = userRepository.findByBackjoonId(baekjoonId);
+        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         solveEntity.setUser(user);
-        Optional<Problem> problemEntity = problemRepository.findById(Long.parseLong(problemId));
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo()));
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
@@ -71,7 +75,7 @@ public class SolveServiceImpl implements SolveService{
                 break;
             }
 
-            if(subject.getProblem().getProblemId() == Long.parseLong(problemId) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
+            if(subject.getProblem().getProblemId() == Long.parseLong(gitPushDto.getProblemNo()) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
 
                 Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
                 if(solveEntityPrev.isPresent()){
@@ -82,10 +86,20 @@ public class SolveServiceImpl implements SolveService{
                         solveRepository.save(temp);
                         study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
                         studyRepository.save(study);
+                        try {
+                            subjectService.submitSubject(gitPushDto);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     } else {
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
+                        try {
+                            subjectService.submitSubject(gitPushDto);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     }
                 } else {
@@ -93,6 +107,11 @@ public class SolveServiceImpl implements SolveService{
                     study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
                     solveRepository.save(solveEntity);
                     studyRepository.save(study);
+                    try {
+                        subjectService.submitSubject(gitPushDto);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 }
             } else {

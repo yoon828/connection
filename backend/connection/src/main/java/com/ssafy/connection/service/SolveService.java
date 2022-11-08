@@ -1,11 +1,13 @@
 package com.ssafy.connection.service;
 
+import com.ssafy.connection.dto.GitPushDto;
+
 import java.util.List;
 
 public interface SolveService {
     boolean isSolved(long problemId, long userId);
 
-    boolean saveSolve(String problemId, String baekjoonId);
+    boolean saveSolve(GitPushDto gitPushDto);
 
     boolean saveSolve2(String baekjoonId, Long problemId);
 

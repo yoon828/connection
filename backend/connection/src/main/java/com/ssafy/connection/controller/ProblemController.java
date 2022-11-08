@@ -1,5 +1,6 @@
 package com.ssafy.connection.controller;
 
+import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.UserStatDto;
@@ -93,8 +94,8 @@ public class ProblemController {
 
     @ApiOperation(value = "문제 제출", notes = "problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
     @PostMapping("/submit")
-    public ResponseEntity<ResponseDto> submitProblem(@RequestBody Map<String, Object> map){
-        boolean result = solveService.saveSolve((String) map.get("problemId"), (String) map.get("baekjoonId"));
+    public ResponseEntity<ResponseDto> submitProblem(@RequestBody GitPushDto gitPushDto){
+        boolean result = solveService.saveSolve(gitPushDto);
         if(result){
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
