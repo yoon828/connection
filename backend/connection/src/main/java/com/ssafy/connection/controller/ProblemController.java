@@ -104,8 +104,8 @@ public class ProblemController {
 
     @ApiOperation(value = "문제 제출 2", notes = "스터디 같이 풀기 후 node 서버에서 userId와 problemId를 입력받아 풀이 여부를 저장")
     @PostMapping("/submit/study")
-    public ResponseEntity<ResponseDto> submitStudyProblem(@RequestParam(value = "baekjoonId") String baekjoonId, @RequestParam(value = "problemId") Long problemId){
-        boolean result = solveService.saveSolve2(baekjoonId, problemId);
+    public ResponseEntity<ResponseDto> submitStudyProblem(@RequestBody GitPushDto gitPushDto){
+        boolean result = solveService.saveSolve2(gitPushDto);
         if(result){
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }

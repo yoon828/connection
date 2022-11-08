@@ -9,7 +9,7 @@ public interface SolveService {
 
     boolean saveSolve(GitPushDto gitPushDto);
 
-    boolean saveSolve2(String baekjoonId, Long problemId);
+    boolean saveSolve2(GitPushDto gitPushDto);
 
     boolean saveSolveList(List<Integer> list, Long userId);
 }

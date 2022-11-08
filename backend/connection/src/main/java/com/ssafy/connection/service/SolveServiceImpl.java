@@ -132,10 +132,10 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
-    public boolean saveSolve2(String baekjoonId, Long problemId) {
-        User userEntity = userRepository.findByBackjoonId(baekjoonId);
+    public boolean saveSolve2(GitPushDto gitPushDto) {
+        User userEntity = userRepository.findByBackjoonId(gitPushDto.getUserId());
 
-        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), problemId);
+        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), Long.parseLong(gitPushDto.getProblemNo()));
         if(studySolveEntity.isPresent()){
             Solve temp = studySolveEntity.get();
             temp.setTime(LocalDateTime.now());
@@ -146,23 +146,33 @@ public class SolveServiceImpl implements SolveService{
         Solve solveEntity = new Solve();
         solveEntity.setUser(userEntity);
 
-        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo()));
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
             return false;
         }
 
-        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), Long.valueOf(gitPushDto.getProblemNo()));
         if(normalSolveEntity.isPresent()){
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
+            try {
+                subjectService.submitSubject(gitPushDto);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             solveEntity.setTime(LocalDateTime.now());
             solveEntity.setStatus(1);
             solveRepository.save(solveEntity);
+            try {
+                subjectService.submitSubject(gitPushDto);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return true;
