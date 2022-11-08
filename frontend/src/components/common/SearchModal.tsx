@@ -1,19 +1,16 @@
 import {
   Box,
-  Flex,
   Grid,
   Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalOverlay,
-  Text,
   useToast
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 
-import { stat } from "fs";
 import ProblemCard from "./ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
 import { searchProblem } from "../../api/problem";
@@ -37,14 +34,17 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
   const appSelector = useAppSelector(state => state.selectedProblem);
   const dispatch = useAppDispatch();
   const toast = useToast();
+  const fetch = async () => {
+    const res = await searchProblem(debouncedKeyword);
+    setProblemList(res.data.slice(0, 10));
+  };
   useEffect(() => {
-    const fetch = async () => {
-      const res = await searchProblem(debouncedKeyword);
-      console.log(res);
-      setProblemList(res.data);
-    };
     fetch();
   }, [debouncedKeyword]);
+  useEffect(() => {
+    console.log(problemList);
+  }, [problemList]);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="5xl">
       <ModalOverlay />
