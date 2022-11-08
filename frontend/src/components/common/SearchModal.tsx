@@ -1,11 +1,13 @@
 import {
   Box,
+  Flex,
   Grid,
   Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalOverlay,
+  Text,
   useToast
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
@@ -67,60 +69,78 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
             onChange={e => setKeyword(e.target.value)}
           />
         </Box>
-        <Grid
-          templateColumns="repeat(2,1fr)"
-          gridTemplateRows="auto minmax(auto,300px)"
-          gap="32px"
-          height="500px"
-          overflowY="scroll"
-          p={4}
-        >
-          {problemList.map(problem => (
-            <ProblemCard
-              bg="dep_2"
-              key={problem.problemInfo.problemId}
-              problem={problem}
-              btnType={
-                appSelector.selectedProblemList.findIndex(
-                  p => p.problemInfo.problemId === problem.problemInfo.problemId
-                ) >= 0
-                  ? "delete"
-                  : "add"
-              }
-              onBtnClick={
-                appSelector.selectedProblemList.findIndex(
-                  p => p.problemInfo.problemId === problem.problemInfo.problemId
-                ) >= 0
-                  ? () => {
-                      dispatch(removeProblem(problem));
-                      toast({
-                        title: `${problem.problemInfo.problemId}번 문제를 삭제했습니다.`,
-                        position: "top",
-                        isClosable: true,
-                        status: "warning"
-                      });
-                    }
-                  : () => {
-                      if (appSelector.cnt >= maxCnt) {
+        {problemList.length > 0 ? (
+          <Grid
+            templateColumns="repeat(2,1fr)"
+            gridTemplateRows="auto minmax(auto,300px)"
+            gap="32px"
+            height="500px"
+            overflowY="scroll"
+            p={4}
+          >
+            {problemList.map(problem => (
+              <ProblemCard
+                bg="dep_2"
+                key={problem.problemInfo.problemId}
+                problem={problem}
+                btnType={
+                  appSelector.selectedProblemList.findIndex(
+                    p =>
+                      p.problemInfo.problemId === problem.problemInfo.problemId
+                  ) >= 0
+                    ? "delete"
+                    : "add"
+                }
+                onBtnClick={
+                  appSelector.selectedProblemList.findIndex(
+                    p =>
+                      p.problemInfo.problemId === problem.problemInfo.problemId
+                  ) >= 0
+                    ? () => {
+                        dispatch(removeProblem(problem));
                         toast({
-                          title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
+                          title: `${problem.problemInfo.problemId}번 문제를 삭제했습니다.`,
                           position: "top",
                           isClosable: true,
-                          status: "error"
+                          status: "warning"
                         });
-                        return;
                       }
-                      dispatch(addProblem(problem));
-                      toast({
-                        title: `${problem.problemInfo.problemId}번 문제를 추가했습니다.`,
-                        position: "top",
-                        isClosable: true
-                      });
-                    }
-              }
-            />
-          ))}
-        </Grid>
+                    : () => {
+                        if (appSelector.cnt >= maxCnt) {
+                          toast({
+                            title: `선택할 수 있는 최대 갯수는 ${maxCnt}개 입니다!`,
+                            position: "top",
+                            isClosable: true,
+                            status: "error"
+                          });
+                          return;
+                        }
+                        dispatch(addProblem(problem));
+                        toast({
+                          title: `${problem.problemInfo.problemId}번 문제를 추가했습니다.`,
+                          position: "top",
+                          isClosable: true
+                        });
+                      }
+                }
+              />
+            ))}
+          </Grid>
+        ) : (
+          <Flex
+            height="500px"
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={4}
+            fontSize="3xl"
+            fontWeight="bold"
+          >
+            <Text>검색 결과가 없습니다.</Text>
+            <Text>검색어를 입력해주세요.</Text>
+          </Flex>
+        )}
+
         <ModalBody />
       </ModalContent>
     </Modal>

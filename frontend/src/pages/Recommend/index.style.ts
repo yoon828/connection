@@ -9,8 +9,7 @@ const StyledIcon = styled(RepeatIcon, {
     top: 120,
     right: 12,
     cursor: "pointer",
-    transition: "transform .6s",
-    _hover: { transform: "rotate(90deg)" }
+    transition: "transform .6s"
   }
 });
 

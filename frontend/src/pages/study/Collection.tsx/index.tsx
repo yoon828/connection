@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Flex, Text, useDisclosure, useToast } from "@chakra-ui/react";
 
+import { Link } from "react-router-dom";
 import StudyLayout from "../../../components/layout/StudyLayout";
 import BackButton from "../../../components/common/BackButton";
 import SearchModal from "../../../components/collection/SearchModal";
@@ -62,7 +63,24 @@ function Collection() {
           <Style.SearchIcon />
           <Text>검색하기</Text>
         </Style.SearchBox>
-        <ProblemList workbook={workbook} deleteProblem={deleteProblem} />
+        {workbook.length > 0 ? (
+          <ProblemList workbook={workbook} deleteProblem={deleteProblem} />
+        ) : (
+          <Flex
+            h="300px"
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            fontSize="2xl"
+            fontWeight="bold"
+          >
+            <Link to="/recommend">
+              <Text textDecoration="underline" _hover={{ opacity: 0.7 }}>
+                문제집이 비어있어요
+              </Text>
+            </Link>
+          </Flex>
+        )}
       </StudyLayout>
       <SearchModal
         isOpen={isOpen}
