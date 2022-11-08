@@ -69,6 +69,7 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
         </Box>
         <Grid
           templateColumns="repeat(2,1fr)"
+          gridTemplateRows="auto minmax(auto,300px)"
           gap="32px"
           height="500px"
           overflowY="scroll"
