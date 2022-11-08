@@ -7,7 +7,7 @@ public interface SolveService {
 
     boolean saveSolve(String problemId, String baekjoonId);
 
-    boolean saveSolve2(Long userId, Long problemId);
+    boolean saveSolve2(String baekjoonId, Long problemId);
 
     boolean saveSolveList(List<Integer> list, Long userId);
 }
