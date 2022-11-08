@@ -69,7 +69,8 @@ function StudyInfoModal({ isOpen, onClose, studyInfo }: StudyInfoModalProps) {
           studyCode: studyInfo.studyCode,
           studyId: studyInfo.studyId,
           studyRepository: studyInfo.studyRepository,
-          studyName: studyInfo.studyName
+          studyName: studyInfo.studyName,
+          studyRole: "MEMBER"
         })
       );
       navigator("/study", { replace: true });

@@ -8,14 +8,16 @@ export interface UserInfoType {
   tier: number;
   role: string;
   studyId: number;
-  studyRole: string;
+  studyRole: "MEMBER" | "LEADER";
   studyName: string;
   studyRepository: string;
   studyCode: string;
   ismember: boolean;
 }
-export type UserProfileType = Pick<UserInfoType, "name" | "imageUrl">;
-
+export type UserProfileType = Pick<
+  UserInfoType,
+  "name" | "imageUrl" | "studyRole"
+>;
 export interface ServerProblemType {
   problemId: number;
   title: string;
@@ -30,7 +32,8 @@ export interface ServerToClientEvents {
   ) => void;
   addParticipant: (
     newName: UserInfoType["name"],
-    newImageUrl: UserInfoType["imageUrl"]
+    newImageUrl: UserInfoType["imageUrl"],
+    studyRole: UserInfoType["studyRole"]
   ) => void;
   removeParticipant: (targetName: UserInfoType["name"]) => void;
   endStudy: () => void;
@@ -40,6 +43,14 @@ export interface ServerToClientEvents {
     problemNo: number,
     isAllSol: boolean
   ) => void;
+  newResult: (
+    results: {
+      name: string;
+      problem: number;
+      time: number | null;
+      imageUrl: string;
+    }[]
+  ) => void;
 }
 
 export interface ClientToServerEvents {
@@ -48,7 +59,8 @@ export interface ClientToServerEvents {
     name: UserInfoType["name"],
     imageUrl: UserInfoType["imageUrl"],
     bojId: string,
-    initParticipant: (userList: UserProfileType[]) => void
+    studyRole: UserInfoType["studyRole"],
+    initParticipant: (userList: UserProfileType[], isStudying: boolean) => void
   ) => void;
   startStudy: (
     studyId: string,
@@ -57,7 +69,11 @@ export interface ClientToServerEvents {
     callback: () => void
   ) => void;
   getSolvingInfo: (
-    callback: (problemList: ServerProblemType[], remainTime: number) => void
+    callback: (
+      problemList: ServerProblemType[],
+      remainTime: number,
+      allSol: boolean
+    ) => void
   ) => void;
   getResult: (
     callback: (
@@ -77,10 +93,12 @@ export interface SocketData {
   name: UserInfoType["name"];
   imageUrl: UserInfoType["imageUrl"];
   bojId: string;
+  studyRole: UserInfoType["studyRole"];
 }
 
 export enum PageViewState {
-  NumberSet,
+  Waiting,
+  // NumberSet,
   ProblemSet,
   TimeSet,
   Solving,

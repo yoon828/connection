@@ -60,7 +60,7 @@ function CreateChkModal({ isOpen, onClose, studyName }: CreateChkModalProps) {
     }
 
     if (!axios.isAxiosError(res)) {
-      dispatch(updateUserInfo(res.data));
+      dispatch(updateUserInfo({ ...res.data, studyRole: "LEADER" }));
       navigator("/study", { replace: true });
     }
   };
