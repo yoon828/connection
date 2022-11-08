@@ -12,8 +12,8 @@ function PrivateRoute({ auth, outlet }: PrivateRouteProps) {
   // 로그인x, 백준연동x, 깃허브 ismember x, extension x 인 경우 메인으로
   if (
     (!check && !information.backjoonId) ||
-    !information.ismember ||
-    !extension
+    !information.ismember
+    // !extension
   ) {
     return <Navigate to="/" />;
   }
