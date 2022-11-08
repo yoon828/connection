@@ -306,6 +306,7 @@ public class StudyServiceImpl implements StudyService {
         studyRepository.delete(studyEntity);
     }
 
+    @Transactional
     public boolean changeSolve(long userId){
         Optional<User> userEntityOptional = userRepository.findById(userId);
         if(userEntityOptional.isPresent()){
