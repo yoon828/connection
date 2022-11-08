@@ -1,11 +1,13 @@
 import {
   Box,
+  Flex,
   Grid,
   Input,
   Modal,
   ModalBody,
   ModalContent,
-  ModalOverlay
+  ModalOverlay,
+  Text
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
@@ -66,34 +68,50 @@ function SearchModal({
             onChange={e => setKeyword(e.target.value)}
           />
         </Box>
-        <Grid
-          templateColumns="repeat(2,1fr)"
-          gridTemplateRows="auto minmax(auto,300px)"
-          gap="32px"
-          height="500px"
-          overflowY="scroll"
-          p={4}
-        >
-          {problemList.map(problem => {
-            const exist =
-              workbook.findIndex(
-                p => p.problemInfo.problemId === problem.problemInfo.problemId
-              ) >= 0;
-            return (
-              <ProblemCard
-                bg="dep_2"
-                key={problem.problemInfo.problemId}
-                problem={problem}
-                btnType={exist ? "delete" : "add"}
-                onBtnClick={() => {
-                  console.log(exist);
-                  if (exist) deleteProblem(problem.problemInfo.problemId);
-                  else addProblem(problem);
-                }}
-              />
-            );
-          })}
-        </Grid>
+        {problemList.length > 0 ? (
+          <Grid
+            templateColumns="repeat(2,1fr)"
+            gridTemplateRows="auto minmax(auto,300px)"
+            gap="32px"
+            height="500px"
+            overflowY="scroll"
+            p={4}
+          >
+            {problemList.map(problem => {
+              const exist =
+                workbook.findIndex(
+                  p => p.problemInfo.problemId === problem.problemInfo.problemId
+                ) >= 0;
+              return (
+                <ProblemCard
+                  bg="dep_2"
+                  key={problem.problemInfo.problemId}
+                  problem={problem}
+                  btnType={exist ? "delete" : "add"}
+                  onBtnClick={() => {
+                    console.log(exist);
+                    if (exist) deleteProblem(problem.problemInfo.problemId);
+                    else addProblem(problem);
+                  }}
+                />
+              );
+            })}
+          </Grid>
+        ) : (
+          <Flex
+            height="500px"
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={4}
+            fontSize="3xl"
+            fontWeight="bold"
+          >
+            <Text>검색 결과가 없습니다.</Text>
+            <Text>검색어를 입력해주세요.</Text>
+          </Flex>
+        )}
+
         <ModalBody />
       </ModalContent>
     </Modal>

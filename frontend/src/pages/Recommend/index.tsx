@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { Flex, keyframes, Spinner } from "@chakra-ui/react";
 import StudyLayout from "../../components/layout/StudyLayout";
 import SideComponent, {
   RECOMMEND_TAPS
@@ -12,6 +13,7 @@ import Style from "./index.style";
 
 function Recommend() {
   const [recommends, setRecommends] = useState<null | GetRecommendRes>(null);
+  const [pending, setPending] = useState(false);
   const [selectedTap, setSelectedTap] = useState(0);
 
   const onTabClick: React.MouseEventHandler<HTMLDivElement> = e => {
@@ -22,15 +24,24 @@ function Recommend() {
   };
 
   const getAndSetRecommend = async () => {
+    setPending(true);
     const res = await getRecommend();
     setRecommends(res.data);
     console.log(res);
+    setPending(false);
   };
 
   useEffect(() => {
     getAndSetRecommend();
   }, []);
-
+  const animation = keyframes`
+  0%{
+    transform: rotate(90deg);
+  }
+  100% {
+      transform: rotate(450deg);
+  }
+`;
   return (
     <StudyLayout
       sideComponent={
@@ -39,11 +50,15 @@ function Recommend() {
       title={RECOMMEND_TAPS[selectedTap].label}
       description={RECOMMEND_TAPS[selectedTap].msg}
     >
-      <Style.StyledIcon onClick={getAndSetRecommend} />
+      <Style.StyledIcon
+        onClick={getAndSetRecommend}
+        animation={pending ? `${animation} ease-in-out infinite 1s` : "none"}
+        _hover={{ transform: pending ? "none" : "rotate(90deg)" }}
+      />
       {RECOMMEND_TAPS[selectedTap].category === "weak" && (
         <Tooltip recommends={recommends} />
       )}
-      {recommends && (
+      {recommends ? (
         <ProblemList
           problemList={
             recommends[
@@ -51,6 +66,10 @@ function Recommend() {
             ] as Problem[]
           }
         />
+      ) : (
+        <Flex justifyContent="center" alignItems="center" h="500px">
+          <Spinner color="main" size="xl" />
+        </Flex>
       )}
     </StudyLayout>
   );
