@@ -3,13 +3,12 @@ package com.ssafy.connection.service;
 import com.ssafy.connection.advice.RestException;
 import com.ssafy.connection.dto.*;
 import com.ssafy.connection.entity.ConnStudy;
+import com.ssafy.connection.entity.ConnWorkbook;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.entity.Study;
-import com.ssafy.connection.repository.ConnStudyRepository;
-import com.ssafy.connection.repository.SolveRepository;
-import com.ssafy.connection.repository.StudyRepository;
-import com.ssafy.connection.repository.SubjectRepository;
+import com.ssafy.connection.entity.Workbook;
+import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
@@ -37,14 +36,18 @@ public class StudyServiceImpl implements StudyService {
     private final TokenRepository tokenRepository;
     private final SolveRepository solveRepository;
     private final SubjectRepository subjectRepository;
+    private final WorkbookRepository workbookRepository;
+    private final ConnWorkbookRepository connWorkbookRepository;
 
-    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository, SolveRepository solveRepository, SubjectRepository subjectRepository) {
+    public StudyServiceImpl(UserRepository userRepository, StudyRepository studyRepository, ConnStudyRepository connStudyRepository, TokenRepository tokenRepository, SolveRepository solveRepository, SubjectRepository subjectRepository, WorkbookRepository workbookRepository, ConnWorkbookRepository connWorkbookRepository) {
         this.userRepository = userRepository;
         this.studyRepository = studyRepository;
         this.connStudyRepository = connStudyRepository;
         this.tokenRepository = tokenRepository;
         this.solveRepository = solveRepository;
         this.subjectRepository = subjectRepository;
+        this.workbookRepository = workbookRepository;
+        this.connWorkbookRepository = connWorkbookRepository;
     }
 
     @Override
@@ -298,11 +301,12 @@ public class StudyServiceImpl implements StudyService {
         
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserIdAndRole(userId, "LEADER").get();
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get(); // 스터디 정보
-        List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(connStudyEntity.getStudy().getStudyId()); // study에 참가한 스터디원 정보
+        Workbook workbookEntity = workbookRepository.findByStudy(studyEntity);
 
-        for (ConnStudy connStudy : connStudyList) {
-            connStudyRepository.delete(connStudy);
-        }
+        connWorkbookRepository.deleteAllByWorkbook(workbookEntity);
+        workbookRepository.deleteAllByStudy(studyEntity);
+        subjectRepository.deleteAllByStudy(studyEntity);
+        connStudyRepository.deleteAllByStudy(studyEntity);
         studyRepository.delete(studyEntity);
     }
 
