@@ -14,9 +14,11 @@ import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,7 +63,7 @@ public class SubjectServiceImpl implements SubjectService{
 //        subjectRepository.save(subject);
 //    }
     @Override
-    public ResponseEntity makeSubject(SubjectDto subjectDto, Long userId){
+    public ResponseEntity makeSubject(SubjectDto subjectDto, Long userId) throws IOException {
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         Study study = studyRepository.findByConnStudy(connStudy.get());
@@ -90,6 +92,9 @@ public class SubjectServiceImpl implements SubjectService{
         catch (Exception e){
             return new ResponseEntity<>(new ResponseDto("wrong parameter value"), HttpStatus.CONFLICT);
         }
+
+//        GitPushDto gitPushDto = GitPushDto.builder().userId(connStudy.get().getUser().getBackjoonId()).problemNo(problemList.).build();
+//        updateProblemReadme(gitPushDto);
 
         return new ResponseEntity<>(new ResponseDto("success"), HttpStatus.OK);
     }
@@ -280,7 +285,7 @@ public class SubjectServiceImpl implements SubjectService{
         String code = new String(Base64.encodeBase64(gitPushDto.getCode().getBytes()));
         String fileName = problemNo + "_" + githubId + "." + gitPushDto.getLang();
         
-        String createFileRequest = "{\"message\":\"" + "메세지" + "\"," +
+        String createFileRequest = "{\"message\":\"" + "created " + fileName + " automatically via \'<connection/>\'" + "\"," +
                 "\"content\":\""+ code +"\"}";
 
         try {
@@ -321,6 +326,9 @@ public class SubjectServiceImpl implements SubjectService{
                 }
 
                 String fileName_alt = problemNo + "_" + githubId + "_" + cnt + "." + gitPushDto.getLang();
+
+                createFileRequest = "{\"message\":\"" + "created " + fileName_alt + " automatically via \'<connection/>\'" + "\"," +
+                        "\"content\":\""+ code +"\"}";
                 try {
                     webClient.put()
                             .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName_alt)
@@ -332,6 +340,96 @@ public class SubjectServiceImpl implements SubjectService{
                 }
                 catch (WebClientResponseException e2) {
                     System.out.println("답이없네용");
+                }
+
+            }
+            else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
+        }
+
+
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
+
+//    @EventListener // 1
+    @Async
+    @Override
+    @Transactional
+    public ResponseEntity updateProblemReadme(SubjectDto subjectDto, Long userId) throws IOException {
+        List list = subjectDto.getProblemList();
+
+        String baekjoonId = userRepository.getById(userId).getBackjoonId();
+        for (int i = 0; i < list.size(); i++) {
+            GitPushDto gitPushDto = new GitPushDto();
+            gitPushDto.setProblemNo(list.get(i).toString());
+            gitPushDto.setUserId(baekjoonId);
+            updateProblemReadme(gitPushDto);
+        }
+
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
+
+//    @EventListener // 1
+//    @Async
+    @Override
+    @Transactional
+    public ResponseEntity updateProblemReadme(GitPushDto gitPushDto) throws IOException {
+        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
+        if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
+        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
+        long studyId = connStudy.get().getStudy().getStudyId();
+        String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
+        String githubId = connStudy.get().getUser().getGithubId();
+        String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
+
+        //파일 처리
+        System.out.println(gitPushDto.getProblemNo() + "이거 진행중");//=======-=-=567-=65-756=7-=+-
+        String code = new String(Base64.encodeBase64("리드미입니당".getBytes()));
+        String fileName = "README.md";
+        String problemNo = gitPushDto.getProblemNo();
+        String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
+                "\"content\":\""+ code +"\"}";
+
+        try {
+            webClient.put()
+                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(createFileRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
+        catch (WebClientResponseException e) {
+            System.out.println("한번터짐 " + e);
+            if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
+                //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
+                Map<String, Object> contents = (Map<String, Object>)webClient.get()
+                                            .uri("repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                                            .retrieve()
+                                            .bodyToMono(Object.class)
+                                            .block();
+                String sha = contents.get("sha").toString();
+                createFileRequest = "{" +
+                        "\"message\":\"" + "updated README.md automatically via \'<connection/>\'" + "\","
+                        + "\"content\":\""+ code +"\","
+                        + "\"sha\":\"" + sha + "\""
+                        + "}";
+                try {
+                    webClient.put()
+                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                            .bodyValue(createFileRequest)
+                            .retrieve()
+                            .bodyToMono(Void.class)
+                            .block();
+                }
+                catch (WebClientResponseException e2) {
+                    if(e2.getStatusCode().equals(HttpStatus.CONFLICT))
+                        return new ResponseEntity<>(new ResponseDto("same content"), HttpStatus.CONFLICT);
+                    System.out.println("같은 내용이라 업뎃 안됨" +e2);
+                    System.out.println(githubToken);
+                    System.out.println(sha);
+                    System.out.println(createFileRequest);
                 }
 
             }
