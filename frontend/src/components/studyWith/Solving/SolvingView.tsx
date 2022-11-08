@@ -1,5 +1,5 @@
 import { Center, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
@@ -18,19 +18,16 @@ type TimerProps = {
 
 function Timer({ initTime }: TimerProps) {
   const [time, setTime] = useState(initTime);
-  const [timerId, setTimerId] = useState<ReturnType<
-    typeof setTimeout
-  > | null>();
-
+  const timerId = useRef<NodeJS.Timeout>();
   useEffect(() => {
-    if (!timerId) {
-      const nextTimerId = setTimeout(() => {
-        setTimerId(null);
+    timerId.current = setInterval(() => {
+      if (time > 0) {
         setTime(prev => prev - 1);
-      }, 1000);
-      setTimerId(nextTimerId);
-    }
-  }, [time]);
+      } else {
+        clearInterval(timerId.current);
+      }
+    }, 1000);
+  }, []);
 
   return (
     <Text fontSize="100px" mt="60px" textAlign="center">
@@ -63,17 +60,10 @@ function SolvingView({
       setSolvingProblems(problemList);
       setIsLoading(false);
     });
-    socket.on("solvedByExtension", (bojId, problemNo, allSol) => {
+    socket.on("solvedByExtension", (bojId, problemList, allSol) => {
       if (baekjoonId === bojId) {
         if (allSol) onBtnClick();
-        setSolvingProblems(
-          solvingProblmes?.map(problem => {
-            if (problem.problemId === problemNo) {
-              return { ...problem, isSolved: true };
-            }
-            return problem;
-          })
-        );
+        setSolvingProblems(problemList);
       }
     });
   }, []);

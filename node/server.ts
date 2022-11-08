@@ -10,6 +10,7 @@ import {
   InterServerEvents,
   SocketData,
   UserProfileType,
+  ServerProblemType,
 } from "./socket.type";
 import moment from "moment";
 import fetch from "node-fetch";
@@ -87,6 +88,26 @@ const getUserList = async (studyId: string): Promise<UserProfileType[]> => {
   }));
 };
 
+const getSolvingInfo = (
+  studyId: string,
+  bojId: string
+): { problemList: ServerProblemType[]; isAllSol: boolean } => {
+  const studyInfo = studyInfos.get(studyId);
+  let isAllSol = false;
+  let solveCnt = 0;
+  const problemList = studyInfo!.problems.map((problem) => {
+    const isSolved = problem.solvedUser.includes(bojId);
+    if (isSolved) solveCnt += 1;
+    return {
+      ...problem,
+      isSolved,
+    };
+  });
+  if (solveCnt === problemList.length) isAllSol = true;
+
+  return { problemList, isAllSol };
+};
+
 app.post("/problem/submit", (req, res) => {
   const { userId, problemNo, submitNo, code, lang } = req.body;
   const problemId = +`${problemNo}`.trim();
@@ -106,10 +127,10 @@ app.post("/problem/submit", (req, res) => {
         }
       });
 
-      const allSol = cnt === problems.length;
-      io.to(studyId).emit("solvedByExtension", userId, problemId, allSol);
+      const { problemList, isAllSol } = getSolvingInfo(studyId, userId);
+      io.to(studyId).emit("solvedByExtension", userId, problemList, isAllSol);
 
-      if (allSol) {
+      if (isAllSol) {
         const studyInfo = studyInfos.get(studyId);
         if (studyInfo?.startTime) {
           console.log(studyInfo.startTime.diff(moment(), "seconds"));
@@ -213,20 +234,20 @@ io.on("connection", (socket) => {
     const bojId = socket.data.bojId as string;
     const userInfo = userInfos.get(socket.data.bojId as string);
     const studyInfo = studyInfos.get(userInfo!.studyId);
-    let isAllSol = false;
-    let solveCnt = 0;
-    const problemInfo = studyInfo!.problems.map((problem) => {
-      const isSolved = problem.solvedUser.includes(bojId);
-      if (isSolved) solveCnt += 1;
-      return {
-        ...problem,
-        isSolved,
-      };
-    });
-    if (solveCnt === problemInfo.length) isAllSol = true;
-
+    // let isAllSol = false;
+    // let solveCnt = 0;
+    // const problemInfo = studyInfo!.problems.map((problem) => {
+    //   const isSolved = problem.solvedUser.includes(bojId);
+    //   if (isSolved) solveCnt += 1;
+    //   return {
+    //     ...problem,
+    //     isSolved,
+    //   };
+    // });
+    // if (solveCnt === problemInfo.length) isAllSol = true;
+    const { problemList, isAllSol } = getSolvingInfo(userInfo!.studyId, bojId);
     callback(
-      problemInfo,
+      problemList,
       studyInfo!.duringMinute * 60 -
         moment().diff(studyInfo!.startTime, "seconds"),
       isAllSol
