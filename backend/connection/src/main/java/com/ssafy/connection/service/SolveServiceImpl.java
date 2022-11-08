@@ -86,20 +86,12 @@ public class SolveServiceImpl implements SolveService{
                         solveRepository.save(temp);
                         study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
                         studyRepository.save(study);
-                        try {
-                            subjectService.submitSubject(gitPushDto);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        this.pushGithub(gitPushDto);
                         break;
                     } else {
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        try {
-                            subjectService.submitSubject(gitPushDto);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        this.pushGithub(gitPushDto);
                         break;
                     }
                 } else {
@@ -107,11 +99,7 @@ public class SolveServiceImpl implements SolveService{
                     study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
                     solveRepository.save(solveEntity);
                     studyRepository.save(study);
-                    try {
-                        subjectService.submitSubject(gitPushDto);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    this.pushGithub(gitPushDto);
                     break;
                 }
             } else {
@@ -129,6 +117,14 @@ public class SolveServiceImpl implements SolveService{
         }
 
         return true;
+    }
+
+    public void pushGithub(GitPushDto gitPushDto){
+        try {
+            subjectService.submitSubject(gitPushDto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -159,20 +155,12 @@ public class SolveServiceImpl implements SolveService{
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
-            try {
-                subjectService.submitSubject(gitPushDto);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.pushGithub(gitPushDto);
         } else {
             solveEntity.setTime(LocalDateTime.now());
             solveEntity.setStatus(1);
             solveRepository.save(solveEntity);
-            try {
-                subjectService.submitSubject(gitPushDto);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.pushGithub(gitPushDto);
         }
 
         return true;
