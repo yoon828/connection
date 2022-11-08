@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Grid, Text, useDisclosure, useToast } from "@chakra-ui/react";
-import { Search2Icon } from "@chakra-ui/icons";
+import { Text, useDisclosure, useToast } from "@chakra-ui/react";
 
-import StudyLayout from "../../components/layout/StudyLayout";
-import BackButton from "../../components/common/BackButton";
-import ProblemCard from "../../components/common/ProblemCard";
-import SearchModal from "../../components/collection/SearchModal";
-import { Problem } from "../Recommend";
-import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
+import StudyLayout from "../../../components/layout/StudyLayout";
+import BackButton from "../../../components/common/BackButton";
+import SearchModal from "../../../components/collection/SearchModal";
+import {
+  addWorkbook,
+  deleteWorkbook,
+  getWorkbook
+} from "../../../api/workbook";
+import { Problem } from "../../../@types/Problem";
+import Style from "./index.style";
+import ProblemList from "../../../components/collection/ProblemList";
 
 function Collection() {
   const [workbook, setWorkbook] = useState<Problem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+
   const deleteProblem = async (problemId: number) => {
     const res = await deleteWorkbook(problemId);
     setWorkbook(prevWorkbook =>
@@ -27,6 +32,7 @@ function Collection() {
       status: "warning"
     });
   };
+
   const addProblem = async (problem: Problem) => {
     const res = await addWorkbook(problem.problemInfo.problemId);
     setWorkbook(prevWorkbook => [...prevWorkbook, problem]);
@@ -44,6 +50,7 @@ function Collection() {
     };
     fetch();
   }, []);
+
   return (
     <>
       <StudyLayout
@@ -51,33 +58,11 @@ function Collection() {
         title="스터디 문제집"
         description="스터디에서 담아놓은 문제집입니다."
       >
-        <Flex
-          borderRadius="20px"
-          w="200px"
-          p="3"
-          bg="dep_1"
-          ml="auto"
-          mb="6"
-          cursor="pointer"
-          gap="3"
-          boxShadow="0 4px 4px rgba(0,0,0,0.25)"
-          onClick={onOpen}
-        >
-          <Search2Icon w="6" h="6" />
-          <Text fontSize="lg" fontWeight="normal">
-            검색하기
-          </Text>
-        </Flex>
-        <Grid templateColumns="repeat(2,1fr)" gap="32px">
-          {workbook.map(problem => (
-            <ProblemCard
-              key={problem.problemInfo.problemId}
-              problem={problem}
-              btnType="delete"
-              onBtnClick={() => deleteProblem(problem.problemInfo.problemId)}
-            />
-          ))}
-        </Grid>
+        <Style.SearchBox onClick={onOpen}>
+          <Style.SearchIcon />
+          <Text>검색하기</Text>
+        </Style.SearchBox>
+        <ProblemList workbook={workbook} deleteProblem={deleteProblem} />
       </StudyLayout>
       <SearchModal
         isOpen={isOpen}
