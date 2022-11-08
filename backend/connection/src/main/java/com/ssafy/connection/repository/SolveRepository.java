@@ -50,4 +50,6 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
     @Query(value = "SELECT res.date, SUM(res.count)/res.cnt AS count FROM (SELECT DATE_FORMAT(s.time, '%Y-%m-01') AS date, COUNT(s.time) AS COUNT, s.user_id AS user, (SELECT COUNT(*) FROM conn_study WHERE study_id =?1) AS cnt FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND s.status IN (0,1) AND s.time BETWEEN  DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY DATE, user) res GROUP BY date;", nativeQuery = true)
     List<GetDateAndCountFloatInterface> findStudyAvgSolveByStudyId(long studyId); // 월별 스터디 해결 문제 평균 갯수
 
+    @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND (status = 0 OR status = 1)", nativeQuery = true)
+    List<Solve> findUncommonSolveByUserId(long userId);
 }

@@ -4,6 +4,8 @@ import com.ssafy.connection.advice.RestException;
 import com.ssafy.connection.dto.*;
 import com.ssafy.connection.entity.ConnStudy;
 import com.ssafy.connection.entity.ConnWorkbook;
+import com.ssafy.connection.entity.Problem;
+import com.ssafy.connection.entity.Solve;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Workbook;
 import com.ssafy.connection.repository.*;
@@ -306,6 +308,31 @@ public class StudyServiceImpl implements StudyService {
         subjectRepository.deleteAllByStudy(studyEntity);
         connStudyRepository.deleteAllByStudy(studyEntity);
         studyRepository.delete(studyEntity);
+    }
+
+    @Transactional
+    public boolean changeSolve(long userId){
+        Optional<User> userEntityOptional = userRepository.findById(userId);
+        if(userEntityOptional.isPresent()){
+            User userEntity = userEntityOptional.get();
+            // 유저의 과제, 스터디 solve entity를 가져온다.
+            List<Solve> solveList = solveRepository.findUncommonSolveByUserId(userId);
+            // 유저의 과제, 스터디 solve entity list를 돌면서
+            // 해당 solve entity의 userId와 problemId로 조회되는 일반 solve entity가 있으면 과제, 스터디 solve entity를 삭제
+            // 조회되지 않으면 status를 2로 바꿔서 update
+            for(Solve solveEntity : solveList){
+                Optional<Solve> solveCheck = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), solveEntity.getProblem().getProblemId());
+                if(solveCheck.isPresent()){
+                    solveRepository.delete(solveEntity);
+                } else {
+                    solveEntity.setStatus(2);
+                    solveRepository.save(solveEntity);
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
     @Override
