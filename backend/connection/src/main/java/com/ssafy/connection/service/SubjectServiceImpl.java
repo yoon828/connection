@@ -118,11 +118,6 @@ public class SubjectServiceImpl implements SubjectService{
         if(result.isEmpty()) {  //결과값없을때
             Map<String,Object> subjectMap_empty = new HashMap<>();
             List<Map<String,Object>> subjects = new ArrayList<>();
-            Map<String, Object> subjectInfo = new HashMap<>();
-            subjectInfo.put("problems", null);
-            subjectInfo.put("users", null);
-            subjectInfo.put("deadline", null);
-            subjects.add(subjectInfo);
             subjectMap_empty.put("subjects", subjects);
             subjectMap_empty.put("inProgress",false);
             return new ResponseEntity<>(subjectMap_empty, HttpStatus.OK);
