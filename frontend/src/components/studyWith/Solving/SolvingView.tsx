@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
+  ServerProblemType,
   ServerToClientEvents
 } from "../../../asset/data/socket.type";
+import { useAppSelector } from "../../../store/hooks";
 import getTime from "../../../utils/getTime";
 import NextBtn from "../NextBtn";
 import ViewTitle from "../ViewTitle";
@@ -40,18 +42,38 @@ function Timer({ initTime }: TimerProps) {
 type SolvingViewProps = {
   onBtnClick: () => void;
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+  solvingProblmes: ServerProblemType[];
+  setSolvingProblems: (promblems: ServerProblemType[]) => void;
 };
 
-function SolvingView({ onBtnClick, socket }: SolvingViewProps) {
+function SolvingView({
+  onBtnClick,
+  socket,
+  solvingProblmes,
+  setSolvingProblems
+}: SolvingViewProps) {
   const [isLaoding, setIsLoading] = useState(true);
   const [remainTime, setRemainTime] = useState(0);
-  const [problems, setProblems] = useState<ProblemBarProps[]>();
+  const baekjoonId = useAppSelector(({ auth }) => auth.information.backjoonId);
 
   useEffect(() => {
-    socket.emit("getSolvingInfo", (problemList, endTime) => {
-      setRemainTime(endTime - Date.now());
-      setProblems(problemList);
+    socket.emit("getSolvingInfo", (problemList, time) => {
+      setRemainTime(time);
+      setSolvingProblems(problemList);
       setIsLoading(false);
+    });
+    socket.on("solvedByExtension", (bojId, problemNo, allSol) => {
+      if (allSol) onBtnClick();
+      if (baekjoonId === bojId) {
+        setSolvingProblems(
+          solvingProblmes?.map(problem => {
+            if (problem.problemId === problemNo) {
+              return { ...problem, isSolved: true };
+            }
+            return problem;
+          })
+        );
+      }
     });
   }, []);
 
@@ -75,7 +97,7 @@ function SolvingView({ onBtnClick, socket }: SolvingViewProps) {
       />
       {!isLaoding && (
         <>
-          {problems?.map(problem => (
+          {solvingProblmes?.map(problem => (
             <ProblemBar
               key={problem.problemId}
               title={problem.title}
