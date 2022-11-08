@@ -14,12 +14,12 @@ import React, { useEffect, useState } from "react";
 import ProblemCard from "./ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
 import { searchProblem } from "../../api/problem";
-import { Problem } from "../../pages/Recommend";
 import {
   addProblem,
   removeProblem
 } from "../../store/ducks/selectedProblem/selectedProblemSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { Problem } from "../../@types/Problem";
 
 interface SearchModalTypes {
   isOpen: boolean;
