@@ -40,7 +40,7 @@ export interface ServerToClientEvents {
   startSolve: () => void;
   solvedByExtension: (
     bojId: string,
-    problemNo: number,
+    problemList: ServerProblemType[],
     isAllSol: boolean
   ) => void;
   newResult: (

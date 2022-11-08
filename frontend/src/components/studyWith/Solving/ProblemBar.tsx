@@ -31,7 +31,13 @@ function ProblemBar({ problemId, title, isSolved }: ProblemBarProps) {
       >
         <Center>{title}</Center>
         <Center>
-          <Button bg="transparent" _hover={{ background: "transparent" }}>
+          <Button
+            bg="transparent"
+            _hover={{ background: "transparent" }}
+            onClick={() =>
+              window.open(`https://www.acmicpc.net/problem/${problemId}`)
+            }
+          >
             문제풀기
           </Button>
         </Center>
