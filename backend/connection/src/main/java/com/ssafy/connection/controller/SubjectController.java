@@ -56,7 +56,7 @@ public class SubjectController {
                                                     "wrong parameter value : 해당문제 존재하지 않거나 데드라인 잘못됨")
 //    @ApiResponse(responseCode = "409", description = "성공")
     @PostMapping("")
-    public ResponseEntity makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) throws IOException {
         if(subjectDto.getDeadline() == null) return new ResponseEntity<>(new ResponseDto("wrong parameter value"), HttpStatus.CONFLICT);
         ResponseEntity result = null;
         try{
@@ -64,6 +64,17 @@ public class SubjectController {
             result = subjectService.makeSubject(subjectDto, userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        if(result.getStatusCode().equals(HttpStatus.OK)){
+            subjectService.updateProblemReadme(subjectDto, userPrincipal.getId());
+//            List list = subjectDto.getProblemList();
+//            String baekjoonId = "lastbest"; //하드코딩=-=7-=-78=-7=8-8=7-=8
+//            for (int i = 0; i < list.size(); i++) {
+//                GitPushDto gitPushDto = new GitPushDto();
+//                gitPushDto.setProblemNo(list.get(i).toString());
+//                gitPushDto.setUserId(baekjoonId);
+//                subjectService.updateProblemReadme(gitPushDto);
+//            }
         }
         return result;
     }
