@@ -113,6 +113,47 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
+    public boolean saveSolve2(Long userId, Long problemId) {
+        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userId, problemId);
+        if(studySolveEntity.isPresent()){
+            Solve temp = studySolveEntity.get();
+            temp.setTime(LocalDateTime.now());
+            solveRepository.save(temp);
+            return true;
+        }
+
+        Solve solveEntity = new Solve();
+
+        Optional<User> userEntity = userRepository.findById(userId);
+        if(userEntity.isPresent()){
+            solveEntity.setUser(userEntity.get());
+        } else {
+            return false;
+        }
+
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
+        if(problemEntity.isPresent()){
+            solveEntity.setProblem(problemEntity.get());
+        } else {
+            return false;
+        }
+
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userId, problemId);
+        if(normalSolveEntity.isPresent()){
+            Solve temp = normalSolveEntity.get();
+            temp.setStatus(1);
+            temp.setTime(LocalDateTime.now());
+            solveRepository.save(temp);
+        } else {
+            solveEntity.setTime(LocalDateTime.now());
+            solveEntity.setStatus(1);
+            solveRepository.save(solveEntity);
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean saveSolveList(List<Integer> list, Long userId) {
         for(Integer problemId : list){
             Optional<Solve> prevSolveEntity = solveRepository.findNormalByUserAndProblem(userId, Long.valueOf(problemId));

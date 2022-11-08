@@ -217,6 +217,10 @@ public class ProblemServiceImpl implements ProblemService{
                 }
             }
         }
+        Collections.shuffle(returnList);
+        if(returnList.size() >= 100){
+            return returnList.subList(0, 100);
+        }
         return returnList;
     }
 
