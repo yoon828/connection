@@ -261,6 +261,7 @@ public class StudyServiceImpl implements StudyService {
                     .bodyToMono(Void.class)
                     .block();
 
+            changeSolve(quitUserEntity.getUserId());
             studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()-1);
             connStudyRepository.delete(connStudyEntity);
             studyRepository.save(studyEntity);
@@ -302,6 +303,11 @@ public class StudyServiceImpl implements StudyService {
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserIdAndRole(userId, "LEADER").get();
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get(); // 스터디 정보
         Workbook workbookEntity = workbookRepository.findByStudy(studyEntity);
+        List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
+
+        for (ConnStudy connStudy : connStudyList) {
+            changeSolve(connStudy.getUser().getUserId());
+        }
 
         connWorkbookRepository.deleteAllByWorkbook(workbookEntity);
         workbookRepository.deleteAllByStudy(studyEntity);
