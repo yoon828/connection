@@ -101,15 +101,14 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
     }
 
-    @ApiOperation(value = "문제 제출 2", notes = "스터디 같이 풀기 후 node 서버에서 problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
+    @ApiOperation(value = "문제 제출 2", notes = "스터디 같이 풀기 후 node 서버에서 userId와 problemId를 입력받아 풀이 여부를 저장")
     @PostMapping("/submit/study")
-    public ResponseEntity<ResponseDto> submitStudyProblem(@RequestBody List<Map<String, Object>> list){
-        for(Map<String, Object> map : list){
-            long userId = (long) (int) map.get("userId");
-            List<Long> problemIdList = (List<Long>) map.get("problemIdList");
+    public ResponseEntity<ResponseDto> submitStudyProblem(@RequestParam(value = "userId") Long userId, @RequestParam(value = "problemId") Long problemId){
+        boolean result = solveService.saveSolve2(userId, problemId);
+        if(result){
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
     }
 
     @ApiOperation(value = "문제 풀이 등록", notes = "유저 회원가입 시, 유저의 문제 풀이 목록을 저장")
