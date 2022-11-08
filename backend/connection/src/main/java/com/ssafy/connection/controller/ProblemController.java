@@ -85,11 +85,7 @@ public class ProblemController {
             throw new RuntimeException(e);
         }
         List<ProblemReturnDto> returnList = problemService.searchProblem(keyword, userPrincipal);
-        if(returnList.size() > 0){
-            return ResponseEntity.status(HttpStatus.OK).body(returnList);
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(returnList);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(returnList);
     }
 
     @ApiOperation(value = "문제 제출", notes = "problemId와 baekjoonId를 입력받아 풀이 여부를 저장")
