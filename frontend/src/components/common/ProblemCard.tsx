@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon, LinkIcon } from "@chakra-ui/icons";
 import { Problem } from "../../@types/Problem";
+import DIFFICULTY from "../../utils/DIFFICULTY";
 
 interface CardButtonProps {
   btnType: "delete" | "add";
@@ -38,18 +39,19 @@ function ProblemCard({
   const { problemInfo, tagList, difficulty } = problem;
   const { problemId, title, level } = problemInfo;
   return (
-    <Box
+    <Flex
+      direction="column"
       bg={bg}
       borderRadius="20px"
-      p="20px"
+      p="20px 20px 0 20px"
       boxShadow="0 4px 4px rgba(0,0,0,0.25)"
       _hover={{
         transform: "scale(1.03)",
         transition: "transform ease-out .5s"
       }}
-      maxH="250px"
+      // maxH="250px"
     >
-      <Box borderBottom="1px" borderColor="border_gray" pb="20px" mb="20px">
+      <Box pb="20px" mb="auto">
         <Flex
           justifyContent="space-between"
           mt="10px"
@@ -85,11 +87,34 @@ function ProblemCard({
           ))}
         </Flex>
       </Box>
-      <Box>
-        {/* <Text mb="10px">소요시간 : {elapsedTime}</Text> */}
-        <Text>체감 난이도 : {difficulty}</Text>
-      </Box>
-    </Box>
+      <Flex
+        justifyContent="space-between"
+        py="20px"
+        borderTop="1px"
+        borderColor="border_gray"
+      >
+        <Flex gap={2} p={1}>
+          <Text alignSelf="flex-start">백준 난이도 </Text>
+          <img
+            style={{ paddingTop: 5 }}
+            width="15px"
+            height="100%"
+            src={`https://static.solved.ac/tier_small/${level}.svg`}
+            alt={DIFFICULTY[level]}
+          />
+        </Flex>
+        <Flex gap={2} p={1}>
+          <Text alignSelf="flex-start">체감 난이도 </Text>
+          <img
+            style={{ paddingTop: 5 }}
+            width="15px"
+            height="100%"
+            src={`https://static.solved.ac/tier_small/${difficulty}.svg`}
+            alt={DIFFICULTY[difficulty]}
+          />
+        </Flex>
+      </Flex>
+    </Flex>
   );
 }
 
