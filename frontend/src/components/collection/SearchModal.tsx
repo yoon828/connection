@@ -40,7 +40,7 @@ function SearchModal({
     const fetch = async () => {
       const res = await searchProblem(debouncedKeyword);
       console.log(res);
-      setProblemList(res.data);
+      setProblemList(res.data.slice(0, 10));
     };
     fetch();
   }, [debouncedKeyword]);
