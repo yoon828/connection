@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 public class GitPushDto {
     private String submitNo;
-    private String userId;
-    private String problemNo;
+    private String userId;  //리드미에 필요
+    private String problemNo;   //리드미에 필요
     private String code;
     private String lang;
 }
