@@ -14,7 +14,7 @@ import {
   useColorMode,
   useDisclosure
 } from "@chakra-ui/react";
-import { Link as ReactLink, useLocation } from "react-router-dom";
+import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
 import LogoLight from "../asset/img/logo_light.svg";
@@ -40,6 +40,7 @@ function Header() {
   const location = useLocation();
   const auth = useAppSelector(state => state.auth) as InitialStateType;
   const dispatch = useAppDispatch();
+  const navigator = useNavigate();
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
@@ -59,7 +60,8 @@ function Header() {
     );
     const { information, extension, check } = auth;
     if (check) {
-      if (!information.backjoonId || !information.ismember || !extension) {
+      // if (!information.backjoonId || !information.ismember || !extension) {
+      if (!information.backjoonId || !information.ismember) {
         AllModal.onOpen();
       } else {
         AllModal.onClose();
@@ -69,6 +71,7 @@ function Header() {
 
   const logout = () => {
     dispatch(resetUserInfo());
+    navigator("/");
   };
 
   return (
@@ -145,7 +148,8 @@ function Header() {
                 <BackjoonModal code={code} />
               ) : !auth.information.ismember ? (
                 <GithubModal />
-              ) : !auth.extension ? (
+              ) : // ) : !auth.extension ? (
+              false ? (
                 <ExtensionModal onClose={AllModal.onClose} />
               ) : null
             }

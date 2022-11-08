@@ -1,16 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Problem } from "../../../pages/Recommend";
-import { getMyWorkbook, getRecommends } from "./selectedProblemThunk";
 
-interface InitialStateType {
-  selectedProblemList: Problem[];
-  recommends: Problem[];
-  showedRecommends: Problem[];
-  myWorkbook: Problem[];
-  showedMyWorkbook: Problem[];
-  selectedTab: number;
-  cnt: number;
-}
+import { Problem } from "../../../@types/Problem";
+import { InitialStateType, ProblemActionType } from "./selectedProblem.type";
+import { getMyWorkbook, getRecommends } from "./selectedProblemThunk";
 
 const initialState: InitialStateType = {
   selectedProblemList: [],
@@ -22,70 +14,50 @@ const initialState: InitialStateType = {
   cnt: 0
 };
 
+const filter = (list: Problem[], problemId: number) =>
+  list.filter(problem => problem.problemInfo.problemId !== problemId);
+
+const isExist = (list: Problem[], problemId: number) =>
+  list.findIndex(problem => problem.problemInfo.problemId === problemId) >= 0;
+
 export const selectedProblemSlice = createSlice({
   name: "selectedProblem",
   initialState,
   reducers: {
-    addProblem: (state, action) => {
-      if (
-        state.selectedProblemList.findIndex(
-          problem =>
-            problem.problemInfo.problemId ===
-            action.payload.problemInfo.problemId
-        ) >= 0
-      )
-        return;
+    addProblem: (state, action: ProblemActionType) => {
+      const { problemId } = action.payload.problemInfo;
+
+      if (isExist(state.selectedProblemList, problemId)) return;
+
       state.selectedProblemList = [
         ...state.selectedProblemList,
         action.payload
       ];
-      state.showedRecommends = [
-        ...state.showedRecommends.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
-        )
-      ];
-      state.showedMyWorkbook = [
-        ...state.showedMyWorkbook.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
-        )
-      ];
+      state.showedRecommends = [...filter(state.showedRecommends, problemId)];
+      state.showedMyWorkbook = [...filter(state.showedMyWorkbook, problemId)];
       state.cnt = state.selectedProblemList.length;
     },
-    removeProblem: (state, action) => {
+    removeProblem: (state, action: ProblemActionType) => {
+      const { problemId } = action.payload.problemInfo;
+
       state.selectedProblemList = [
-        ...state.selectedProblemList.filter(
-          problem =>
-            problem.problemInfo.problemId !==
-            action.payload.problemInfo.problemId
-        )
+        ...filter(state.selectedProblemList, problemId)
       ];
+
       const recommendItem = state.recommends.find(
-        problem =>
-          problem.problemInfo.problemId === action.payload.problemInfo.problemId
-      );
-      const myWorkbookItem = state.myWorkbook.find(
-        problem =>
-          problem.problemInfo.problemId === action.payload.problemInfo.problemId
+        problem => problem.problemInfo.problemId === problemId
       );
       if (recommendItem)
         state.showedRecommends = [recommendItem, ...state.showedRecommends];
+
+      const myWorkbookItem = state.myWorkbook.find(
+        problem => problem.problemInfo.problemId === problemId
+      );
       if (myWorkbookItem)
         state.showedMyWorkbook = [myWorkbookItem, ...state.showedMyWorkbook];
       state.cnt = state.selectedProblemList.length;
     },
-    reset: state => {
-      state.selectedProblemList = [];
-      state.recommends = [];
-      state.showedRecommends = [];
-      state.myWorkbook = [];
-      state.showedMyWorkbook = [];
-      state.selectedTab = 0;
-      state.cnt = 0;
-    }
+    reset: () => initialState
   },
   extraReducers: builder => {
     builder.addCase(getRecommends.fulfilled, (state, { payload }) => {

@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import ProblemCard from "../common/ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
 import { searchProblem } from "../../api/problem";
-import { Problem } from "../../pages/Recommend";
+import { Problem } from "../../@types/Problem";
 
 interface SearchModalTypes {
   isOpen: boolean;
