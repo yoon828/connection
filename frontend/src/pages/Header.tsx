@@ -10,8 +10,6 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
-  Modal,
-  ModalOverlay,
   Spacer,
   useColorMode,
   useDisclosure
@@ -19,11 +17,16 @@ import {
 import { Link as ReactLink, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { MoonIcon } from "@chakra-ui/icons";
-import JoinModal from "../components/join/JoinModal";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { resetUserInfo, setUserInfo } from "../store/ducks/auth/authSlice";
+import { resetUserInfo, updateExtension } from "../store/ducks/auth/authSlice";
+import BackjoonModal from "../components/modal/BackjoonModal";
+import GithubModal from "../components/modal/GithubModal";
+import ExtensionModal from "../components/modal/ExtensionModal";
+import AuthModal from "../components/modal/AuthModal";
+import checkExtension from "../utils/checkExtension";
+import { InitialStateType } from "../store/ducks/auth/auth.type";
 
 interface menuType {
   title: string;
@@ -32,12 +35,10 @@ interface menuType {
 
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLogin, setIsLogin] = useState(false);
-  const [isBJ, setIsBJ] = useState(false);
-
+  const [code, setCode] = useState("");
+  const AllModal = useDisclosure();
   const location = useLocation();
-  const auth = useAppSelector(state => state.auth);
+  const auth = useAppSelector(state => state.auth) as InitialStateType;
   const dispatch = useAppDispatch();
 
   const menus: menuType[] = [
@@ -47,24 +48,28 @@ function Header() {
   ];
 
   useEffect(() => {
-    setIsLogin(auth.check);
-    if (auth.check) {
-      if (auth.information?.backjoonId) {
-        setIsBJ(true);
-      }
-    }
-  }, [auth]);
+    setCode(v4().substring(0, 6).toUpperCase());
+  }, []);
 
   useEffect(() => {
-    if (!isBJ && isLogin) {
-      // 모달창 띄우기 추후 주석 해제
-      // onOpen();
+    // 확장 프로그램 확인
+    checkExtension(
+      () => dispatch(updateExtension(true)),
+      () => dispatch(updateExtension(false))
+    );
+    const { information, extension, check } = auth;
+    if (check) {
+      if (!information.backjoonId || !information.ismember || !extension) {
+        AllModal.onOpen();
+      } else {
+        AllModal.onClose();
+      }
     }
-  }, [isBJ, isLogin, location]);
+  }, [auth, location]);
 
-  function logout() {
+  const logout = () => {
     dispatch(resetUserInfo());
-  }
+  };
 
   return (
     <Flex
@@ -108,7 +113,7 @@ function Header() {
             <MoonIcon />
           </Button>
 
-          {isLogin ? (
+          {auth.check ? (
             <Menu>
               <MenuButton>
                 <Image
@@ -132,11 +137,19 @@ function Header() {
               <Button>로그인</Button>
             </Link>
           )}
-          <Button onClick={onOpen}>백준</Button>
-          <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
-            <ModalOverlay />
-            <JoinModal onClose={onClose} />
-          </Modal>
+          <AuthModal
+            isOpen={AllModal.isOpen}
+            onClose={AllModal.onClose}
+            content={
+              !auth.information.backjoonId ? (
+                <BackjoonModal code={code} />
+              ) : !auth.information.ismember ? (
+                <GithubModal />
+              ) : !auth.extension ? (
+                <ExtensionModal onClose={AllModal.onClose} />
+              ) : null
+            }
+          />
         </Center>
       </Center>
     </Flex>

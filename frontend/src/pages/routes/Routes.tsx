@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter,
   Route,
@@ -22,8 +22,7 @@ export default function Routes() {
   const auth = useAppSelector(state => state.auth);
 
   const defaultPrivateRouteProps: Omit<PrivateRouteProps, "outlet"> = {
-    isAuth: auth.check,
-    isBJ: !!auth.information?.backjoonId
+    auth
   };
 
   return (

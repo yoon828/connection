@@ -16,5 +16,6 @@ export interface UserInfoType {
 }
 export interface InitialStateType {
   check: boolean;
+  extension: boolean;
   information: UserInfoType;
 }

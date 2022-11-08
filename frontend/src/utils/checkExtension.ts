@@ -18,7 +18,7 @@ export default function checkExtension(
       }
     );
   } catch (e) {
-    window.open(process.env.REACT_APP_EXTENSION_URL as string, "_blank");
+    // window.open(process.env.REACT_APP_EXTENSION_URL as string, "_blank");
     onError(e);
   }
 }
