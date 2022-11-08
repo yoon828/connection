@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { getSubject } from "../../../api/study";
