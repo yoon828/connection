@@ -11,6 +11,7 @@ import TimeSetView from "../components/studyWith/TimeSet/TimeSetView";
 import {
   ClientToServerEvents,
   PageViewState,
+  ServerProblemType,
   ServerToClientEvents,
   UserProfileType
 } from "../asset/data/socket.type";
@@ -37,7 +38,7 @@ function StudyWith() {
         })
   );
 
-  const { studyId, name, imageUrl } = useAppSelector(
+  const { studyId, name, imageUrl, backjoonId } = useAppSelector(
     ({ auth: { information } }) => information
   );
 
@@ -46,6 +47,9 @@ function StudyWith() {
   const [isLoading, setIsLoading] = useState(false);
   const [isBoss, setIsBoss] = useState(false);
   const [participants, setPartcipants] = useState<UserProfileType[]>([]);
+  const [solvingProblmes, setSolvingProblems] = useState<ServerProblemType[]>(
+    []
+  );
   const navigate = useNavigate();
 
   const bossView: React.FunctionComponentElement<undefined>[] = [
@@ -69,6 +73,10 @@ function StudyWith() {
       key={PageViewState.Solving}
       onBtnClick={() => setStep(PageViewState.Result)}
       socket={socket}
+      solvingProblmes={solvingProblmes}
+      setSolvingProblems={(problems: ServerProblemType[]) =>
+        setSolvingProblems(problems)
+      }
     />,
     <ResultView
       key={PageViewState.Result}
@@ -77,7 +85,7 @@ function StudyWith() {
     />,
     <ReviewView
       key={PageViewState.Review}
-      socket={socket}
+      solvingProblmes={solvingProblmes}
       onBtnClick={() => navigate("/study", { replace: true })}
     />
   ];
@@ -86,9 +94,10 @@ function StudyWith() {
     socket.connect();
     socket.emit(
       "enter",
-      studyId,
+      `${studyId}`,
       name,
       imageUrl,
+      backjoonId as string,
       (userList: UserProfileType[]) => setPartcipants(userList)
     );
 

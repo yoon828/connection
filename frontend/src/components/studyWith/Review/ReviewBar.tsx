@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import BOJ_LEVEL from "../../../asset/data/baekjoon";
 
 type ReviewBarProps = {
-  name: string;
-  id: number;
+  title: string;
+  problemId: number;
   level: number;
-  setTiers: (id: number, tier: string) => void;
+  setTiers: (problemId: number, tier: string) => void;
 };
 
-function ReviewBar({ id, name, level, setTiers }: ReviewBarProps) {
+function ReviewBar({ problemId, title, level, setTiers }: ReviewBarProps) {
   const defaultLevel = level < 2 ? 2 : level > 29 ? 29 : level;
   const optArr = Array(5)
     .fill(defaultLevel - 2)
@@ -30,9 +30,9 @@ function ReviewBar({ id, name, level, setTiers }: ReviewBarProps) {
     >
       <Center>
         <Text w="60px" mr="12px" borderRight="1px solid #b8b8b8">
-          {id}
+          {problemId}
         </Text>
-        <Text>{name}</Text>
+        <Text>{title}</Text>
       </Center>
       <Center>
         <Select
@@ -42,7 +42,7 @@ function ReviewBar({ id, name, level, setTiers }: ReviewBarProps) {
           cursor="pointer"
           value={defaultValue}
           onChange={e => {
-            setTiers(id, e.target.value);
+            setTiers(problemId, e.target.value);
             setDefaultValue(+e.target.value);
           }}
         >

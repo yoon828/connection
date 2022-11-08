@@ -68,7 +68,7 @@ function TimeSetView({
     });
     socket.emit(
       "startStudy",
-      studyId,
+      `${studyId}`,
       problems.map(problem => ({
         problemId: problem.problemId,
         title: problem.title,

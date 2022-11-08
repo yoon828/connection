@@ -6,31 +6,24 @@ import axios from "axios";
 import NextBtn from "../NextBtn";
 import ReviewBar from "./ReviewBar";
 import ViewTitle from "../ViewTitle";
-import {
-  ClientToServerEvents,
-  ProblemType,
-  ServerToClientEvents
-} from "../../../asset/data/socket.type";
 import { registReview } from "../../../api/studyJoin";
+import { ServerProblemType } from "../../../asset/data/socket.type";
 
 type ReviewViewProps = {
   onBtnClick: () => void;
-  socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+  solvingProblmes: ServerProblemType[];
 };
 
-function ReviewView({ onBtnClick, socket }: ReviewViewProps) {
+function ReviewView({ onBtnClick, solvingProblmes }: ReviewViewProps) {
   const [tiers, setTiers] = useState<Map<number, string>>(new Map());
-  const [problems, setProblems] = useState<ProblemType[]>();
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    socket.emit("getSolvingInfo", (problemList, _) => {
-      setProblems(problemList);
-      const initTier = new Map<number, string>();
-      problemList.map(problem =>
-        initTier.set(problem.problemId, `${problem.level}`)
-      );
-      setTiers(initTier);
-    });
+    const initTier = new Map<number, string>();
+    solvingProblmes.map(problem =>
+      initTier.set(problem.problemId, `${problem.level}`)
+    );
+    setTiers(initTier);
+    setIsLoading(false);
   }, []);
 
   const handleOnBtnClick = async () => {
@@ -39,14 +32,11 @@ function ReviewView({ onBtnClick, socket }: ReviewViewProps) {
       reviews.push({ problemId: `${key}`, difficulty: value });
     });
     const res = await registReview(reviews);
-    // if(!axios.re)
     if (!axios.isAxiosError(res)) {
-      // console.log(res.data);
       if (res.data.msg === "success") {
         onBtnClick();
       }
     }
-    // console.log(reviews);
   };
 
   return (
@@ -59,13 +49,13 @@ function ReviewView({ onBtnClick, socket }: ReviewViewProps) {
         highLight=""
         desSize={20}
       />
-      {problems &&
-        problems.map(problem => (
+      {!isLoading &&
+        solvingProblmes.map(problem => (
           <ReviewBar
             level={problem.level}
             key={problem.problemId}
-            name={problem.title}
-            id={problem.problemId}
+            title={problem.title}
+            problemId={problem.problemId}
             setTiers={(id: number, tier: string) =>
               setTiers(prev => new Map(prev).set(id, tier))
             }
