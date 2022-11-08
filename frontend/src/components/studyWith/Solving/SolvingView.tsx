@@ -63,8 +63,8 @@ function SolvingView({
       setIsLoading(false);
     });
     socket.on("solvedByExtension", (bojId, problemNo, allSol) => {
-      if (allSol) onBtnClick();
       if (baekjoonId === bojId) {
+        if (allSol) onBtnClick();
         setSolvingProblems(
           solvingProblmes?.map(problem => {
             if (problem.problemId === problemNo) {
