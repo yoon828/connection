@@ -300,38 +300,22 @@ public class SubjectServiceImpl implements SubjectService{
         }
         catch (WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
-                //422 터졌으니 레포에서 Get 가져오자요 번호있는지
-                List<Map<String, Object>> contents = (List<Map<String, Object>>)webClient.get()
-                                            .uri("repos/{owner}/{repo}/contents/{path}", "co-nnection", repositoryName, problemNo)
-                                            .retrieve()
-                                            .bodyToMono(Object.class)
-                                            .block();
+                //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
+                Map<String, Object> contents = (Map<String, Object>)webClient.get()
+                        .uri("repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .retrieve()
+                        .bodyToMono(Object.class)
+                        .block();
+                String sha = contents.get("sha").toString();
+                createFileRequest = "{" +
+                        "\"message\":\"" + "updated " + fileName + " automatically via \'<connection/>\'" + "\","
+                        + "\"content\":\""+ code +"\","
+                        + "\"sha\":\"" + sha + "\""
+                        + "}";
 
-                int cnt = 0;
-                for (Map<String,Object> map:contents) {
-                    String name_t = map.get("name").toString();
-//                    name_t.substring(0,problemNo.length());
-
-                    String fname = name_t.substring(0,problemNo.length()+githubId.length()+1);
-                    String noext = FilenameUtils.getBaseName(name_t);
-                    String ext = FilenameUtils.getExtension(name_t);
-                    if(fname.equals(problemNo + "_" + githubId) && ext.equals(gitPushDto.getLang())){
-                        int no = 0;
-                        if(noext.length() <= problemNo.length()+githubId.length()+1)
-                            no = 1;
-                        else
-                            no = Integer.parseInt(noext.substring(problemNo.length()+githubId.length()+2));
-                        if(no>=cnt) cnt = no+1;
-                    }
-                }
-
-                String fileName_alt = problemNo + "_" + githubId + "_" + cnt + "." + gitPushDto.getLang();
-
-                createFileRequest = "{\"message\":\"" + "created " + fileName_alt + " automatically via \'<connection/>\'" + "\"," +
-                        "\"content\":\""+ code +"\"}";
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName_alt)
+                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
