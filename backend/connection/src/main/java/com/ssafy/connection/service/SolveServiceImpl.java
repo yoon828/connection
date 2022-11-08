@@ -113,8 +113,10 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
-    public boolean saveSolve2(Long userId, Long problemId) {
-        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userId, problemId);
+    public boolean saveSolve2(String baekjoonId, Long problemId) {
+        User userEntity = userRepository.findByBackjoonId(baekjoonId);
+
+        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), problemId);
         if(studySolveEntity.isPresent()){
             Solve temp = studySolveEntity.get();
             temp.setTime(LocalDateTime.now());
@@ -123,13 +125,7 @@ public class SolveServiceImpl implements SolveService{
         }
 
         Solve solveEntity = new Solve();
-
-        Optional<User> userEntity = userRepository.findById(userId);
-        if(userEntity.isPresent()){
-            solveEntity.setUser(userEntity.get());
-        } else {
-            return false;
-        }
+        solveEntity.setUser(userEntity);
 
         Optional<Problem> problemEntity = problemRepository.findById(problemId);
         if(problemEntity.isPresent()){
@@ -138,7 +134,7 @@ public class SolveServiceImpl implements SolveService{
             return false;
         }
 
-        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userId, problemId);
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
         if(normalSolveEntity.isPresent()){
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
