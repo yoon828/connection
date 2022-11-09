@@ -51,6 +51,7 @@ public class OrganizationServiceImpl implements OrganizationService{
                     .bodyToMono(Void.class)
                     .block();
         } catch (Exception e) {
+            System.out.println("오가니제이션 초대"+e);
             throw new RuntimeException(e);
         }
     }
