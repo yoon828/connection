@@ -29,8 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
-//    private final String adminGithubToken = "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";
-//    private WebClient webClient = WebClient.create("https://api.github.com");
+    private WebClient webClient = WebClient.create("https://api.github.com");
     private final UserRepository userRepository;
     private final OrganizationService organizationService;
     
@@ -90,6 +89,20 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                     .githubId(oAuth2UserInfo.getId())
                     .role(Role.USER)
                     .build();
+
+        if(user.getImageUrl().isEmpty()) { // Github image_url이 null인 경우
+
+            GithubUserDto githubUserDto = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path(String.format("/search/users"))
+                            .queryParam("q", "user:"+user.getGithubId())
+                            .build())
+                    .retrieve()
+                    .bodyToMono(GithubUserDto.class)
+                    .block();
+
+            user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+        }
 
         return userRepository.save(user);
     }
