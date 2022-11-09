@@ -70,8 +70,10 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
             System.out.println("깃헙아이디" + githubId);
             System.out.println(user.getImageUrl());
+            System.out.println(oAuth2UserInfo.getImageUrl());
             System.out.println("ㅇ");
-            if(user.getImageUrl().equals(null)) { // Github image_url이 null인 경우
+
+            if(user.getImageUrl() == null) { // Github image_url이 null인 경우
                 System.out.println("이프문");
                 GithubUserDto githubUserDto = webClient.get()
                         .uri(uriBuilder -> uriBuilder
