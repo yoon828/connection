@@ -56,10 +56,15 @@ function Assignment() {
       ]
     };
     const res = await postSubject(body);
-    if (res.data.statusCode === "ACCEPTED") {
+    if (res.data.msg === "success") {
       navigate("/study");
     } else {
-      alert("에러가 발생했습니다. 다시 시도해주세요.");
+      toast({
+        title: `에러가 발생했습니다. 다시 시도해주세요.`,
+        position: "top",
+        isClosable: true,
+        status: "error"
+      });
     }
   };
   return (
@@ -73,7 +78,12 @@ function Assignment() {
         <Style.Container>
           <Style.Top>
             <Style.TopText>과제 기간</Style.TopText>
-            <Style.DurationInput type="date" value={startDate} readOnly />
+            <Style.DurationInput
+              type="date"
+              value={startDate}
+              readOnly
+              cursor="not-allowed"
+            />
             <Style.TopText>~</Style.TopText>
             <Style.DurationInput
               type="date"
