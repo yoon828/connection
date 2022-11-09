@@ -5,8 +5,10 @@ import com.ssafy.connection.entity.Workbook;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface WorkbookRepository extends JpaRepository<Workbook, Long> {
-    Workbook findByStudy(Study studyEntity);
+    Optional<Workbook> findByStudy(Study studyEntity);
     void deleteAllByStudy(Study study);
 }

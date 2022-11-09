@@ -305,7 +305,7 @@ public class StudyServiceImpl implements StudyService {
         
         ConnStudy connStudyEntity = connStudyRepository.findByUser_UserIdAndRole(userId, "LEADER").get();
         Study studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get(); // 스터디 정보
-        Workbook workbookEntity = workbookRepository.findByStudy(studyEntity);
+        Workbook workbookEntity = workbookRepository.findByStudy(studyEntity).get();
         List<ConnStudy> connStudyList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId());
 
         for (ConnStudy connStudy : connStudyList) {

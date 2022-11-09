@@ -146,7 +146,7 @@ public class AuthService {
             if(connStudy.isPresent()) {
                 Study study = studyRepository.findByConnStudy(connStudy.get());
 
-                Workbook workbook = workbookRepository.findByStudy(study);
+                Workbook workbook = workbookRepository.findByStudy(study).get();
 
                 //workbook optional로 받지 않아도 괜찮은가
                 connWorkbookRepository.deleteAllByWorkbook(workbook);

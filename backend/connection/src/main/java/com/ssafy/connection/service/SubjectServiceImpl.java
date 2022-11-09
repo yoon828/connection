@@ -279,7 +279,7 @@ public class SubjectServiceImpl implements SubjectService{
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
         //파일 처리
-        String problemNo = gitPushDto.getProblemNo();
+        String problemNo = gitPushDto.getProblemNo().trim();
         String code = new String(Base64.encodeBase64(gitPushDto.getCode().getBytes()));
         String fileName = problemNo + "_" + githubId + "." + gitPushDto.getLang();
         

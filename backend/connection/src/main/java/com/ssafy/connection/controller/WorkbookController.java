@@ -47,6 +47,8 @@ public class WorkbookController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already exist"));
             case 2:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
+            case -1:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("no study"));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("fail"));
     }
@@ -67,8 +69,10 @@ public class WorkbookController {
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
             case 0:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already delete"));
-            case -1:
+            case -2:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
+            case -1 :
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("no study"));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("fail"));
     }
