@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ReviewService {
-    int saveReview(List<Map<String, Object>> map);
+    int saveReview(String beakjoonId, List<Map<String, Object>> map);
 
     int getAvgDifficulty(ProblemDto problemDto);
 }
