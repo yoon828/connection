@@ -141,6 +141,9 @@ public class SubjectServiceImpl implements SubjectService{
                 
                 int cnt = 0;
                 for (int k = 0; k < subjectCnts.get(i); k++) {
+                    System.out.println("디버그");
+                    System.out.println(startIdx + " " + j + " " + k + " " + userCnt);
+                    System.out.println(result.get(startIdx + j + k * (int)userCnt)[4].toString());
                     if(!result.get(startIdx + j + k * (int)userCnt)[4].toString().equals("0"))
                         cnt++;
                 }
