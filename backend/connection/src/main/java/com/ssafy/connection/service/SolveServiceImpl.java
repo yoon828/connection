@@ -69,8 +69,16 @@ public class SolveServiceImpl implements SolveService{
         List<Subject> curSubjectList = subjectRepository.findAllByStudyDesc(study.getStudyId());
 
         if(curSubjectList.size() == 0){
-            solveEntity.setStatus(2);
-            solveRepository.save(solveEntity);
+            Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+            if(solveEntityPrev.isPresent()){
+                Solve temp = solveEntityPrev.get();
+                temp.setTime(LocalDateTime.now());
+                temp.setStatus(2);
+                solveRepository.save(temp);
+            } else {
+                solveEntity.setStatus(2);
+                solveRepository.save(solveEntity);
+            }
             return true;
         }
 
@@ -156,7 +164,7 @@ public class SolveServiceImpl implements SolveService{
             return false;
         }
 
-        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), Long.valueOf(gitPushDto.getProblemNo()));
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), Long.valueOf(gitPushDto.getProblemNo().trim()));
         if(normalSolveEntity.isPresent()){
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
