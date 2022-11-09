@@ -9,6 +9,7 @@ import {
   ServerToClientEvents
 } from "../../../asset/data/socket.type";
 import { useAppSelector } from "../../../store/hooks";
+import popper from "../../../utils/popper";
 
 type ResultViewProps = {
   onBtnClick: () => void;
@@ -22,6 +23,7 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
     socket.emit("getResult", setResults);
     socket.on("newResult", newResult => {
       setResults(newResult);
+      popper();
     });
   }, []);
   return (

@@ -2,7 +2,6 @@ import { Box, Center, Flex, Image, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { v4 } from "uuid";
 import getTime from "../../../utils/getTime";
-import popper from "../../../utils/popper";
 
 export type ResultBarProps = {
   imageUrl: string;
@@ -19,8 +18,6 @@ function ResultBar({
   isMe,
   imageUrl
 }: ResultBarProps & { rank: number; isMe: boolean }) {
-  popper();
-
   return (
     <Center
       w="640px"

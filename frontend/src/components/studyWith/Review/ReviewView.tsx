@@ -8,6 +8,7 @@ import ReviewBar from "./ReviewBar";
 import ViewTitle from "../ViewTitle";
 import { registReview } from "../../../api/studyJoin";
 import { ServerProblemType } from "../../../asset/data/socket.type";
+import { useAppSelector } from "../../../store/hooks";
 
 type ReviewViewProps = {
   onBtnClick: () => void;
@@ -17,6 +18,9 @@ type ReviewViewProps = {
 function ReviewView({ onBtnClick, solvingProblmes }: ReviewViewProps) {
   const [tiers, setTiers] = useState<Map<number, string>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
+  const bojId = useAppSelector(
+    ({ auth }) => auth.information.backjoonId
+  ) as string;
   useEffect(() => {
     const initTier = new Map<number, string>();
     solvingProblmes.map(problem =>
@@ -31,7 +35,7 @@ function ReviewView({ onBtnClick, solvingProblmes }: ReviewViewProps) {
     tiers.forEach((value, key) => {
       reviews.push({ problemId: `${key}`, difficulty: value });
     });
-    const res = await registReview(reviews);
+    const res = await registReview(reviews, bojId);
     if (!axios.isAxiosError(res)) {
       if (res.data.msg === "success") {
         onBtnClick();

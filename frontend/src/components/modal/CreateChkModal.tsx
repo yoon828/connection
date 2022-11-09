@@ -66,7 +66,12 @@ function CreateChkModal({ isOpen, onClose, studyName }: CreateChkModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="2xl"
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay />
       <ModalContent p="20px">
         <ModalHeader fontSize="32px">스터디 생성</ModalHeader>
