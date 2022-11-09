@@ -69,6 +69,8 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             String githubId = user.getGithubId();
 
             System.out.println("깃헙아이디" + githubId);
+            System.out.println(user.getImageUrl());
+            System.out.println("ㅇ");
             if(user.getImageUrl().equals(null)) { // Github image_url이 null인 경우
                 System.out.println("이프문");
                 GithubUserDto githubUserDto = webClient.get()
@@ -86,7 +88,7 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                 userRepository.save(user);
                 System.out.println("유저저장");
             }
-
+            System.out.println("이프문아래");
             organizationService.joinOrganization(user.getUserId());
             System.out.println("조인");
         }
