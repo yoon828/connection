@@ -64,6 +64,21 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+
+            if(user.getImageUrl().isEmpty()) { // Github image_url이 null인 경우
+                GithubUserDto githubUserDto = webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(String.format("/search/users"))
+                                .queryParam("q", "user:"+user.getGithubId())
+                                .build())
+                        .retrieve()
+                        .bodyToMono(GithubUserDto.class)
+                        .block();
+
+                user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+                userRepository.save(user);
+            }
+
             organizationService.joinOrganization(user.getUserId());
         }
 
