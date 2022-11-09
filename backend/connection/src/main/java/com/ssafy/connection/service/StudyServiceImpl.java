@@ -241,8 +241,8 @@ public class StudyServiceImpl implements StudyService {
 
                 connStudyEntity = connStudyRepository.findByUser_UserId(quitUserId).get();
 
-                if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, connStudyEntity.getStudy().getStudyId(), "READER").isEmpty())
-                    throw new RestException(HttpStatus.BAD_REQUEST, "Not study reader");
+                if (connStudyRepository.findByUser_UserIdAndStudy_StudyIdAndRole(userId, connStudyEntity.getStudy().getStudyId(), "LEADER").isEmpty())
+                    throw new RestException(HttpStatus.BAD_REQUEST, "Not study leader");
 
 //안쓰길래                studyLeaderEntity = userRepository.findById(userId).get();
                 studyEntity = studyRepository.findById(connStudyEntity.getStudy().getStudyId()).get();
