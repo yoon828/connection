@@ -130,8 +130,11 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
             connStudyRepository.save(connStudy);
+            Workbook workbook = new Workbook();
+            workbook.setWorkbookName(study.getStudyName());
+            workbook.setStudy(study);
+            workbookRepository.save(workbook);
             StudyInfoReturnDto createdStudy = StudyInfoReturnDto.of(study);
-
             return createdStudy;
         } catch (Exception e) {
             throw new RuntimeException(e);
