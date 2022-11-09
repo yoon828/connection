@@ -92,7 +92,7 @@ public class WorkbookController {
             return ResponseEntity.status(HttpStatus.OK).body(returnMap);
         } else {
             returnMap.put("msg", "empty");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(returnMap);
+            return ResponseEntity.status(HttpStatus.OK).body(returnMap);
         }
     }
 
