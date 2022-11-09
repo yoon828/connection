@@ -65,11 +65,13 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
 
+            String githubId = user.getGithubId();
+
             if(user.getImageUrl().isEmpty()) { // Github image_url이 null인 경우
                 GithubUserDto githubUserDto = webClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path(String.format("/search/users"))
-                                .queryParam("q", "user:"+user.getGithubId())
+                                .queryParam("q", "user:"+githubId)
                                 .build())
                         .retrieve()
                         .bodyToMono(GithubUserDto.class)
