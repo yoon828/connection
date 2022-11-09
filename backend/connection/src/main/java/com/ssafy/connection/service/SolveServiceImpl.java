@@ -67,6 +67,13 @@ public class SolveServiceImpl implements SolveService{
         ConnStudy connStudy = connStudyRepository.findByUser(user);
         Study study = studyRepository.findByConnStudy(connStudy);
         List<Subject> curSubjectList = subjectRepository.findAllByStudyDesc(study.getStudyId());
+
+        if(curSubjectList.size() == 0){
+            solveEntity.setStatus(2);
+            solveRepository.save(solveEntity);
+            return true;
+        }
+
         LocalDateTime curDeadLine = curSubjectList.get(0).getDeadline();
 
         for(Subject subject : curSubjectList){

@@ -124,8 +124,8 @@ public class ProblemController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "list", value = "문제에 대한 리뷰", required = true)
     })
-    @PostMapping("/review")
-    public ResponseEntity<ResponseDto> saveReview(@RequestParam("beakjoonId") String beakjoonId, @RequestBody List<Map<String, Object>> list){
+    @PostMapping("/review/{beakjoonId}")
+    public ResponseEntity<ResponseDto> saveReview(@PathVariable("beakjoonId") String beakjoonId, @RequestBody List<Map<String, Object>> list){
         int result = reviewService.saveReview(beakjoonId, list);
         switch (result){
             case 1:

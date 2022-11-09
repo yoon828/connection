@@ -393,7 +393,7 @@ public class StudyServiceImpl implements StudyService {
         List<StudyRankingInterface> studyRanking = studyRepository.findStudyRanking();
         Map<String, Object> map = new HashMap<>();
 
-        int ranking = 0;
+        int ranking = 1;
         int add = 0;
         int beforeScore = 0;
 
