@@ -56,7 +56,7 @@ public class SolveServiceImpl implements SolveService{
         Solve solveEntity = new Solve();
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         solveEntity.setUser(user);
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo()));
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().trim()));
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
@@ -75,7 +75,7 @@ public class SolveServiceImpl implements SolveService{
                 break;
             }
 
-            if(subject.getProblem().getProblemId() == Long.parseLong(gitPushDto.getProblemNo()) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
+            if(subject.getProblem().getProblemId() == Long.parseLong(gitPushDto.getProblemNo().trim()) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
 
                 Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
                 if(solveEntityPrev.isPresent()){
@@ -131,7 +131,7 @@ public class SolveServiceImpl implements SolveService{
     public boolean saveSolve2(GitPushDto gitPushDto) {
         User userEntity = userRepository.findByBackjoonId(gitPushDto.getUserId());
 
-        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), Long.parseLong(gitPushDto.getProblemNo()));
+        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), Long.parseLong(gitPushDto.getProblemNo().trim()));
         if(studySolveEntity.isPresent()){
             Solve temp = studySolveEntity.get();
             temp.setTime(LocalDateTime.now());
@@ -142,7 +142,7 @@ public class SolveServiceImpl implements SolveService{
         Solve solveEntity = new Solve();
         solveEntity.setUser(userEntity);
 
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo()));
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().trim()));
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
