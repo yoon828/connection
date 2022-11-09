@@ -64,10 +64,13 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            System.out.println("레지스터유저");
 
             String githubId = user.getGithubId();
 
+            System.out.println("깃헙아이디" + githubId);
             if(user.getImageUrl().equals(null)) { // Github image_url이 null인 경우
+                System.out.println("이프문");
                 GithubUserDto githubUserDto = webClient.get()
                         .uri(uriBuilder -> uriBuilder
                                 .path(String.format("/search/users"))
@@ -76,12 +79,16 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                         .retrieve()
                         .bodyToMono(GithubUserDto.class)
                         .block();
-
+                System.out.println("잘가져왔음");
+                System.out.println(githubUserDto.getItems().get(0).getAvatar_url());
                 user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+                System.out.println("세터햇음");
                 userRepository.save(user);
+                System.out.println("유저저장");
             }
 
             organizationService.joinOrganization(user.getUserId());
+            System.out.println("조인");
         }
 
         //깃허브 토큰 저장
