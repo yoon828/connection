@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, ComponentWithAs, IconProps } from "@chakra-ui/react";
+import { Box, Button, ComponentWithAs, IconProps } from "@chakra-ui/react";
 
 type SlideArrowProps = {
   onClick: () => void;
@@ -12,7 +12,7 @@ export default function SlideArrow({
   isDisabled,
   Icon
 }: SlideArrowProps) {
-  return (
+  return !isDisabled ? (
     <Button
       onClick={onClick}
       w="30px"
@@ -25,5 +25,7 @@ export default function SlideArrow({
         _dark={{ color: `${isDisabled ? "gray.900" : "gray.100"} ` }}
       />
     </Button>
+  ) : (
+    <Box w="30px" />
   );
 }

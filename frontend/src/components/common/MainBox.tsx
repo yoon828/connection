@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { v4 } from "uuid";
 import TMP from "../../asset/img/tmp.png";
 import { BoxDataProp } from "../../asset/data/main";
@@ -10,8 +12,16 @@ interface MainBoxProps {
 }
 
 function MainBox({ dir, data }: MainBoxProps) {
+  useEffect(() => {
+    AOS.init();
+  }, []);
   return (
-    <Flex my="100px" w="100%" flexDir={dir === "right" ? "row" : "row-reverse"}>
+    <Flex
+      my="100px"
+      w="100%"
+      flexDir={dir === "right" ? "row" : "row-reverse"}
+      data-aos={dir === "right" ? "fade-right" : "fade-left"}
+    >
       <Box w="50%">
         <Image src={TMP} alt="info_img" w="380px" />
       </Box>

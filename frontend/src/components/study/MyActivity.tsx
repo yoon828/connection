@@ -84,10 +84,10 @@ function PercentChart({ title, content }: PercentChartProps) {
         />
         <Box flexDir="column" mr="20px">
           <Text>
-            내가 푼 {title} 수 :{content.my}
+            총 {title} 수 : {content.total}
           </Text>
           <Text>
-            총 {title} 수 : {content.total}
+            내가 푼 {title} 수 :{content.my}
           </Text>
         </Box>
       </Center>

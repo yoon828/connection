@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
-import { MoonIcon } from "@chakra-ui/icons";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -27,6 +26,7 @@ import ExtensionModal from "../components/modal/ExtensionModal";
 import AuthModal from "../components/modal/AuthModal";
 import checkExtension from "../utils/checkExtension";
 import { InitialStateType } from "../store/ducks/auth/auth.type";
+import DarkmodeButton from "../components/darkmode";
 
 interface menuType {
   title: string;
@@ -60,8 +60,7 @@ function Header() {
     );
     const { information, extension, check } = auth;
     if (check) {
-      // if (!information.backjoonId || !information.ismember || !extension) {
-      if (!information.backjoonId || !information.ismember) {
+      if (!information.backjoonId || !information.ismember || !extension) {
         AllModal.onOpen();
       } else {
         AllModal.onClose();
@@ -104,6 +103,7 @@ function Header() {
                 color={location.pathname === menu.link ? "main" : ""}
                 _hover={{}}
                 fontWeight="bold"
+                fontSize={18}
               >
                 {menu.title}
               </Link>
@@ -112,10 +112,9 @@ function Header() {
         </Center>
         <Spacer />
         <Center p="14px" flex={1} minW="170px">
-          <Button mr="14px" onClick={toggleColorMode}>
-            <MoonIcon />
-          </Button>
-
+          <Center position="relative" mr="10px" onClick={toggleColorMode}>
+            <DarkmodeButton />
+          </Center>
           {auth.check ? (
             <Menu>
               <MenuButton>
@@ -148,8 +147,7 @@ function Header() {
                 <BackjoonModal code={code} />
               ) : !auth.information.ismember ? (
                 <GithubModal />
-              ) : // ) : !auth.extension ? (
-              false ? (
+              ) : !auth.extension ? (
                 <ExtensionModal onClose={AllModal.onClose} />
               ) : null
             }
