@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDisclosure } from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { deleteStudy, getMember, quitStudy } from "../../../api/study";
@@ -20,11 +20,12 @@ interface StatSeriesType {
 export interface MemberType {
   userId: number;
   name: string;
+  imageUrl: string;
   series: StatSeriesType[];
 }
 interface ConfirmStateType {
   msg: string;
-  onConfirmHandler: () => void;
+  onConfirmHandler: () => Promise<void> | null;
 }
 
 function Management() {
@@ -37,6 +38,7 @@ function Management() {
       return null;
     }
   });
+  const toast = useToast();
   const [members, setMembers] = useState<MemberType[]>([]);
   const auth = useAppSelector(state => state.auth);
   const isBoss = auth.information?.studyRole === "LEADER";
@@ -53,15 +55,24 @@ function Management() {
     setConfirmState({
       msg: `정말 ${isBoss ? "해체" : "탈퇴"}하시겠습니까?`,
       async onConfirmHandler() {
-        if (isBoss) {
-          const res = await deleteStudy();
-          console.log(res);
-          return;
+        try {
+          if (isBoss) {
+            const res = await deleteStudy();
+            console.log(res);
+          } else {
+            const res = await quitStudy();
+            console.log(res);
+          }
+          dispatch(getUserInfo());
+          navigate("/study");
+        } catch (error) {
+          toast({
+            title: "요청중 에러가 발생했습니다.",
+            status: "error",
+            position: "top",
+            isClosable: true
+          });
         }
-        const res = await quitStudy();
-        console.log(res);
-        dispatch(getUserInfo());
-        navigate("/");
       }
     });
     onOpen();
@@ -70,9 +81,18 @@ function Management() {
     setConfirmState({
       msg: `정말 ${name}님을 추방하시겠습니까?`,
       async onConfirmHandler() {
-        const res = await quitStudy(id);
-        console.log(res);
-        getAndSetMembers();
+        try {
+          const res = await quitStudy(id);
+          console.log(res);
+          getAndSetMembers();
+        } catch (error) {
+          toast({
+            title: "요청중 에러가 발생했습니다.",
+            status: "error",
+            position: "top",
+            isClosable: true
+          });
+        }
       }
     });
     onOpen();

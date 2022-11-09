@@ -1,8 +1,10 @@
 import React from "react";
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
+
 import useChartOption from "../../hooks/useChartOption";
 import { MemberType } from "../../pages/study/Management";
+import { useAppSelector } from "../../store/hooks";
 
 interface MemberTableProps {
   members: MemberType[];
@@ -11,17 +13,24 @@ interface MemberTableProps {
 }
 
 function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
+  const auth = useAppSelector(state => state.auth);
   const chartOption = useChartOption();
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
-      {members.map((member, idx) => (
+      {members.map(member => (
         <Box bg="dep_1" key={member.userId}>
           <Flex bg="dep_2" p={2} textAlign="center">
-            <Text flexGrow={1} borderRight="1px" borderColor="border_gray">
-              No {idx + 1}
-            </Text>
+            <img
+              src={member.imageUrl}
+              alt={member.name}
+              width="24px"
+              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                e.currentTarget.src =
+                  "https://avatars.githubusercontent.com/u/48246705?s=40&v=4";
+              }}
+            />
             <Text flexGrow={3}>{member.name}</Text>
-            {isBoss && (
+            {isBoss && member.userId !== auth.information.userId && (
               <Text
                 flexGrow={1}
                 color="red"
