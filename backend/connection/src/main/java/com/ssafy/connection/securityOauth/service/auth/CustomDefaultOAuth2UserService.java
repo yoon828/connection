@@ -91,17 +91,21 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                     .build();
 
         if(user.getImageUrl().isEmpty()) { // Github image_url이 null인 경우
+            try{
+                GithubUserDto githubUserDto = webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(String.format("/search/users"))
+                                .queryParam("q", "user:"+user.getGithubId())
+                                .build())
+                        .retrieve()
+                        .bodyToMono(GithubUserDto.class)
+                        .block();
 
-            GithubUserDto githubUserDto = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path(String.format("/search/users"))
-                            .queryParam("q", "user:"+user.getGithubId())
-                            .build())
-                    .retrieve()
-                    .bodyToMono(GithubUserDto.class)
-                    .block();
-
-            user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+                user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+            }
+            catch(Exception e) {
+                user.setImageUrl("https://avatars.githubusercontent.com/u/116149938");
+            }
         }
 
         return userRepository.save(user);
