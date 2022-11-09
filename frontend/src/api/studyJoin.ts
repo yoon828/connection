@@ -88,12 +88,13 @@ export const joinStudy = async (
 };
 
 export const registReview = async (
-  reviews: RegistReviewReq
+  reviews: RegistReviewReq,
+  bojId: string
 ): Promise<
   AxiosResponse<{ msg: string }, RegistReviewReq> | AxiosError<ErrMsgType, null>
 > => {
   try {
-    const res = await api.post(`/problem/review`, reviews);
+    const res = await api.post(`/problem/review/${bojId}`, reviews);
     return res;
   } catch (error) {
     const e = error as AxiosError | Error;

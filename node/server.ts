@@ -42,9 +42,7 @@ const io = new Server<
 
 instrument(io, { auth: false });
 
-httpServer.listen(8000, () => {
-  console.log("listening!!");
-});
+httpServer.listen(8000, () => {});
 
 interface ProblemInfoType {
   title: string;
@@ -56,13 +54,7 @@ interface StudyInfoType {
   startTime: moment.Moment | null;
   problems: ProblemInfoType[];
   duringMinute: number;
-  finishedUser: {
-    name: string;
-    imageUrl: string;
-    problem: number;
-    time: number | null;
-  }[];
-  notFinishedUser: {
+  users: {
     name: string;
     imageUrl: string;
     problem: number;
@@ -129,29 +121,34 @@ app.post("/problem/submit", (req, res) => {
 
       const { problemList, isAllSol } = getSolvingInfo(studyId, userId);
       io.to(studyId).emit("solvedByExtension", userId, problemList, isAllSol);
-
+      const studyInfo = studyInfos.get(studyId);
       if (isAllSol) {
-        const studyInfo = studyInfos.get(studyId);
         if (studyInfo?.startTime) {
           console.log(studyInfo.startTime.diff(moment(), "seconds"));
-          studyInfo.finishedUser.push({
-            name,
-            imageUrl,
-            problem: cnt,
-            time: moment().diff(studyInfo.startTime, "seconds"),
+          studyInfo.users.forEach((user) => {
+            if (user.name === name) {
+              user.time = moment().diff(studyInfo.startTime, "seconds");
+            }
           });
-
-          studyInfo.notFinishedUser = studyInfo.notFinishedUser.filter(
-            (user) => user.name !== name
-          );
-          io.to(studyId).emit("newResult", [
-            ...studyInfo.finishedUser,
-            ...studyInfo.notFinishedUser,
-          ]);
+          io.to(studyId).emit("newResult", [...studyInfo.users]);
         }
+      } else {
+        const studyInfo = studyInfos.get(studyId);
+        studyInfo?.users.forEach((user) => {
+          if (user.name === name) {
+            user.problem = cnt;
+          }
+        });
       }
     }
   }
+  console.log({
+    submitNo,
+    userId,
+    problemNo,
+    code,
+    lang,
+  });
   fetch(`https://k7c202.p.ssafy.io/api/problem/submit/study`, {
     method: "POST",
     headers: {
@@ -164,7 +161,7 @@ app.post("/problem/submit", (req, res) => {
       code,
       lang,
     }),
-  });
+  }).then(() => console.log("백에 전송 성공"));
 
   res.sendStatus(200);
 });
@@ -188,10 +185,6 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected-123--!!");
-  });
-
   socket.on("startStudy", async (studyId, problemList, time, callback) => {
     console.log("startStudy", studyId, problemList, time);
     const loginedUser = await getUserList(studyId);
@@ -199,8 +192,7 @@ io.on("connection", (socket) => {
       startTime: moment(),
       problems: problemList.map((problem) => ({ ...problem, solvedUser: [] })),
       duringMinute: time,
-      finishedUser: [],
-      notFinishedUser: loginedUser.map((user) => ({
+      users: loginedUser.map((user) => ({
         ...user,
         problem: 0,
         time: null,
@@ -212,17 +204,13 @@ io.on("connection", (socket) => {
     setTimeout(() => {
       const studyInfo = studyInfos.get(studyId);
       if (studyInfo) {
-        studyInfo.notFinishedUser.forEach((user) => {
-          studyInfo.finishedUser.push({
-            ...user,
-            time: studyInfo.duringMinute * 60,
-          });
+        studyInfo.users = studyInfo.users.map((user) => {
+          if (!user.time) {
+            return { ...user, time: studyInfo.duringMinute * 60 };
+          }
+          return user;
         });
-        studyInfo.notFinishedUser = [];
-        io.to(studyId).emit("newResult", [
-          ...studyInfo.finishedUser,
-          ...studyInfo.notFinishedUser,
-        ]);
+        io.to(studyId).emit("newResult", [...studyInfo.users]);
         io.to(`${studyId}`).emit("endStudy");
         studyInfo.startTime = null;
       }
@@ -234,17 +222,6 @@ io.on("connection", (socket) => {
     const bojId = socket.data.bojId as string;
     const userInfo = userInfos.get(socket.data.bojId as string);
     const studyInfo = studyInfos.get(userInfo!.studyId);
-    // let isAllSol = false;
-    // let solveCnt = 0;
-    // const problemInfo = studyInfo!.problems.map((problem) => {
-    //   const isSolved = problem.solvedUser.includes(bojId);
-    //   if (isSolved) solveCnt += 1;
-    //   return {
-    //     ...problem,
-    //     isSolved,
-    //   };
-    // });
-    // if (solveCnt === problemInfo.length) isAllSol = true;
     const { problemList, isAllSol } = getSolvingInfo(userInfo!.studyId, bojId);
     callback(
       problemList,
@@ -257,6 +234,6 @@ io.on("connection", (socket) => {
   socket.on("getResult", (callback) => {
     const userInfo = userInfos.get(socket.data.bojId as string);
     const studyInfo = studyInfos.get(userInfo!.studyId);
-    callback([...studyInfo!.finishedUser, ...studyInfo!.notFinishedUser]);
+    callback([...studyInfo!.users]);
   });
 });
