@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -124,13 +125,15 @@ public class ProblemController {
             @ApiImplicitParam(name = "list", value = "문제에 대한 리뷰", required = true)
     })
     @PostMapping("/review")
-    public ResponseEntity<ResponseDto> saveReview(@RequestBody List<Map<String, Object>> list){
-        int result = reviewService.saveReview(list);
+    public ResponseEntity<ResponseDto> saveReview(@RequestParam("beakjoonId") String beakjoonId, @RequestBody List<Map<String, Object>> list){
+        int result = reviewService.saveReview(beakjoonId, list);
         switch (result){
             case 1:
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
             case -1:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("wrong parameter value"));
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
+            case 0:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("duplicate"));
         }
         return null;
     }
