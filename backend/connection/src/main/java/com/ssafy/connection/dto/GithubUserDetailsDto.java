@@ -12,4 +12,6 @@ public class GithubUserDetailsDto {
     private String login;
 
     private long id;
+
+    private String avatar_url;
 }
