@@ -139,12 +139,12 @@ public class SubjectController {
         return subjectService.submitSubject(gitPushDto);
     }
 
-    @ApiOperation(value = "과제 리드미", notes = "")
-    @ApiResponse(responseCode = "200", description = "{msg : success} 성공")
-    @ApiResponse(responseCode = "409", description = "{msg : empty} 가입된 스터디정보 없거나 백준 or 깃헙 연동 안됨")
-    @PostMapping("/readme")
-    public ResponseEntity updateProblemReadme(@RequestBody GitPushDto gitPushDto) throws IOException
-    {
-        return subjectService.updateProblemReadme(gitPushDto);
-    }
+//    @ApiOperation(value = "과제 리드미", notes = "")
+//    @ApiResponse(responseCode = "200", description = "{msg : success} 성공")
+//    @ApiResponse(responseCode = "409", description = "{msg : empty} 가입된 스터디정보 없거나 백준 or 깃헙 연동 안됨")
+//    @PostMapping("/readme")
+//    public ResponseEntity updateProblemReadme(@RequestBody GitPushDto gitPushDto) throws IOException
+//    {
+//        return subjectService.updateProblemReadme(gitPushDto);
+//    }
 }
