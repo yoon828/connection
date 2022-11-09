@@ -126,6 +126,7 @@ public class SubjectServiceImpl implements SubjectService{
             return new ResponseEntity<>(subjectMap_empty, HttpStatus.OK);
         }
 
+
         Map<String,Object> subjectMap = new HashMap<>();
         List<Map<String,Object>> subjects = new ArrayList<>();
         for (int i = 0; i < subjectCnts.size(); i++) {
@@ -136,25 +137,44 @@ public class SubjectServiceImpl implements SubjectService{
 
             for (int j = 0; j < userCnt; j++) {
                 Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("user_id", result.get(j + startIdx)[0]);
-                userInfo.put("user_name", result.get(j + startIdx)[1]);
-                
+                try {
+                    userInfo.put("user_id", result.get(j + startIdx)[0]);
+                    userInfo.put("user_name", result.get(j + startIdx)[1]);
+                }
+                catch (IndexOutOfBoundsException e){
+                    break;
+                }
+
+
                 int cnt = 0;
                 for (int k = 0; k < subjectCnts.get(i); k++) {
 //                    System.out.println("디버그");
 //                    System.out.println(startIdx + " " + j + " " + k + " " + userCnt);
 //                    System.out.println(result.get(startIdx + j + k * (int)userCnt)[4].toString());
-                    if(startIdx + j + k * (int)userCnt >= result.size()) break;
-                    if(!result.get(startIdx + j + k * (int)userCnt)[4].toString().equals("0"))
-                        cnt++;
+//                    System.out.println(" 얼니ㅏㅓㅏㅣㄴ더라디저리ㅏ"+startIdx + j + k * (int)userCnt);
+
+//                    System.out.println(result.get(startIdx + j + k * (int)userCnt).length);
+
+                    try {
+                        if (!result.get(startIdx + j + k * (int) userCnt)[4].toString().equals("0"))
+                            cnt++;
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        break;
+                    }
                 }
                 userInfo.put("problem_cnt", cnt);
                 users.add(userInfo);
             }
             for (int j = 0; j < subjectCnts.get(i); j++) {
                 Map<String, Object> problemInfo = new HashMap<>();
-                problemInfo.put("problem_id", result.get(startIdx + j * (int)userCnt)[2]);
-                problemInfo.put("problem_name", result.get(startIdx + j * (int)userCnt)[3]);
+                try {
+                    problemInfo.put("problem_id", result.get(startIdx + j * (int) userCnt)[2]);
+                    problemInfo.put("problem_name", result.get(startIdx + j * (int) userCnt)[3]);
+                }
+                catch (IndexOutOfBoundsException e){
+                    break;
+                }
 
                 List solved = new ArrayList<>();
                 for (int k = 0; k < userCnt; k++) {
@@ -168,11 +188,18 @@ public class SubjectServiceImpl implements SubjectService{
             }
 
             List deadline = new ArrayList<>();
-            DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+            DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             DateTimeFormatter returnFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            LocalDateTime startDate = LocalDateTime.parse(result.get(startIdx)[6].toString(), parseFormat).minusHours(9);
-            LocalDateTime endDate = LocalDateTime.parse(result.get(startIdx)[5].toString(), parseFormat).minusHours(9);
+            LocalDateTime startDate = null ;
+            LocalDateTime endDate = null;
+            try {
+                startDate = LocalDateTime.parse(result.get(startIdx)[6].toString().substring(0, 19), parseFormat).minusHours(9);
+                endDate = LocalDateTime.parse(result.get(startIdx)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+            }
+            catch (IndexOutOfBoundsException e){
+                break;
+            }
 
             deadline.add(startDate.format(returnFormat));
             deadline.add(endDate.format(returnFormat));
