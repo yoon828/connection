@@ -56,7 +56,7 @@ public class SolveServiceImpl implements SolveService{
         Solve solveEntity = new Solve();
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         solveEntity.setUser(user);
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().trim()));
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim()));
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
