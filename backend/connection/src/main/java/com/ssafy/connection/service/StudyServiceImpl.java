@@ -514,7 +514,7 @@ public class StudyServiceImpl implements StudyService {
             }
             //
 
-            SolveStudyMemberListDto solveStudyMemberListDto = new SolveStudyMemberListDto(selectUserId, selectUserEntity.getName(), solveStudyMemberList);
+            SolveStudyMemberListDto solveStudyMemberListDto = new SolveStudyMemberListDto(selectUserId, selectUserEntity.getName(), selectUserEntity.getImageUrl(), solveStudyMemberList);
             result.add(solveStudyMemberListDto);
         }
 
