@@ -15,5 +15,7 @@ public class SolveStudyMemberListDto {
 
     private String name;
 
+    private String imageUrl;
+
     private List<SolveStudyMemberDto> series = new ArrayList<>();
 }
