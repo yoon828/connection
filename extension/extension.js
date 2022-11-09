@@ -7,10 +7,5 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 		});
 		return true;
 	}
-	const sources = message.sources;
-	const tab = sender.tab;
-	chrome.desktopCapture.chooseDesktopMedia(sources, tab, (streamId) => {
-		// result of selecting desktop
-	});
 	return true;
 });
