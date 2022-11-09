@@ -4,10 +4,7 @@ import com.ssafy.connection.dto.GitPushDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SolvedacUserDto;
 import com.ssafy.connection.dto.SubjectDto;
-import com.ssafy.connection.entity.ConnStudy;
-import com.ssafy.connection.entity.Solve;
-import com.ssafy.connection.entity.Study;
-import com.ssafy.connection.entity.Subject;
+import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
@@ -15,6 +12,7 @@ import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.context.event.EventListener;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -346,6 +344,8 @@ public class SubjectServiceImpl implements SubjectService{
             GitPushDto gitPushDto = new GitPushDto();
             gitPushDto.setProblemNo(list.get(i).toString());
             gitPushDto.setUserId(baekjoonId);
+            gitPushDto.setDeadline(subjectDto.getDeadline().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            gitPushDto.setStart(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             updateProblemReadme(gitPushDto);
         }
 
@@ -362,13 +362,23 @@ public class SubjectServiceImpl implements SubjectService{
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         long studyId = connStudy.get().getStudy().getStudyId();
+        Problem problem = problemRepository.getById(Long.parseLong(gitPushDto.getProblemNo()));
+
         String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
         String githubId = connStudy.get().getUser().getGithubId();
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
         //파일 처리
-        System.out.println(gitPushDto.getProblemNo() + "이거 진행중");//=======-=-=567-=65-756=7-=+-
-        String code = new String(Base64.encodeBase64("리드미입니당".getBytes()));
+//        System.out.println(gitPushDto.getProblemNo() + "이거 진행중");//=======-=-=567-=65-756=7-=+-
+        String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n" +
+                "\n" +
+                "### :speaker: " + problem.getTitle() + " <img src=\"https://static.solved.ac/tier_small/" + problem.getLevel() + ".svg\" height=\"19\"/>\n" +
+                "  \n" +
+                "##### [:link: https://www.acmicpc.net/problem/" + gitPushDto.getProblemNo() + "](https://www.acmicpc.net/problem/" + gitPushDto.getProblemNo() + ")\n" +
+                "##### :clock10: 기간 " + gitPushDto.getStart() + " ~ " + gitPushDto.getDeadline() + "\n" +
+                "  \n" +
+                "<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
+        String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
         String fileName = "README.md";
         String problemNo = gitPushDto.getProblemNo();
         String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
