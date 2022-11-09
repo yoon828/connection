@@ -1,3 +1,20 @@
+import Rank from "../img/rank.png";
+import Homework from "../img/homework.png";
+
+export const squares = [
+  {
+    src: Rank,
+    title: "스터디 랭킹",
+    content:
+      "챌린지, 문제풀이, 과제 등을 기반으로 선정된 점수로 랭킹을 보여줘요"
+  },
+  {
+    src: Homework,
+    title: "스터디 과제",
+    content: "지정한 기간안에 정해진 문제들을 스터디원들과 같이 풀어보세요"
+  }
+];
+
 export interface BoxDataProp {
   category: string;
   title: string[];

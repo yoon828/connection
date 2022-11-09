@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
 import { ProblemProps, UserProps } from "./SubjectView";
+import { useAppSelector } from "../../../store/hooks";
 
 type HomeworkTableProps = {
   problems: ProblemProps[];
@@ -20,6 +21,7 @@ type HomeworkTableProps = {
 };
 
 function HomeworkTable({ problems, users }: HomeworkTableProps) {
+  const studyName = useAppSelector(state => state.auth.information.studyName);
   return (
     <TableContainer
       w="70%"
@@ -72,7 +74,7 @@ function HomeworkTable({ problems, users }: HomeworkTableProps) {
                   return (
                     <Td key={v4()} textAlign="center">
                       <Link
-                        href="/"
+                        href={`https://github.com/co-nnection/${studyName}/tree/main/${problem.problem_id}`}
                         cursor={solved ? "pointer" : "default"}
                         pointerEvents={solved ? "auto" : "none"}
                       >
