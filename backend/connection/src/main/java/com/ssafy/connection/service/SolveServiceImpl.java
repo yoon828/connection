@@ -162,36 +162,44 @@ public class SolveServiceImpl implements SolveService{
         }
 
         Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), problemId);
-        // 이미 스터디에서 같이 푼 문제일 경우 Update
-        if(studySolveEntity.isPresent()){
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
+        List<Subject> subjectList = subjectRepository.findAllByStudyAndProblemOrderByDeadLine(studyEntity.getStudyId(), problemId);
+        Solve solveEntity = new Solve();
+        solveEntity.setUser(userEntity);
+        solveEntity.setProblem(problemEntity.get());
+        solveEntity.setTime(LocalDateTime.now());
+        solveEntity.setStatus(1);
+
+        if(studySolveEntity.isPresent()){   // 이미 스터디에서 같이 푼 문제일 경우 Update
             Solve temp = studySolveEntity.get();
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
             studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             return true;
-        }
-
-        Solve solveEntity = new Solve();
-        solveEntity.setUser(userEntity);
-        solveEntity.setProblem(problemEntity.get());
-
-        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
-        // 일반으로 푼 문제가 등록되어 있을 경우 스터디에서 같이 푼 문제로 바꿔서 Update
-        if(normalSolveEntity.isPresent()){
+        } else if(normalSolveEntity.isPresent()){  // 일반으로 푼 문제가 등록되어 있을 경우 스터디에서 같이 푼 문제로 바꿔서 Update
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
             studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             this.pushGithub(gitPushDto);
-        } else {    // 일반으로 푼 문제가 등록되어 있지 않을 경우 Save
-            solveEntity.setTime(LocalDateTime.now());
-            solveEntity.setStatus(1);
+            return true;
+        } else if(subjectList.size() > 0){
+            Subject recentSubjectEntity = subjectList.get(0);
+            LocalDateTime recentDeadLine = recentSubjectEntity.getDeadline();
+            if(recentDeadLine.isAfter(LocalDateTime.now())){
+                solveRepository.save(solveEntity);
+                studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
+                this.pushGithub(gitPushDto);
+                return true;
+            }
+        } else {
             solveRepository.save(solveEntity);
             studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             this.pushGithub(gitPushDto);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
