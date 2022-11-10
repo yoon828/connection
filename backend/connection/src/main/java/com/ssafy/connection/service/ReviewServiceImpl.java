@@ -1,6 +1,5 @@
 package com.ssafy.connection.service;
 
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Review;
@@ -10,7 +9,6 @@ import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,6 @@ public class ReviewServiceImpl implements ReviewService{
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
     }
-
 
     @Override
     public int saveReview(String beakjoonId, List<Map<String, Object>> map) {
