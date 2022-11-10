@@ -54,36 +54,40 @@ public class SolveServiceImpl implements SolveService{
 
     @Override
     public boolean saveSolve(GitPushDto gitPushDto) {
-        Long problemId = Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
         Solve solveEntity = new Solve();
-        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
-        solveEntity.setUser(user);
+        Long problemId = Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
+        User userEntity = userRepository.findByBackjoonId(gitPushDto.getUserId());
         Optional<Problem> problemEntity = problemRepository.findById(problemId);
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
             return false;
         }
+
+        solveEntity.setUser(userEntity);
         solveEntity.setTime(LocalDateTime.now());
 
-        ConnStudy connStudy = connStudyRepository.findByUser(user);
+        ConnStudy connStudy = connStudyRepository.findByUser(userEntity);
         Study study = studyRepository.findByConnStudy(connStudy);
         List<Subject> curSubjectList = subjectRepository.findAllByStudyDesc(study.getStudyId());
 
+        // 스터디에서 진행된 과제가 하나도 없는 경우(예외처리), status를 2(일반)로 해서 저장
         if(curSubjectList.size() == 0){
-            Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemId);
+            Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
+            // 이전에 개인적으로 푼 풀이가 등록되어 있는 경우 Update
             if(solveEntityPrev.isPresent()){
                 Solve temp = solveEntityPrev.get();
                 temp.setTime(LocalDateTime.now());
                 temp.setStatus(2);
                 solveRepository.save(temp);
-            } else {
+            } else {    // 처음 푼 문제라면 Save
                 solveEntity.setStatus(2);
                 solveRepository.save(solveEntity);
             }
             return true;
         }
 
+        // 가장 최근에 진행된 또는 현재 진행중인 과제의 제출 기한
         LocalDateTime curDeadLine = curSubjectList.get(0).getDeadline();
 
         for(Subject subject : curSubjectList){
@@ -92,12 +96,13 @@ public class SolveServiceImpl implements SolveService{
                 break;
             }
 
-            if(subject.getProblem().getProblemId() == Long.parseLong(gitPushDto.getProblemNo().trim()) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
-
-                Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemId);
+            // 입력받은 problemId가 과제에 등록되어 있고, 현재 시간이 과제 시작시잔과 제출기한 사이에 있다면 과제(0)로 등록
+            if(subject.getProblem().getProblemId() == problemId && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
+                Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(userEntity.getUserId(), problemId);
+                // 이전에 과제로 푼 풀이가 등록되어 있는 경우 Update
                 if(solveEntityPrev.isPresent()){
                     Solve temp = solveEntityPrev.get();
-
+                    // 이전 풀이가 현재 진행중인 과제로 등록되어 있지 않은 경우, Score up & Update & Github Push
                     if(!temp.getTime().isAfter(subject.getStart())){
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
@@ -105,13 +110,13 @@ public class SolveServiceImpl implements SolveService{
                         studyRepository.save(study);
                         this.pushGithub(gitPushDto);
                         break;
-                    } else {
+                    } else {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
                         this.pushGithub(gitPushDto);
                         break;
                     }
-                } else {
+                } else {    // 이전에 과제로 푼 풀이가 등록되어 있지 않은 경우 Score up & Save & Github Push
                     solveEntity.setStatus(0);
                     study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
                     solveRepository.save(solveEntity);
@@ -119,20 +124,20 @@ public class SolveServiceImpl implements SolveService{
                     this.pushGithub(gitPushDto);
                     break;
                 }
-            } else {
-                Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemId);
+            } else {    // 입력받은 problemId가 과제에 등록되어 있지 않은 경우 일반(2)으로 등록
+                Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
+                // 이전에 개인적으로 푼 풀이가 등록되어 있는 경우 Update
                 if(solveEntityPrev.isPresent()){
                     Solve temp = solveEntityPrev.get();
                     temp.setTime(LocalDateTime.now());
                     temp.setStatus(2);
                     solveRepository.save(temp);
-                } else {
+                } else {    // 플이가 등록되어있지 않은 경우 Save
                     solveEntity.setStatus(2);
                     solveRepository.save(solveEntity);
                 }
             }
         }
-
         return true;
     }
 
