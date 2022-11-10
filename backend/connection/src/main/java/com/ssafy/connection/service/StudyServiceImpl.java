@@ -67,7 +67,7 @@ public class StudyServiceImpl implements StudyService {
                 throw new RestException(HttpStatus.BAD_REQUEST, "Already joined to another study");
 
             do { // 고유한 study 코드 생성
-                studyCode = RandomCodeGenerate.generate();
+                studyCode = RandomCodeGenerate.generate().toUpperCase();
             } while (studyRepository.findByStudyCode(studyCode) == null);
 
             //githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
