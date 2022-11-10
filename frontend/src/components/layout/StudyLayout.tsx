@@ -18,17 +18,18 @@ function StudyLayout({
   children
 }: StudyLayoutProps) {
   return (
-    <Container marginTop="80px" maxW="1200px">
-      <Flex justifyContent="center">
-        <Flex
-          width="180px"
-          top="40px"
-          position="relative"
-          direction="column"
-          gap={4}
-        >
-          {sideComponent}
-        </Flex>
+    <Container marginTop="40px" maxW="1200px" position="relative">
+      <Flex
+        width="180px"
+        top="20px"
+        // left="40px"
+        position="absolute"
+        direction="column"
+        gap={4}
+      >
+        {sideComponent}
+      </Flex>
+      <Flex justifyContent="center" position="relative" maxW="880px" mx="auto">
         <Box
           borderRadius="20px"
           bg={bg}

@@ -100,7 +100,13 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
           <Tab selected={selectedTab === 0} onClick={() => setSelectedTap(0)}>
             추천 문제
           </Tab>
-          <Tab selected={selectedTab === 1} onClick={() => setSelectedTap(1)}>
+          <Tab
+            selected={selectedTab === 1}
+            onClick={() => {
+              setSelectedTap(1);
+              dispatch(getMyWorkbook());
+            }}
+          >
             문제집
           </Tab>
         </Flex>
@@ -131,13 +137,6 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
                       });
                       return;
                     }
-                    // setRecommends(prev => [
-                    //   ...prev.filter(
-                    //     p =>
-                    //       p.problemInfo.problemId !==
-                    //       problem.problemInfo.problemId
-                    //   )
-                    // ]);
                     dispatch(addProblem(problem));
                   }}
                 />
@@ -158,13 +157,6 @@ function ProblemSelect({ maxCnt }: ProblemSelectProps) {
                       });
                       return;
                     }
-                    // setMyWorkbook(prev => [
-                    //   ...prev.filter(
-                    //     p =>
-                    //       p.problemInfo.problemId !==
-                    //       problem.problemInfo.problemId
-                    //   )
-                    // ]);
                     dispatch(addProblem(problem));
                   }}
                 />
