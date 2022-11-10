@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link as ReactLink, Navigate } from "react-router-dom";
+import { Link as ReactLink, Navigate, useNavigate } from "react-router-dom";
 import { CopyIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -29,6 +29,7 @@ function StudyTotal() {
   const info: UserInfoType = useAppSelector(state => state.auth.information);
   const { onCopy } = useClipboard(info.studyCode);
   const toast = useToast();
+  const navigator = useNavigate();
 
   function onCopyEvent() {
     onCopy();
@@ -54,7 +55,7 @@ function StudyTotal() {
         borderBottom="1px solid #BFBFBF"
       >
         <Flex direction="column" ml="20px">
-          <Flex mb="5px">
+          <Flex mb="5px" alignItems="center">
             <Heading fontSize="20px" fontWeight="bold" mr="5px">
               {info.studyName}
             </Heading>

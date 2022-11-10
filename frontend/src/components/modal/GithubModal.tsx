@@ -22,7 +22,8 @@ function GithubModal() {
       toast({
         title: "connection의 멤버가 된 걸 환영합니다😊",
         position: "top",
-        status: "success"
+        status: "success",
+        duration: 1000
       });
       dispatch(updateUserInfo({ ismember: true }));
     } catch (error) {
@@ -30,7 +31,8 @@ function GithubModal() {
       toast({
         title: "가입이 확인되지 않았습니다😥",
         position: "top",
-        status: "error"
+        status: "error",
+        duration: 1000
       });
     }
   };
@@ -42,7 +44,7 @@ function GithubModal() {
       </Text>
       <Center p="50px 0 30px" flexDir="column">
         <Text fontSize={20} mt="5px" textAlign="center">
-          Github에서 “co-nnectnion”
+          Github에서 “co-nnection”
           <br /> Organization 초대 수락 후,
           <br />
           <Text as="span" color="main" display="inline" fontWeight="bold">

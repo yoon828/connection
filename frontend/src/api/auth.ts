@@ -9,9 +9,6 @@ type BjProps = {
 type SolvedProps = {
   list: number[];
 };
-type ResMsg = {
-  msg: string;
-};
 
 export const getUser = async () => {
   const res = await api.get("/auth/");

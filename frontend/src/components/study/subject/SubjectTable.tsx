@@ -60,7 +60,11 @@ function HomeworkTable({ problems, users }: HomeworkTableProps) {
           {problems.map(problem => {
             return (
               <Tr key={v4()}>
-                <Td borderRight="0.5px solid" borderColor="border_gray">
+                <Td
+                  borderRight="0.5px solid"
+                  borderColor="border_gray"
+                  textAlign="center"
+                >
                   <Tooltip label={problem.problem_name} placement="right">
                     <Link
                       href={`https://www.acmicpc.net/problem/${problem.problem_id}`}
