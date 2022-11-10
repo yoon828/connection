@@ -27,7 +27,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
             "\tleft join solve sv \n" +
             "\ton a.user_id = sv.user_id \n" +
             "\t\tand a.problem_id = sv.problem_id\n" +
-            "where sv.status = 0 or isnull(sv.status) \n" +
+            "and sv.status = 0 AND sv.time BETWEEN a.start and a.deadline \n" +
             "group by a.user_id, a.problem_id\n" +
             "order by a.deadline, a.problem_id, a.user_id;", nativeQuery = true)
     List<Object[]> getTeamStatus(long studyId);
