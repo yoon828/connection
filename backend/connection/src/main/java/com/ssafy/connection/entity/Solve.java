@@ -38,6 +38,7 @@ public class Solve {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problemId")
     private Problem problem;
+
     ////////////////////////////////////////
 
     public static Solve of(SolveDto solveDto) {

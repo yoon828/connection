@@ -40,4 +40,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT DATE_FORMAT(s.deadline, '%Y-%m-01') AS date, COUNT(s.deadline) AS count FROM subject s WHERE s.study_id =?1 AND s.deadline BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY DATE;", nativeQuery = true)
     List<GetDateAndCountInterface> findStudySubject(long studyId);
+
+    @Query(value = "SELECT * FROM subject where study_id = :studyId AND problem_id = :problemId ORDER BY deadline desc", nativeQuery = true)
+    List<Subject> findAllByStudyAndProblemOrderByDeadLine(long studyId, Long problemId);
 }
