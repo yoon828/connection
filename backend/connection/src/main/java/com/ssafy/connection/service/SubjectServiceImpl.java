@@ -62,6 +62,10 @@ public class SubjectServiceImpl implements SubjectService{
 //    }
     @Override
     public ResponseEntity makeSubject(SubjectDto subjectDto, Long userId) throws IOException {
+        System.out.println(subjectDto.getDeadline());
+        System.out.println(subjectDto.getStart());
+        System.out.println(LocalDateTime.now());
+
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
         Study study = studyRepository.findByConnStudy(connStudy.get());
