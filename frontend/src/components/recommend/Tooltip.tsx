@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { QuestionIcon } from "@chakra-ui/icons";
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 import { GetRecommendRes } from "../../api/problem";
 
@@ -30,6 +30,7 @@ function Tooltip({ recommends }: TooltipProps) {
         onMouseEnter={toggleTooltip}
         onMouseLeave={toggleTooltip}
       />
+
       <Box
         position="absolute"
         display={`${tooltipOpen ? "block" : "none"}`}
@@ -39,7 +40,10 @@ function Tooltip({ recommends }: TooltipProps) {
         p={4}
         shadow="2px 4px 4px rgba(0, 0, 0, 0.25)"
       >
-        {recommends?.stat.slice(0, 5).map(v => `${v.type} : ${v.cnt} `)}
+        <Text textAlign="center">이 유형들은 고작 이만큼 풀었어요</Text>
+        <Text>
+          {recommends?.stat.slice(0, 5).map(v => `${v.type} : ${v.cnt} `)}
+        </Text>
       </Box>
     </>
   );
