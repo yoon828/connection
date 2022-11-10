@@ -140,7 +140,7 @@ app.post("/problem/submit", (req, res) => {
 
     studyInfo.users.sort((a, b) =>
       a.problem !== b.problem
-        ? a.problem - b.problem
+        ? b.problem - a.problem
         : (a.time || 0) - (b.time || 0)
     );
 
