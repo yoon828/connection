@@ -184,6 +184,7 @@ public class SolveServiceImpl implements SolveService{
             solveRepository.save(temp);
             studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
             studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+            studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
         } else if(subjectList.size() > 0){
@@ -193,6 +194,7 @@ public class SolveServiceImpl implements SolveService{
                 solveRepository.save(solveEntity);
                 studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
                 studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+                studyRepository.save(studyEntity);
                 this.pushGithub(gitPushDto);
                 return true;
             }
@@ -200,6 +202,7 @@ public class SolveServiceImpl implements SolveService{
             solveRepository.save(solveEntity);
             studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
             studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+            studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
         }
