@@ -15,19 +15,22 @@ import { v4 } from "uuid";
 import { ProblemProps, UserProps } from "./SubjectView";
 import { useAppSelector } from "../../../store/hooks";
 
-type HomeworkTableProps = {
+type SubjectTableProps = {
   problems: ProblemProps[];
   users: UserProps[];
+  flex: number;
 };
 
-function HomeworkTable({ problems, users }: HomeworkTableProps) {
-  const studyName = useAppSelector(state => state.auth.information.studyName);
+function SubjectTable({ problems, users, flex }: SubjectTableProps) {
+  const studyLeader = useAppSelector(
+    state => state.auth.information.studyLeader
+  );
   return (
     <TableContainer
-      w="70%"
       pr="20px"
       borderRight="0.5px solid"
       borderColor="border_gray"
+      flex={flex}
     >
       <Table variant="unstyled" size="sm">
         <Thead>
@@ -78,7 +81,7 @@ function HomeworkTable({ problems, users }: HomeworkTableProps) {
                   return (
                     <Td key={v4()} textAlign="center">
                       <Link
-                        href={`https://github.com/co-nnection/${studyName}/tree/main/${problem.problem_id}`}
+                        href={`https://github.com/co-nnection/${studyLeader}/tree/main/${problem.problem_id}`}
                         cursor={solved ? "pointer" : "default"}
                         pointerEvents={solved ? "auto" : "none"}
                       >
@@ -100,4 +103,4 @@ function HomeworkTable({ problems, users }: HomeworkTableProps) {
   );
 }
 
-export default HomeworkTable;
+export default SubjectTable;

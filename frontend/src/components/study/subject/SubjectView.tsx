@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { getSubject } from "../../../api/study";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import Subject from "./Subject";
 import NoSubject from "./NoSubject";
 import SliderLayout from "../../layout/SliderLayout";
+import { updateUserInfo } from "../../../store/ducks/auth/authSlice";
 
 export type ProblemProps = {
   problem_id: number;
@@ -25,15 +26,15 @@ export type SubjectProps = {
 
 function SubjectkView() {
   const studyRole = useAppSelector(state => state.auth.information.studyRole);
+  const dispatch = useAppDispatch();
   const [isProgress, setIsProgress] = useState(false);
   const [subjectList, setSubjectList] = useState<SubjectProps[]>([]);
 
   const getSubjectApi = async () => {
     const {
-      data: { inProgress, subjects }
+      data: { inProgress, subjects, leader }
     } = await getSubject();
-    // console.log(subjects);
-    // console.log(inProgress);
+    dispatch(updateUserInfo({ studyLeader: leader }));
     setIsProgress(inProgress);
     setSubjectList(subjects);
   };

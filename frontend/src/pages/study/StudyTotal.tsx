@@ -81,7 +81,7 @@ function StudyTotal() {
           </Link>
         </Flex>
       </Center>
-      <Box p="40px 20px">
+      <Box p="20px">
         <Flex>
           <TotalLayout
             title="챌린지"

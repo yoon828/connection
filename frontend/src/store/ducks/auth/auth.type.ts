@@ -12,6 +12,7 @@ export interface UserInfoType {
   studyName: string;
   studyRepository: string;
   studyCode: string;
+  studyLeader: string;
   ismember: boolean;
 }
 export interface InitialStateType {

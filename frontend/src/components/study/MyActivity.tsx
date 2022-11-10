@@ -72,7 +72,9 @@ function PercentChart({ title, content }: PercentChartProps) {
   };
   if (content) {
     const series =
-      content.total !== 0 ? [(content.my / content.total) * 100] : [0];
+      content.total !== 0
+        ? [Math.floor((content.my / content.total) * 100)]
+        : [0];
     return (
       <Center>
         <ReactApexChart

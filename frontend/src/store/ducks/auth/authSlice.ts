@@ -19,6 +19,7 @@ const initialState: InitialStateType = {
     studyName: "",
     studyRepository: "",
     studyCode: "",
+    studyLeader: "",
     ismember: false
   }
 };

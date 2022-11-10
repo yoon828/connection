@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuList,
   Spacer,
+  Tooltip,
   useColorMode,
   useDisclosure
 } from "@chakra-ui/react";
@@ -18,6 +19,8 @@ import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
+import GithubLight from "../asset/img/githubL.svg";
+import GithubDark from "../asset/img/githubD.svg";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { resetUserInfo, updateExtension } from "../store/ducks/auth/authSlice";
 import BackjoonModal from "../components/modal/BackjoonModal";
@@ -141,12 +144,21 @@ function Header() {
               </MenuList>
             </Menu>
           ) : (
-            <Link
-              href={`${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
-              _hover={{}}
-            >
-              <Button>로그인</Button>
-            </Link>
+            <Tooltip label="깃허브 로그인으로 이동합니다">
+              <Link
+                href={`${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
+                _hover={{}}
+              >
+                <Button>
+                  로그인
+                  <Image
+                    w="18px"
+                    ml="5px"
+                    src={colorMode === "light" ? GithubLight : GithubDark}
+                  />
+                </Button>
+              </Link>
+            </Tooltip>
           )}
           <AuthModal
             isOpen={AllModal.isOpen}

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Alert, AlertIcon, Badge, Box, Center, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import { UserProps } from "./SubjectView";
 
-type ChartProps = {
-  series: number[];
-  labels: string[];
+type SubjectChartProps = {
+  users: UserProps[];
+  flex: number;
 };
 
-function HomeworkChart({ series, labels }: ChartProps) {
-  // series = [1];
+function SubjectChart({ users, flex }: SubjectChartProps) {
+  const [series, setSeries] = useState<number[]>([]);
+  const [labels, setlabels] = useState<string[]>([]);
   const [flag, setFlag] = useState(false);
   const options: ApexOptions = {
     chart: {
@@ -42,13 +44,25 @@ function HomeworkChart({ series, labels }: ChartProps) {
       }
     }
   };
-
   useEffect(() => {
-    series.map(cnt => (!flag && cnt > 0 ? setFlag(true) : setFlag(false)));
+    const seriesTmp: number[] = [];
+    const labelsTmp: string[] = [];
+    users.map(user => {
+      seriesTmp.push(user.problem_cnt);
+      return labelsTmp.push(user.user_name);
+    });
+    seriesTmp.map(cnt => {
+      if (!flag && cnt > 0) {
+        setFlag(true);
+      }
+      return null;
+    });
+    setSeries(seriesTmp);
+    setlabels(labelsTmp);
   }, []);
 
   return (
-    <Center flexDir="column" p="0 10px">
+    <Center flexDir="column" p="0 10px" flex={flex}>
       {flag ? (
         <Center flexDir="column">
           <ReactApexChart
@@ -72,4 +86,4 @@ function HomeworkChart({ series, labels }: ChartProps) {
   );
 }
 
-export default HomeworkChart;
+export default SubjectChart;

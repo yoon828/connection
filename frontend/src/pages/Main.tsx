@@ -44,7 +44,7 @@ function Main() {
   }
 
   return (
-    <Box position="relative">
+    <Box position="relative" minW="800px">
       <Center
         as="section"
         flexDir="column"
@@ -54,7 +54,7 @@ function Main() {
         minH="550px"
         py="30px"
       >
-        <Flex w="100%" maxW="800px">
+        <Flex>
           <Center flexDir="column" flex="1" alignItems="">
             <Box fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
               <Text>
@@ -90,7 +90,7 @@ function Main() {
           </Box>
         </Flex>
         <Center flexDir="column">
-          <Center maxW="800px" mb="10px">
+          <Center mb="10px">
             {imgs.map((img, idx) => {
               return (
                 <Box
@@ -131,7 +131,7 @@ function Main() {
         _dark={{ bg: "#1b1b1b" }}
         p="100px 0 0"
       >
-        <Center maxW="800px" m="0 auto" flexDir="column" pt="30px">
+        <Center m="0 auto" flexDir="column" pt="30px" w="800px">
           <Box
             w="100%"
             display="flex"
@@ -192,7 +192,7 @@ function Main() {
         </Center>
       </Box>
       <Box as="section" p="100px 0 0">
-        <Center maxW="800px" m="0 auto" flexDir="column">
+        <Center m="0 auto" flexDir="column" w="800px">
           <Box
             w="100%"
             display="flex"
@@ -244,7 +244,6 @@ function Main() {
         }
       >
         <Center
-          maxW="800px"
           m="0 auto"
           flexDir="column"
           h="100%"
@@ -263,7 +262,7 @@ function Main() {
         </Center>
       </Center>
       <Box as="footer" h="200px" display="flex">
-        <Box maxW="800px" w="100%" m="0 auto">
+        <Box m="0 auto" w="800px">
           <Box
             display="flex"
             flexDir="column"
