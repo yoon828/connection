@@ -304,8 +304,6 @@ public class SubjectServiceImpl implements SubjectService{
     @Override
     @Transactional
     public ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException {
-
-//        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
@@ -325,7 +323,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
 //                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
@@ -337,7 +335,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                        .uri("repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .uri("repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
@@ -350,7 +348,7 @@ public class SubjectServiceImpl implements SubjectService{
 
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
@@ -364,8 +362,70 @@ public class SubjectServiceImpl implements SubjectService{
             }
             else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
         }
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
 
+    @Override
+    @Transactional
+    public ResponseEntity submitStudy(GitPushDto gitPushDto) throws IOException {
+        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
+        if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
+        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
+        long studyId = connStudy.get().getStudy().getStudyId();
+        String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
+        String githubId = connStudy.get().getUser().getGithubId();
+        String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
+        //파일 처리
+        String problemNo = gitPushDto.getProblemNo().trim();
+        String code = new String(Base64.encodeBase64(gitPushDto.getCode().getBytes()));
+        String fileName = problemNo + "_" + githubId + "." + gitPushDto.getLang();
+
+        String createFileRequest = "{\"message\":\"" + "created " + fileName + " automatically via \'<connection/>\'" + "\"," +
+                "\"content\":\""+ code +"\"}";
+
+        try {
+            webClient.put()
+                    .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+//                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(createFileRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
+        catch (WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
+                //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
+                Map<String, Object> contents = (Map<String, Object>)webClient.get()
+                        .uri("repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .retrieve()
+                        .bodyToMono(Object.class)
+                        .block();
+                String sha = contents.get("sha").toString();
+                createFileRequest = "{" +
+                        "\"message\":\"" + "updated " + fileName + " automatically via \'<connection/>\'" + "\","
+                        + "\"content\":\""+ code +"\","
+                        + "\"sha\":\"" + sha + "\""
+                        + "}";
+
+                try {
+                    webClient.put()
+                            .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                            .bodyValue(createFileRequest)
+                            .retrieve()
+                            .bodyToMono(Void.class)
+                            .block();
+                }
+                catch (WebClientResponseException e2) {
+                    System.out.println("답이없네용");
+                }
+
+            }
+            else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
+        }
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
 
