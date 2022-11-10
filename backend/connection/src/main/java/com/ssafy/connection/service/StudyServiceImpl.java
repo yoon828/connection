@@ -393,24 +393,25 @@ public class StudyServiceImpl implements StudyService {
         List<StudyRankingInterface> studyRanking = studyRepository.findStudyRanking();
         Map<String, Object> map = new HashMap<>();
 
-        int ranking = 1;
-        int add = 0;
-        int beforeScore = 0;
+        int ranking = 0;
+        int add = 1;
+        int beforeScore = -1;
 
         for (StudyRankingInterface studyInterface : studyRanking) {
-            StudyRankingDto studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking + add, studyInterface.getStudyRepository());
+            StudyRankingDto studyRankingDto = null;
 
-            if (beforeScore != studyInterface.getTotalScore()) {
-                ranking++;
-                studyRankingDto.setRanking(ranking + add);
-                add = 0;
-            }
-            else {
-                studyRankingDto.setRanking(ranking);
+            if (studyInterface.getTotalScore()==beforeScore) { // 이전과 동점인 경우
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking, studyInterface.getStudyRepository());
                 add++;
+            }
+            else { // 동점 아닐 경우
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking+add, studyInterface.getStudyRepository());
+                ranking += add;
+                add = 1;
             }
 
             beforeScore = studyInterface.getTotalScore();
+            System.out.println("beforeScore : "+beforeScore);
             studyRankingList.add(studyRankingDto);
         }
 
