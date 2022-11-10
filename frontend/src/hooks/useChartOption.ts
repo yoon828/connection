@@ -40,6 +40,7 @@ function useChartOption() {
         }
       },
       yaxis: {
+        show: false,
         labels: {
           style: {
             colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
