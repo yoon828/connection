@@ -23,7 +23,8 @@ function ExtensionModal({ onClose }: ExtensionModalProps) {
         toast({
           title: "확인되었습니다😊",
           position: "top",
-          status: "success"
+          status: "success",
+          duration: 1000
         });
         onClose();
       },
@@ -32,7 +33,8 @@ function ExtensionModal({ onClose }: ExtensionModalProps) {
           title: "확장프로그램을 설치해주세요😥",
           description: "확장프로그램 설치하거나 실행해주세요",
           status: "error",
-          position: "top"
+          position: "top",
+          duration: 1000
         });
       }
     );

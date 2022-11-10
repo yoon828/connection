@@ -2,6 +2,7 @@
   --color-primary: white;
   --color-secondary: #eec413;
 }
+
 .chakra-ui-dark {
   --color-primary: #121212;
   --color-secondary: #e48fff;
@@ -108,7 +109,7 @@
   height: 23px;
   width: 23px;
   position: absolute;
-  background: var(--color-primary); 
+  background: var(--color-primary);
   border-radius: 50%;
   top: 0;
   right: 0;

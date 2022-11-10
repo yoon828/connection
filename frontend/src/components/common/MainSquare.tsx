@@ -14,7 +14,7 @@ interface MainSquareProps {
 
 function MainSquare({ data, dir }: MainSquareProps) {
   useEffect(() => {
-    AOS.init();
+    // AOS.init();
   }, []);
   return (
     <Center
