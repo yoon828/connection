@@ -20,7 +20,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {  // 앞단 필터에서 에러가 있을 시 이 필터로 넘어온다.
             chain.doFilter(req, res); // go to 'JwtAuthenticationFilter'
         } catch (JwtException ex) {
-            System.out.println("여긴가요");
             setErrorResponse(HttpStatus.UNAUTHORIZED, res, ex);
         }
     }
@@ -29,7 +28,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setStatus(status.value());
         response.setContentType("application/json; charset=UTF-8");
 
-        System.out.println("여기2");
         JSONObject responseJson = new JSONObject();
         responseJson.put("HttpStatus", HttpStatus.UNAUTHORIZED);
         responseJson.put("message", ex.getMessage());
