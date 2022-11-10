@@ -17,14 +17,14 @@ interface ProblemCardProps extends CardButtonProps {
 function Button({ btnType, onBtnClick }: CardButtonProps) {
   if (btnType === "delete") {
     return (
-      <Box onClick={onBtnClick}>
-        <DeleteIcon w="6" h="6" cursor="pointer" alignSelf="center" />
+      <Box onClick={onBtnClick} alignSelf="flex-start">
+        <DeleteIcon w="5" h="5" cursor="pointer" alignSelf="center" />
       </Box>
     );
   }
   return (
-    <Box onClick={onBtnClick}>
-      <AddIcon w="6" h="6" cursor="pointer" alignSelf="center" />
+    <Box onClick={onBtnClick} alignSelf="flex-start">
+      <AddIcon w="5" h="5" cursor="pointer" alignSelf="center" />
     </Box>
   );
 }
@@ -49,30 +49,36 @@ function ProblemCard({
         transform: "scale(1.03)",
         transition: "transform ease-out .5s"
       }}
-      // maxH="250px"
+      justifyContent="space-between"
     >
-      <Box pb="20px" mb="auto">
+      <Flex
+        direction="column"
+        justifyContent="space-between"
+        pb="20px"
+        flexGrow="1"
+      >
         <Flex
           justifyContent="space-between"
           mt="10px"
           mb="10px"
           alignItems="center"
+          gap={4}
         >
           <Flex>
             <Link
               href={`https://www.acmicpc.net/problem/${problemId}`}
               isExternal
-              fontSize="2xl"
+              fontSize="xl"
               fontWeight="bold"
               noOfLines={3}
             >
               {title}
-              <LinkIcon w="18px" h="18px" mx="2" marginBottom={2} />
+              <LinkIcon w="18px" h="18px" mx="2" marginBottom={1} />
             </Link>
           </Flex>
           {hasBtn && <Button btnType={btnType} onBtnClick={onBtnClick} />}
         </Flex>
-        <Flex gap="8px" wrap="wrap">
+        <Flex gap="8px" wrap="wrap" maxH="70px" overflowY="hidden">
           {tagList.map(tag => (
             <Box
               key={tag.tagId}
@@ -86,7 +92,7 @@ function ProblemCard({
             </Box>
           ))}
         </Flex>
-      </Box>
+      </Flex>
       <Flex
         justifyContent="space-between"
         py="20px"

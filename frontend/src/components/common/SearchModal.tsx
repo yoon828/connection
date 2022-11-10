@@ -5,6 +5,7 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalOverlay,
   Text,
@@ -51,24 +52,26 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
     <Modal isOpen={isOpen} onClose={onClose} size="5xl">
       <ModalOverlay />
       <ModalContent p={8} bg="dep_1">
-        <Box mb={8} position="relative">
-          <Search2Icon
-            position="absolute"
-            zIndex={100}
-            w={5}
-            h={5}
-            transform="translateX(50%) translateY(50%)"
-          />
-          <Input
-            focusBorderColor="#1581FF"
-            bg="dep_2"
-            fontSize="xl"
-            placeholder="검색어를 입력하세요"
-            paddingLeft={10}
-            value={keyword}
-            onChange={e => setKeyword(e.target.value)}
-          />
-        </Box>
+        <Search2Icon
+          position="absolute"
+          zIndex={100}
+          w={5}
+          h={5}
+          left="25%"
+          transform="translateX(125%) translateY(50%)"
+        />
+        <Input
+          focusBorderColor="#1581FF"
+          bg="dep_2"
+          fontSize="xl"
+          placeholder="검색어를 입력하세요"
+          paddingLeft={10}
+          value={keyword}
+          onChange={e => setKeyword(e.target.value)}
+          w="50%"
+          marginX="auto"
+        />
+        <ModalCloseButton />
         {problemList.length > 0 ? (
           <Grid
             templateColumns="repeat(2,1fr)"
@@ -76,6 +79,7 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
             gap="32px"
             height="500px"
             overflowY="scroll"
+            mt={8}
             p={4}
           >
             {problemList.map(problem => (
