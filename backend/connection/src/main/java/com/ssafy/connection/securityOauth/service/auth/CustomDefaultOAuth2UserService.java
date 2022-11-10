@@ -68,36 +68,34 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
             String githubId = user.getGithubId();
 
-            System.out.println("깃헙아이디" + githubId);
-            System.out.println(user.getImageUrl());
-            System.out.println(oAuth2UserInfo.getImageUrl());
-            System.out.println("ㅇ");
-
             if(user.getImageUrl() == null) { // Github image_url이 null인 경우
                 if(oAuth2UserInfo.getImageUrl() == null) {
-                    System.out.println("이프문");
-                    GithubUserDto githubUserDto = webClient.get()
-                            .uri(uriBuilder -> uriBuilder
-                                    .path(String.format("/search/users"))
-                                    .queryParam("q", "user:" + githubId)
-                                    .build())
-                            .retrieve()
-                            .bodyToMono(GithubUserDto.class)
-                            .block();
-                    System.out.println("잘가져왔음");
-                    System.out.println(githubUserDto.getItems().get(0).getAvatar_url());
-                    user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
-                    System.out.println("세터햇음");
-                    userRepository.save(user);
-                    System.out.println("유저저장");
+//                        System.out.println("이프문");
+                        GithubUserDto githubUserDto = webClient.get()
+                                .uri(uriBuilder -> uriBuilder
+                                        .path(String.format("/search/users"))
+                                        .queryParam("q", "user:" + githubId)
+                                        .build())
+                                .retrieve()
+                                .bodyToMono(GithubUserDto.class)
+                                .block();
+//                        System.out.println("잘가져왔음");
+                        System.out.println(githubUserDto.getItems().get(0).getAvatar_url());
+                        user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+//                        System.out.println("세터햇음");
+                        userRepository.save(user);
+                        System.out.println("유저저장");
                 }
                 else {
                     user.setImageUrl(oAuth2UserInfo.getImageUrl());
                 }
             }
-            System.out.println("이프문아래");
-            organizationService.joinOrganization(user.getUserId());
-            System.out.println("조인");
+            try {
+                organizationService.joinOrganization(user.getUserId());
+            }
+            catch (Exception e){    //여기는 이미 멤버이거나 초대된경우 핸들링
+                System.out.println("초대오류" + e);
+            }
         }
 
         //깃허브 토큰 저장
