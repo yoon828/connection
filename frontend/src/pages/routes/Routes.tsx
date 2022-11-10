@@ -46,6 +46,7 @@ export default function Routes() {
           element={
             <PrivateRoute
               {...defaultPrivateRouteProps}
+              study={false}
               outlet={<Recommend />}
             />
           }
@@ -65,6 +66,7 @@ export default function Routes() {
             element={
               <PrivateRoute
                 {...defaultPrivateRouteProps}
+                study={false}
                 outlet={<StudyJoin />}
               />
             }
