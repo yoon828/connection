@@ -116,14 +116,12 @@ public class AuthController {
             Map<String, Object> membership = (Map<String, Object>)(map.get("membership"));
             Map<String, Object> user = (Map<String, Object>)membership.get("user");
             String login = user.get("login").toString();
-            System.out.println("누구세요" + login);
             authService.joinOrQuitOrganization(login, true);
         }
         else if(map.get("action").equals("member_removed")){
             Map<String, Object> membership = (Map<String, Object>)(map.get("membership"));
             Map<String, Object> user = (Map<String, Object>)membership.get("user");
             String login = user.get("login").toString();
-            System.out.println("잘가세요" + login);
             authService.joinOrQuitOrganization(login, false);
         }
 

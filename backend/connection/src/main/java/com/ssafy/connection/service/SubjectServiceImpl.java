@@ -360,7 +360,6 @@ public class SubjectServiceImpl implements SubjectService{
                             .block();
                 }
                 catch (WebClientResponseException e2) {
-                    System.out.println("답이없네용");
                 }
 
             }
@@ -424,7 +423,6 @@ public class SubjectServiceImpl implements SubjectService{
                             .block();
                 }
                 catch (WebClientResponseException e2) {
-                    System.out.println("답이없네용");
                 }
 
             }
@@ -495,7 +493,7 @@ public class SubjectServiceImpl implements SubjectService{
                     .block();
         }
         catch (WebClientResponseException e) {
-            System.out.println("한번터짐 " + e);
+//            System.out.println("한번터짐 " + e);
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
@@ -522,9 +520,9 @@ public class SubjectServiceImpl implements SubjectService{
                     if(e2.getStatusCode().equals(HttpStatus.CONFLICT))
                         return new ResponseEntity<>(new ResponseDto("same content"), HttpStatus.CONFLICT);
                     System.out.println("같은 내용이라 업뎃 안됨" +e2);
-                    System.out.println(githubToken);
-                    System.out.println(sha);
-                    System.out.println(createFileRequest);
+//                    System.out.println(githubToken);
+//                    System.out.println(sha);
+//                    System.out.println(createFileRequest);
                 }
 
             }
