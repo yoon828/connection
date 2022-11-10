@@ -183,27 +183,6 @@ function BackjoonModal({ code }: BackjoonModalProps) {
             </Button>
           </Box>
         </Flex>
-        <Flex w="350px">
-          <Flex w="70px" h={10} fontSize="18px" alignItems="center">
-            백준ID
-          </Flex>
-          <Flex direction="column">
-            <Input
-              type="text"
-              value={id}
-              placeholder="백준 ID를 입력해주세요"
-              onChange={e => setId(e.target.value)}
-            />
-            <Text fontSize={12} mt="5px" color={ready ? "green" : "red"}>
-              {msg}
-            </Text>
-          </Flex>
-          <Box ml="10px">
-            <Button bg="gra" _hover={{}} onClick={() => confirmBJ()}>
-              인증
-            </Button>
-          </Box>
-        </Flex>
       </Center>
       <Center>
         <Button

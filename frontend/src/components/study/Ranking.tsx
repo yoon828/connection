@@ -40,10 +40,10 @@ function Ranking() {
       const centerHeight =
         parentRef.current.clientHeight / 2 -
         myStudyRef.current.clientHeight / 2;
-      console.log(scrollHeight);
-      console.log(test);
-      console.log(centerHeight);
-      console.log(test - centerHeight);
+      // console.log(scrollHeight);
+      // console.log(test);
+      // console.log(centerHeight);
+      // console.log(test - centerHeight);
       parentRef.current.scrollTo({
         top: scrollHeight,
         behavior: "smooth"
@@ -85,42 +85,6 @@ function Ranking() {
                 w="200px"
                 _dark={id === study.studyId ? {} : { bg: "dep_3" }}
                 ref={id === study.studyId ? myStudyRef : null}
-              >
-                <Text w="40px">{study.ranking}</Text>
-                <Text
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                  whiteSpace="nowrap"
-                >
-                  {study.studyName}
-                </Text>
-              </Flex>
-            </Tooltip>
-          </Link>
-        );
-      })}
-      {ranks.map(study => {
-        return (
-          <Link href={study.studyRepository} key={v4()} _hover={{}}>
-            <Tooltip
-              label={
-                <div>
-                  {study.studyName}
-                  <br />
-                  과제 점수 : {study.homeworkScore} <br />
-                  문제 풀이 점수 : {study.studyScore} <br /> 총 점수 :
-                  {study.totalScore}
-                </div>
-              }
-            >
-              <Flex
-                bg={id === study.studyId ? "gra" : "white"}
-                borderRadius="15px"
-                boxShadow="md"
-                p="8px 16px"
-                m="3px 0"
-                w="200px"
-                _dark={id === study.studyId ? {} : { bg: "dep_3" }}
               >
                 <Text w="40px">{study.ranking}</Text>
                 <Text
