@@ -178,9 +178,14 @@ public class SubjectServiceImpl implements SubjectService{
 
                 List solved = new ArrayList<>();
                 for (int k = 0; k < userCnt; k++) {
-                    if(!result.get(startIdx + j*(int)userCnt + k)[4].toString().equals("0"))
-                        solved.add(true);
-                    else solved.add(false);
+                    try {
+                        if (!result.get(startIdx + j * (int) userCnt + k)[4].toString().equals("0"))
+                            solved.add(true);
+                        else solved.add(false);
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        break;
+                    }
                 }
                 problemInfo.put("problem_solved", solved);
 
