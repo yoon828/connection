@@ -10,29 +10,34 @@ import ProblemList from "../../components/recommend/ProblemList";
 import { Problem } from "../../@types/Problem";
 import Tooltip from "../../components/recommend/Tooltip";
 import Style from "./index.style";
+import { getWorkbook } from "../../api/workbook";
 
 function Recommend() {
   const [recommends, setRecommends] = useState<null | GetRecommendRes>(null);
   const [pending, setPending] = useState(false);
   const [selectedTap, setSelectedTap] = useState(0);
+  const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
 
+  const getAndSetRecommend = async () => {
+    setPending(true);
+    const res2 = await getWorkbook();
+    setMyWorkbook(res2.data);
+    const res1 = await getRecommend();
+    setRecommends(res1.data);
+    setPending(false);
+  };
   const onTabClick: React.MouseEventHandler<HTMLDivElement> = e => {
     if (e.target instanceof HTMLDivElement && e.target.dataset.id) {
       const targetId = Number(e.target.dataset.id);
       setSelectedTap(targetId);
+      getAndSetRecommend();
     }
   };
 
-  const getAndSetRecommend = async () => {
-    setPending(true);
-    const res = await getRecommend();
-    setRecommends(res.data);
-    console.log(res);
-    setPending(false);
-  };
-
   useEffect(() => {
-    getAndSetRecommend();
+    (async () => {
+      await getAndSetRecommend();
+    })();
   }, []);
   const animation = keyframes`
   0%{
@@ -65,6 +70,7 @@ function Recommend() {
               RECOMMEND_TAPS[selectedTap].category as keyof GetRecommendRes
             ] as Problem[]
           }
+          myWorkbook={myWorkbook}
         />
       ) : (
         <Flex justifyContent="center" alignItems="center" h="500px">
