@@ -54,10 +54,11 @@ public class SolveServiceImpl implements SolveService{
 
     @Override
     public boolean saveSolve(GitPushDto gitPushDto) {
+        Long problemId = Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
         Solve solveEntity = new Solve();
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         solveEntity.setUser(user);
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim()));
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
         if(problemEntity.isPresent()){
             solveEntity.setProblem(problemEntity.get());
         } else {
@@ -70,7 +71,7 @@ public class SolveServiceImpl implements SolveService{
         List<Subject> curSubjectList = subjectRepository.findAllByStudyDesc(study.getStudyId());
 
         if(curSubjectList.size() == 0){
-            Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+            Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemId);
             if(solveEntityPrev.isPresent()){
                 Solve temp = solveEntityPrev.get();
                 temp.setTime(LocalDateTime.now());
@@ -93,7 +94,7 @@ public class SolveServiceImpl implements SolveService{
 
             if(subject.getProblem().getProblemId() == Long.parseLong(gitPushDto.getProblemNo().trim()) && subject.getDeadline().isAfter(LocalDateTime.now()) && subject.getStart().isBefore(LocalDateTime.now())){
 
-                Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+                Optional<Solve> solveEntityPrev = solveRepository.findSubjectByUserAndProblem(user.getUserId(), problemId);
                 if(solveEntityPrev.isPresent()){
                     Solve temp = solveEntityPrev.get();
 
@@ -119,7 +120,7 @@ public class SolveServiceImpl implements SolveService{
                     break;
                 }
             } else {
-                Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemEntity.get().getProblemId());
+                Optional<Solve> solveEntityPrev = solveRepository.findNormalByUserAndProblem(user.getUserId(), problemId);
                 if(solveEntityPrev.isPresent()){
                     Solve temp = solveEntityPrev.get();
                     temp.setTime(LocalDateTime.now());
@@ -145,16 +146,17 @@ public class SolveServiceImpl implements SolveService{
 
     @Override
     public boolean saveSolve2(GitPushDto gitPushDto) {
+        Long problemId = Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
         User userEntity = userRepository.findByBackjoonId(gitPushDto.getUserId());
         ConnStudy connStudyEntity = connStudyRepository.findByUser(userEntity);
         Study studyEntity = studyRepository.findByConnStudy(connStudyEntity);
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim()));
+        Optional<Problem> problemEntity = problemRepository.findById(problemId);
 
         if(!problemEntity.isPresent()){
             return false;
         }
 
-        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), Long.parseLong(gitPushDto.getProblemNo().trim()));
+        Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), problemId);
         // 이미 스터디에서 같이 푼 문제일 경우 Update
         if(studySolveEntity.isPresent()){
             Solve temp = studySolveEntity.get();
@@ -168,7 +170,7 @@ public class SolveServiceImpl implements SolveService{
         solveEntity.setUser(userEntity);
         solveEntity.setProblem(problemEntity.get());
 
-        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), Long.valueOf(gitPushDto.getProblemNo().trim()));
+        Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), problemId);
         // 일반으로 푼 문제가 등록되어 있을 경우 스터디에서 같이 푼 문제로 바꿔서 Update
         if(normalSolveEntity.isPresent()){
             Solve temp = normalSolveEntity.get();
