@@ -145,6 +145,7 @@ public class SolveServiceImpl implements SolveService{
 
     public void pushGithub(GitPushDto gitPushDto){
         try {
+            gitPushDto.setProblemNo(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
             subjectService.submitSubject(gitPushDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
