@@ -160,7 +160,7 @@ app.post("/problem/submit", (req, res) => {
     body: JSON.stringify({
       submitNo,
       userId,
-      problemId,
+      problemNo: problemId,
       code,
       lang,
     }),
