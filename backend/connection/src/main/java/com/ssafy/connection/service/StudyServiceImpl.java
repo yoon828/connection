@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -550,21 +551,45 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public ResponseEntity updateStudyReadme(Long studyId){
-//        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
-//        if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
-//        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
-//        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
-//        long studyId = connStudy.get().getStudy().getStudyId();
-
-//        String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
-        String githubId = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
+        Optional<Study> study = studyRepository.findById(studyId);
+        if(!study.isPresent()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        List<ConnStudy> connStudyList = study.get().getConnStudy();
+        ConnStudy leaderConnStudy = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get();
+        String githubId = leaderConnStudy.getUser().getGithubId();
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
         //파일 처리
-//        System.out.println(gitPushDto.getProblemNo() + "이거 진행중");//=======-=-=567-=65-756=7-=+-
-        String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n" +
-                githubId + "\n" +
-                "<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
+        String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n\n";
+
+        exampleCode += "<div align=center>\n\n";
+
+        //제목
+        exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\uD83D\uDCBB\n" +
+                "우리는 함께 성장하며 보다 높은 곳을 바라보는 알고리즘 스터디 " + study.get().getStudyName() + "입니다.<br>" +
+                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n";
+
+        //멤버시작======================================================
+        exampleCode += "## \uD83D\uDD25 스터디 멤버 \uD83D\uDD25\n\n"
+                        + "<table>\n<tr>";
+        //리더 먼저 표시
+        exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + leaderConnStudy.getUser().getGithubId() + "\">" +
+                "<img src=\"" + leaderConnStudy.getUser().getImageUrl() + "\" width=\"100px;\" alt=\"\"/><br />" +
+                "<sub><b>\uD83D\uDC51" + leaderConnStudy.getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + leaderConnStudy.getUser().getBackjoonId() + "\">" +
+                "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + leaderConnStudy.getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
+
+        //나머지 멤버
+        for (int i = 0; i < connStudyList.size(); i++) {
+            if(connStudyList.get(i).getRole().equals("LEADER")) continue;    //멤버들만 표시
+            System.out.println(connStudyList.get(i).getRole());
+            exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + connStudyList.get(i).getUser().getGithubId() + "\">" +
+                    "<img src=\"" + connStudyList.get(i).getUser().getImageUrl() + "\" width=\"100px;\" alt=\"\"/><br />" +
+                    "<sub><b>" + connStudyList.get(i).getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + connStudyList.get(i).getUser().getBackjoonId() + "\">" +
+                    "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + connStudyList.get(i).getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
+        }
+        exampleCode += "</table>\n<br />\n\n";
+        //멤버소개 끝 =====================================================
+        exampleCode += "\n</div>\n";
+        exampleCode += "\n<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
         String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
         String fileName = "README.md";
         String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
