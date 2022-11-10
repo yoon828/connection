@@ -101,13 +101,13 @@ const getSolvingInfo = (
 };
 
 const getStudyInfo = (studyId: string): StudyInfoType => {
-  const studyInfo = getStudyInfo(studyId);
+  const studyInfo = studyInfos.get(studyId);
   if (studyInfo) return studyInfo;
   throw new Error(`ID : ${studyId} 가 존재하지 않습니다.`);
 };
 
 const getUserInfo = (bojId: string): UserInfoType => {
-  const userInfo = getUserInfo(bojId);
+  const userInfo = userInfos.get(bojId);
   if (userInfo) return userInfo;
   throw new Error(`BOJ_ID : ${bojId} 가 존재하지 않습니다.`);
 };
@@ -131,9 +131,22 @@ app.post("/problem/submit", (req, res) => {
       }
     });
 
+    const studyInfo = getStudyInfo(studyId);
+    studyInfo.users.forEach((user) => {
+      if (user.name === name) {
+        user.problem = cnt;
+      }
+    });
+
+    studyInfo.users.sort((a, b) =>
+      a.problem !== b.problem
+        ? b.problem - a.problem
+        : (a.time || 0) - (b.time || 0)
+    );
+
     const { problemList, isAllSol } = getSolvingInfo(studyId, userId);
     io.to(studyId).emit("solvedByExtension", userId, problemList, isAllSol);
-    const studyInfo = getStudyInfo(studyId);
+
     if (isAllSol) {
       if (studyInfo?.startTime) {
         studyInfo.users.forEach((user) => {
@@ -143,14 +156,7 @@ app.post("/problem/submit", (req, res) => {
         });
         io.to(studyId).emit("newResult", [...studyInfo.users]);
       }
-    } else {
-      studyInfo?.users.forEach((user) => {
-        if (user.name === name) {
-          user.problem = cnt;
-        }
-      });
     }
-    // }
   }
   fetch(`https://k7c202.p.ssafy.io/api/problem/submit/study`, {
     method: "POST",
@@ -160,7 +166,7 @@ app.post("/problem/submit", (req, res) => {
     body: JSON.stringify({
       submitNo,
       userId,
-      problemId,
+      problemNo: problemId,
       code,
       lang,
     }),
@@ -176,7 +182,7 @@ io.on("connection", (socket) => {
     userInfos.set(bojId, { studyId, name, imageUrl, studyRole });
     socket.join(studyId);
     socket.to(studyId).emit("addParticipant", name, imageUrl, studyRole);
-    cb(await getUserList(studyId), !!getStudyInfo(studyId)?.startTime);
+    cb(await getUserList(studyId), !!studyInfos.get(studyId)?.startTime);
   });
 
   socket.on("disconnecting", () => {

@@ -60,10 +60,42 @@ export default function Routes() {
               />
             }
           />
-          <Route path="join" element={<StudyJoin />} />
-          <Route path="collection" element={<Collection />} />
-          <Route path="assignment" element={<Assignment />} />
-          <Route path="management" element={<Management />} />
+          <Route
+            path="join"
+            element={
+              <PrivateRoute
+                {...defaultPrivateRouteProps}
+                outlet={<StudyJoin />}
+              />
+            }
+          />
+          <Route
+            path="collection"
+            element={
+              <PrivateRoute
+                {...defaultPrivateRouteProps}
+                outlet={<Collection />}
+              />
+            }
+          />
+          <Route
+            path="assignment"
+            element={
+              <PrivateRoute
+                {...defaultPrivateRouteProps}
+                outlet={<Assignment />}
+              />
+            }
+          />
+          <Route
+            path="management"
+            element={
+              <PrivateRoute
+                {...defaultPrivateRouteProps}
+                outlet={<Management />}
+              />
+            }
+          />
         </Route>
         <Route
           path="/study-with"

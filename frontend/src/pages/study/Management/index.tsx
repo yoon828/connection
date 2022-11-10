@@ -63,8 +63,8 @@ function Management() {
             const res = await quitStudy();
             console.log(res);
           }
-          dispatch(getUserInfo());
-          navigate("/study");
+          await dispatch(getUserInfo());
+          navigate("/study/join");
         } catch (error) {
           toast({
             title: "요청중 에러가 발생했습니다.",

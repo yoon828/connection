@@ -10,7 +10,8 @@ import {
   ModalBody,
   Text,
   useClipboard,
-  useToast
+  useToast,
+  Spinner
 } from "@chakra-ui/react";
 import { getUserProblems, postBJConfirm, postBJSolved } from "../../api/auth";
 import { useAppDispatch } from "../../store/hooks";
@@ -41,6 +42,7 @@ function BackjoonModal({ code }: BackjoonModalProps) {
   const [id, setId] = useState("");
   const [msg, setMsg] = useState("");
   const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { onCopy } = useClipboard(code);
   const toast = useToast();
   const dispatch = useAppDispatch();
@@ -69,11 +71,14 @@ function BackjoonModal({ code }: BackjoonModalProps) {
       title: "인증 코드를 복사했습니다!",
       status: "success",
       isClosable: true,
-      position: "top"
+      position: "top",
+      duration: 1000
     });
   };
 
   const onFinish = async () => {
+    if (loading) return;
+    setLoading(true);
     // onClose();
     // 백준에서 푼 문제 가져오기
     const res = await getUserProblems(id, 1);
@@ -95,11 +100,13 @@ function BackjoonModal({ code }: BackjoonModalProps) {
     if (resSolved.msg === "success") {
       toast({
         title: "백준 인증 성공했습니다!",
-        position: "top"
+        position: "top",
+        duration: 1000
       });
 
       // redux 수정하기
       dispatch(updateUserInfo({ backjoonId: id }));
+      setLoading(false);
     }
   };
 
@@ -140,21 +147,41 @@ function BackjoonModal({ code }: BackjoonModalProps) {
               버튼을 눌러주세요
             </Text>
             <Box h="20px">
-              {id !== "" && (
-                <Link
-                  href={`https://solved.ac/profile/${id}`}
-                  isExternal
-                  fontSize={12}
-                  display="flex"
-                  alignItems="center"
-                  textDecorationLine="underline"
-                >
-                  Solved.ac로 이동하기
-                  <ExternalLinkIcon mx="2px" />
-                </Link>
-              )}
+              <Link
+                href={`https://solved.ac/profile/${id}`}
+                isExternal
+                fontSize={12}
+                display="flex"
+                alignItems="center"
+                textDecorationLine="underline"
+                pointerEvents={id === "" ? "none" : "auto"}
+              >
+                Solved.ac로 이동하기
+                <ExternalLinkIcon mx="2px" />
+              </Link>
             </Box>
           </Flex>
+        </Flex>
+        <Flex w="350px">
+          <Flex w="70px" h={10} fontSize="18px" alignItems="center">
+            백준ID
+          </Flex>
+          <Flex direction="column">
+            <Input
+              type="text"
+              value={id}
+              placeholder="백준 ID를 입력해주세요"
+              onChange={e => setId(e.target.value)}
+            />
+            <Text fontSize={12} mt="5px" color={ready ? "green" : "red"}>
+              {msg}
+            </Text>
+          </Flex>
+          <Box ml="10px">
+            <Button bg="gra" _hover={{}} onClick={() => confirmBJ()}>
+              인증
+            </Button>
+          </Box>
         </Flex>
         <Flex w="350px">
           <Flex w="70px" h={10} fontSize="18px" alignItems="center">
@@ -183,10 +210,11 @@ function BackjoonModal({ code }: BackjoonModalProps) {
           bg="gra"
           width="100px"
           _hover={{}}
+          _active={{}}
           disabled={!ready}
           onClick={() => onFinish()}
         >
-          완료
+          {loading ? <Spinner /> : "완료"}
         </Button>
       </Center>
     </ModalBody>

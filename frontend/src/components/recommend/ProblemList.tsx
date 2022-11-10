@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Grid, useToast } from "@chakra-ui/react";
 
-import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
+import { addWorkbook, deleteWorkbook } from "../../api/workbook";
 import { useAppSelector } from "../../store/hooks";
 import ProblemCard from "../common/ProblemCard";
 import { Problem } from "../../@types/Problem";
 
 interface ProblemListProps {
   problemList: Problem[];
+  myWorkbook: Problem[];
 }
 
-function ProblemList({ problemList }: ProblemListProps) {
+function ProblemList({ problemList, myWorkbook }: ProblemListProps) {
   const auth = useAppSelector(state => state.auth);
-  const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
   const [btnTypes, setBtnTypes] = useState(
     problemList.map(problem =>
       myWorkbook.findIndex(
@@ -60,13 +60,6 @@ function ProblemList({ problemList }: ProblemListProps) {
       )
     );
   }, [problemList]);
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await getWorkbook();
-      setMyWorkbook(res.data);
-    };
-    fetch();
-  }, []);
 
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
