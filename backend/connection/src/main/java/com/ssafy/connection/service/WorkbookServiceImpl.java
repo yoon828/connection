@@ -2,10 +2,9 @@ package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.ProblemDto;
 import com.ssafy.connection.dto.ProblemReturnDto;
-import com.ssafy.connection.entity.ConnWorkbook;
-import com.ssafy.connection.entity.Problem;
-import com.ssafy.connection.entity.Workbook;
+import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
+import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,11 +80,14 @@ public class WorkbookServiceImpl implements WorkbookService{
     @Transactional
     public List<ProblemReturnDto> getProblem(Long userId) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-        List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbook(
-                                                workbookRepository.findByStudy(
-                                                    studyRepository.findByConnStudy(
-                                                        connStudyRepository.findByUser(
-                                                            userRepository.getById(userId)))).get());
+        User userEntity = userRepository.getById(userId);
+        ConnStudy connStudyEntity = connStudyRepository.findByUser(userEntity);
+        Optional<Study> studyEntity = Optional.ofNullable(studyRepository.findByConnStudy(connStudyEntity));
+        if(studyEntity.isEmpty()){
+            return returnList;
+        }
+
+        List<ConnWorkbook> connWorkbookList = connWorkbookRepository.findAllByWorkbook(workbookRepository.findByStudy(studyEntity.get()).get());
         for(ConnWorkbook connWorkbook : connWorkbookList){
             Problem problemEntity = connWorkbook.getProblem();
             returnList.add(new ProblemReturnDto(ProblemDto.of(problemEntity), tagRepository.findAllByProblem(problemEntity)));

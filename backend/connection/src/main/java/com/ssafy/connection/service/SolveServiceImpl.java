@@ -5,6 +5,7 @@ import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,39 +146,44 @@ public class SolveServiceImpl implements SolveService{
     @Override
     public boolean saveSolve2(GitPushDto gitPushDto) {
         User userEntity = userRepository.findByBackjoonId(gitPushDto.getUserId());
+        ConnStudy connStudyEntity = connStudyRepository.findByUser(userEntity);
+        Study studyEntity = studyRepository.findByConnStudy(connStudyEntity);
+        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().replace("\u00a0", "").trim()));
+
+        if(!problemEntity.isPresent()){
+            return false;
+        }
 
         Optional<Solve> studySolveEntity = solveRepository.findStudyByUserAndProblem(userEntity.getUserId(), Long.parseLong(gitPushDto.getProblemNo().trim()));
+        // 이미 스터디에서 같이 푼 문제일 경우 Update
         if(studySolveEntity.isPresent()){
             Solve temp = studySolveEntity.get();
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
+            studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             return true;
         }
 
         Solve solveEntity = new Solve();
         solveEntity.setUser(userEntity);
-
-        Optional<Problem> problemEntity = problemRepository.findById(Long.valueOf(gitPushDto.getProblemNo().trim()));
-        if(problemEntity.isPresent()){
-            solveEntity.setProblem(problemEntity.get());
-        } else {
-            return false;
-        }
+        solveEntity.setProblem(problemEntity.get());
 
         Optional<Solve> normalSolveEntity = solveRepository.findNormalByUserAndProblem(userEntity.getUserId(), Long.valueOf(gitPushDto.getProblemNo().trim()));
+        // 일반으로 푼 문제가 등록되어 있을 경우 스터디에서 같이 푼 문제로 바꿔서 Update
         if(normalSolveEntity.isPresent()){
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
+            studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             this.pushGithub(gitPushDto);
-        } else {
+        } else {    // 일반으로 푼 문제가 등록되어 있지 않을 경우 Save
             solveEntity.setTime(LocalDateTime.now());
             solveEntity.setStatus(1);
             solveRepository.save(solveEntity);
+            studyEntity.setHomeworkScore((int) (studyEntity.getHomeworkScore() + problemEntity.get().getLevel()));
             this.pushGithub(gitPushDto);
         }
-
         return true;
     }
 
