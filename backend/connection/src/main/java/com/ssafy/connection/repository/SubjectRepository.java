@@ -1,6 +1,7 @@
 package com.ssafy.connection.repository;
 
 import com.ssafy.connection.dto.GetDateAndCountInterface;
+import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,4 +44,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject where study_id = :studyId AND problem_id = :problemId ORDER BY deadline desc", nativeQuery = true)
     List<Subject> findAllByStudyAndProblemOrderByDeadLine(long studyId, Long problemId);
+
+    boolean existsByProblemIn(List<Problem> efd);
 }
