@@ -222,6 +222,7 @@ public class SubjectServiceImpl implements SubjectService{
         subjectMap.put("inProgress", (LocalDateTime.now().isBefore(
                 LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")).minusHours(9)
         ))? true : false);
+        subjectMap.put("leader", connStudyRepository.findByStudy_StudyIdAndRole(studyId,"LEADER").get().getUser().getGithubId());
 
         return new ResponseEntity<>(subjectMap, HttpStatus.OK);
     }
