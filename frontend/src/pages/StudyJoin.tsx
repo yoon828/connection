@@ -10,7 +10,6 @@ import StudyInfoModal from "../components/modal/StudyInfoModal";
 import JoinAccordionItem from "../components/study/JoinAccordionItem";
 import { updateUserInfo } from "../store/ducks/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-
 import Wave from "../asset/img/wave.png";
 
 type ErrorMsgType =
