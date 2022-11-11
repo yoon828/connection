@@ -12,15 +12,15 @@ public class StudyRankingDto {
 
     private long studyId;
 
-    private int studyPersonnel;
+    private String studyRepository;
 
     private int studyScore;
 
-    private int homeworkScore;
+    private int subjectScore;
+
+    private int bonusScore;
 
     private int totalScore;
 
     private int ranking;
-
-    private String studyRepository;
 }

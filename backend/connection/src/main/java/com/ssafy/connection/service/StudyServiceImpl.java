@@ -410,17 +410,32 @@ public class StudyServiceImpl implements StudyService {
             StudyRankingDto studyRankingDto = null;
 
             if (studyInterface.getTotalScore()==beforeScore) { // 이전과 동점인 경우
-                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking, studyInterface.getStudyRepository());
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(),
+                        studyInterface.getStudyId(),
+                        studyInterface.getStudyRepository(),
+                        studyInterface.getStudyScore(),
+                        studyInterface.getSubjectScore(),
+                        studyInterface.getBonusScore(),
+                        studyInterface.getTotalScore(),
+                        ranking);
+
                 add++;
             }
             else { // 동점 아닐 경우
-                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking+add, studyInterface.getStudyRepository());
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(),
+                        studyInterface.getStudyId(),
+                        studyInterface.getStudyRepository(),
+                        studyInterface.getStudyScore(),
+                        studyInterface.getSubjectScore(),
+                        studyInterface.getBonusScore(),
+                        studyInterface.getTotalScore(),
+                        ranking+add);
+
                 ranking += add;
                 add = 1;
             }
 
             beforeScore = studyInterface.getTotalScore();
-            System.out.println("beforeScore : "+beforeScore);
             studyRankingList.add(studyRankingDto);
         }
 
