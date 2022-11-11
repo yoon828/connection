@@ -11,5 +11,5 @@ public interface SolveService {
 
     boolean saveSolve2(GitPushDto gitPushDto);
 
-    boolean saveSolveList(List<Integer> list, Long userId);
+    boolean saveSolveList(List<Integer> list, Long userId, String baekjoonId);
 }

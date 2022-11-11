@@ -220,7 +220,7 @@ public class SolveServiceImpl implements SolveService{
     }
 
     @Override
-    public boolean saveSolveList(List<Integer> list, Long userId) {
+    public boolean saveSolveList(List<Integer> list, Long userId, String baekjoonId) {
         for(Integer problemId : list){
             Optional<Solve> prevSolveEntity = solveRepository.findNormalByUserAndProblem(userId, Long.valueOf(problemId));
             if(prevSolveEntity.isPresent()){
@@ -239,6 +239,11 @@ public class SolveServiceImpl implements SolveService{
                 solveRepository.save(solveEntity);
             }
         }
+
+        User userEntity = userRepository.findById(userId).get();
+        userEntity.setBackjoonId(baekjoonId);
+        userRepository.save(userEntity);
+
         return true;
     }
 }
