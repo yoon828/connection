@@ -81,7 +81,7 @@ function CreateChkModal({ isOpen, onClose, studyName }: CreateChkModalProps) {
             <Text fontWeight="700">스터디명</Text>
             <Text ml="12px">{studyName}</Text>
           </Flex>
-          <Text fontSize="16px" mt="24px" color="dep_3">
+          <Text fontSize="16px" mt="24px" color="main">
             스터디는 최대 1개만 가입가능합니다.
           </Text>
           <ModalFooter h="32px" p="20px 0">
