@@ -98,9 +98,9 @@ public class SolveServiceImpl implements SolveService{
                     Solve temp = solveEntityPrev.get();
                     // 이전 풀이가 현재 진행중인 과제로 등록되어 있지 않은 경우, Score up & Update & Github Push
                     if(!temp.getTime().isAfter(subject.getStart())){
+                        this.addSubjectScore(userEntity, problemEntity.get());
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        this.addSubjectScore(userEntity, problemEntity.get());
                         this.pushGithub(gitPushDto);
                         break;
                     } else {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
@@ -113,7 +113,6 @@ public class SolveServiceImpl implements SolveService{
                     solveEntity.setStatus(0);
                     this.addSubjectScore(userEntity, problemEntity.get());
                     solveRepository.save(solveEntity);
-                    studyRepository.save(study);
                     this.pushGithub(gitPushDto);
                     break;
                 }
@@ -137,11 +136,8 @@ public class SolveServiceImpl implements SolveService{
     @Transactional
     public boolean checkBonus(User userEntity) {
         List<Solve> todaySolveList = solveRepository.findAllByUserToday(userEntity.getUserId());
-        if(todaySolveList.size() == 0){
-            return true;
-        } else {
-            return false;
-        }
+        System.out.println(todaySolveList.toString());
+        return todaySolveList.size() == 0;
     }
 
     public void addSubjectScore(User userEntity, Problem problemEntity){
@@ -198,28 +194,25 @@ public class SolveServiceImpl implements SolveService{
             solveRepository.save(temp);
             return true;
         } else if(normalSolveEntity.isPresent()){  // 일반으로 푼 문제가 등록되어 있을 경우 스터디에서 같이 푼 문제로 바꿔서 Update & Score Up
+            this.addStudyScore(userEntity, problemEntity.get());
             Solve temp = normalSolveEntity.get();
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
-            this.addStudyScore(userEntity, problemEntity.get());
-            studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
         } else if(subjectList.size() > 0){
             Subject recentSubjectEntity = subjectList.get(0);
             LocalDateTime recentDeadLine = recentSubjectEntity.getDeadline();
             if(recentDeadLine.isAfter(LocalDateTime.now())){
-                solveRepository.save(solveEntity);
                 this.addStudyScore(userEntity, problemEntity.get());
-                studyRepository.save(studyEntity);
+                solveRepository.save(solveEntity);
                 this.pushGithub(gitPushDto);
                 return true;
             }
         } else {
-            solveRepository.save(solveEntity);
             this.addStudyScore(userEntity, problemEntity.get());
-            studyRepository.save(studyEntity);
+            solveRepository.save(solveEntity);
             this.pushGithub(gitPushDto);
             return true;
         }
