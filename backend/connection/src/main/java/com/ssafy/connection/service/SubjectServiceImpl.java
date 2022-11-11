@@ -77,7 +77,7 @@ public class SubjectServiceImpl implements SubjectService{
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
             subject.setStart(now);
-            subject.setDeadline(subjectDto.getDeadline().toLocalDate().atTime(23,59,59,999999999));
+            subject.setDeadline(subjectDto.getDeadline().toLocalDate().atTime(23,59,59));
             subject.setStudy(study);
             try {
                 subject.setProblem(problemRepository.getById(problemList.get(i)));
