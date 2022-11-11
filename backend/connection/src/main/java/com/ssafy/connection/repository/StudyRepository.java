@@ -19,7 +19,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     Study findByConnStudy(ConnStudy connStudyEntity);
 
-    @Query(value = "SELECT s.study_name AS studyName, c.study_id AS studyId, s.study_repository AS studyRepository, SUM(c.study_score) AS studyScore, SUM(c.subject_score) AS subjectScore, SUM(c.bonus_score) AS bonusScore, SUM(c.study_score+c.subject_score+c.bonus_score) AS totalScore FROM conn_study c LEFT JOIN study s ON c.study_id=s.study_id GROUP BY c.study_id ORDER BY totalScore DESC;", nativeQuery = true)
+    @Query(value = "SELECT s.study_name AS studyName, c.study_id AS studyId, s.study_repository AS studyRepository, SUM(c.study_score) AS studyScore, SUM(c.subject_score) AS subjectScore, SUM(c.bonus_score) AS bonusScore, SUM(c.study_score+c.subject_score+c.bonus_score) AS totalScore FROM conn_study c LEFT JOIN study s ON c.study_id=s.study_id GROUP BY c.study_id ORDER BY totalScore DESC, studyName;", nativeQuery = true)
     List<StudyRankingInterface> findStudyRanking();
 
 }
