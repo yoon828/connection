@@ -25,6 +25,15 @@ public class ConnStudy {
 
     private String role;
 
+    @Column(name = "study_score", columnDefinition = "integer default 0")
+    private int studyScore;
+
+    @Column(name = "subject_score", columnDefinition = "integer default 0")
+    private int subjectScore;
+
+    @Column(name = "bonus_score", columnDefinition = "integer default 0")
+    private int bonusScore;
+
     @Column(name = "joined_date")
     private LocalDateTime joinedDate;
 

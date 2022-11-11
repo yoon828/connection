@@ -46,6 +46,7 @@ public class ProblemServiceImpl implements ProblemService{
 
     private static int recommendSize = 4;   // 문제 추천에서 반환할 문제 수
     private static int recommendWorkbookCount = 1;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
+    private static int searchSize = 100;    // 문제 검색에서 반환할 문제 최대 개수
     private static String[] recommendTagList = {"구현", "다이나믹 프로그래밍", "그래프 이론", "문자열", "그리디 알고리즘", "브루트포스 알고리즘", "그래프 탐색",
                                                     "트리", "이분 탐색", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "데이크스트라",
                                                         "백트래킹", "분할 정복", "재귀" };
@@ -218,8 +219,8 @@ public class ProblemServiceImpl implements ProblemService{
             }
         }
         Collections.shuffle(returnList);
-        if(returnList.size() >= 100){
-            return returnList.subList(0, 100);
+        if(returnList.size() >= searchSize){
+            return returnList.subList(0, searchSize);
         }
         return returnList;
     }
@@ -312,10 +313,9 @@ public class ProblemServiceImpl implements ProblemService{
     @Override
     public List<ProblemReturnDto> getWeakProblemList(List<Entry<String, Integer>> entryList) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-            for(int i = 0; i < 4; i++){
+            for(int i = 0; i < recommendSize; i++){
                 returnList.add(this.getPopularProblemList(entryList.get(i).getKey()).get(0));
             }
-
         return returnList;
     }
 

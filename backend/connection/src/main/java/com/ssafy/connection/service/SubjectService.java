@@ -16,7 +16,6 @@ public interface SubjectService {
     ResponseEntity getTeamStatus(Long userId);
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
     List<Subject> getTotalSubjectList(Long userId);
-    Map<String, Integer> getSubjectCountByMonth(List<Subject> totalSubjectList, List<User> userList);
     ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException;
     ResponseEntity submitStudy(GitPushDto gitPushDto) throws IOException;
     ResponseEntity updateProblemReadme(SubjectDto subjectDto, Long userId) throws IOException;

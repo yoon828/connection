@@ -10,6 +10,12 @@ public class ConnStudyDto {
 
     private String role;
 
+    private int studyScore;
+
+    private int subjectScore;
+
+    private int bonusScore;
+
     private LocalDateTime joinedDate;
 
     public static ConnStudyDto of(ConnStudy connStudyEntity) {
