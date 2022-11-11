@@ -60,6 +60,7 @@ public class AuthService {
     private final SubjectRepository subjectRepository;
     private final SolveRepository solveRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
+    private final ReviewRepository reviewRepository;
     private final OrganizationService organizationService;
     private final String adminGithubToken = "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";
     private WebClient webClient = WebClient.create("https://api.github.com");
@@ -158,6 +159,8 @@ public class AuthService {
 
                 connStudyRepository.delete(connStudy.get()); // 스터디원이면 스터디원 정보 삭제
             }
+
+            reviewRepository.deleteAllByUser(user.get());
 
             webClient.delete()
                     .uri("/orgs/{org}/memberships/{username}",

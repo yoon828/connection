@@ -180,6 +180,18 @@ public class AuthController {
         return authService.refresh(refreshToken);
     }
 
+    @Operation(summary = "토큰 갱신", description = "신규 토큰 갱신을 수행합니다. (바디, 파라미터 일절 필요없음)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "토큰 갱신 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    @PostMapping(value = "/refresh2")
+    public ResponseEntity<?> refresh2(
+            String refreshToken
+    ) {
+        return authService.refresh(refreshToken);
+    }
+
 
 //    @Operation(summary = "유저 로그아웃", description = "유저 로그아웃을 수행합니다.")
 //    @ApiResponses(value = {
