@@ -312,8 +312,14 @@ public class ProblemServiceImpl implements ProblemService{
 
     @Override
     public List<ProblemReturnDto> getWeakProblemList(List<Entry<String, Integer>> entryList) {
+        System.out.println(entryList.toString());
         List<ProblemReturnDto> returnList = new ArrayList<>();
             for(int i = 0; i < recommendSize; i++){
+                ProblemReturnDto problemReturnDto = this.getPopularProblemList(entryList.get(i).getKey()).get(0);
+                if(returnList.contains(problemReturnDto)){
+                    i--;
+                    continue;
+                }
                 returnList.add(this.getPopularProblemList(entryList.get(i).getKey()).get(0));
             }
         return returnList;

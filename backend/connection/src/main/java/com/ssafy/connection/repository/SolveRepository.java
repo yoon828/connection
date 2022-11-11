@@ -52,4 +52,7 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND (status = 0 OR status = 1)", nativeQuery = true)
     List<Solve> findUncommonSolveByUserId(long userId);
+
+    @Query(value = "SELECT * FROM solve WHERE DATE(time) = DATE(now()) AND (status = 0 OR status = 1)", nativeQuery = true)
+    List<Solve> findAllByUserToday(long userId);
 }

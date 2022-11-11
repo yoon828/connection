@@ -100,8 +100,7 @@ public class SolveServiceImpl implements SolveService{
                     if(!temp.getTime().isAfter(subject.getStart())){
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        // check
-                        studyRepository.save(study);
+                        this.addSubjectScore(userEntity, problemEntity.get());
                         this.pushGithub(gitPushDto);
                         break;
                     } else {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
@@ -112,7 +111,7 @@ public class SolveServiceImpl implements SolveService{
                     }
                 } else {    // 이전에 과제로 푼 풀이가 등록되어 있지 않은 경우 Score up & Save & Github Push
                     solveEntity.setStatus(0);
-                    // check
+                    this.addSubjectScore(userEntity, problemEntity.get());
                     solveRepository.save(solveEntity);
                     studyRepository.save(study);
                     this.pushGithub(gitPushDto);
@@ -133,6 +132,34 @@ public class SolveServiceImpl implements SolveService{
             }
         }
         return true;
+    }
+
+    @Transactional
+    public boolean checkBonus(User userEntity) {
+        List<Solve> todaySolveList = solveRepository.findAllByUserToday(userEntity.getUserId());
+        if(todaySolveList.size() == 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void addSubjectScore(User userEntity, Problem problemEntity){
+        ConnStudy connStudyEntity = connStudyRepository.findByUser(userEntity);
+        connStudyEntity.setSubjectScore((int) (connStudyEntity.getSubjectScore() + problemEntity.getLevel()));
+        if(this.checkBonus(userEntity)){
+            connStudyEntity.setBonusScore(connStudyEntity.getBonusScore() + 30);
+        }
+        connStudyRepository.save(connStudyEntity);
+    }
+
+    public void addStudyScore(User userEntity, Problem problemEntity){
+        ConnStudy connStudyEntity = connStudyRepository.findByUser(userEntity);
+        connStudyEntity.setStudyScore((int) ((connStudyEntity.getStudyScore()) + problemEntity.getLevel()));
+        if(this.checkBonus(userEntity)){
+            connStudyEntity.setBonusScore((connStudyEntity.getBonusScore() + 30));
+        }
+        connStudyRepository.save(connStudyEntity);
     }
 
     public void pushGithub(GitPushDto gitPushDto){
@@ -175,7 +202,7 @@ public class SolveServiceImpl implements SolveService{
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
-            // check
+            this.addStudyScore(userEntity, problemEntity.get());
             studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
@@ -184,14 +211,14 @@ public class SolveServiceImpl implements SolveService{
             LocalDateTime recentDeadLine = recentSubjectEntity.getDeadline();
             if(recentDeadLine.isAfter(LocalDateTime.now())){
                 solveRepository.save(solveEntity);
-                // check
+                this.addStudyScore(userEntity, problemEntity.get());
                 studyRepository.save(studyEntity);
                 this.pushGithub(gitPushDto);
                 return true;
             }
         } else {
             solveRepository.save(solveEntity);
-            // check
+            this.addStudyScore(userEntity, problemEntity.get());
             studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
