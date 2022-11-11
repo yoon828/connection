@@ -19,6 +19,7 @@ function Recommend() {
   const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
 
   const getAndSetRecommend = async () => {
+    if (pending) return;
     setPending(true);
     const res2 = await getWorkbook();
     setMyWorkbook(res2.data);

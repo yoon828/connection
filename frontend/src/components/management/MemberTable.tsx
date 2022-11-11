@@ -71,7 +71,7 @@ function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
                   name: "참여율",
                   data: [
                     ...member.series.map(data => ({
-                      x: data.date.split("-")[1],
+                      x: `${data.date.split("-")[1]}월`,
                       y: Math.round((100 * data.count) / data.total),
                       goals: [
                         {
