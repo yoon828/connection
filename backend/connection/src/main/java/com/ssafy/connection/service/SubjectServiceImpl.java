@@ -72,12 +72,12 @@ public class SubjectServiceImpl implements SubjectService{
         for (Long problemid: problemList) {problemEntityList.add(problemRepository.getById(problemid));}
         if(subjectRepository.existsByProblemIn(problemEntityList)) return new ResponseEntity<>(new ResponseDto("already exist"), HttpStatus.CONFLICT);
 
-        LocalDateTime now = LocalDateTime.now().toLocalDate().atTime(23,59,59,999999999);;
+        LocalDateTime now = LocalDateTime.now();
 
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
             subject.setStart(now);
-            subject.setDeadline(subjectDto.getDeadline());
+            subject.setDeadline(subjectDto.getDeadline().toLocalDate().atTime(23,59,59,999999999));
             subject.setStudy(study);
             try {
                 subject.setProblem(problemRepository.getById(problemList.get(i)));
@@ -227,6 +227,9 @@ public class SubjectServiceImpl implements SubjectService{
         subjectMap.put("inProgress", (LocalDateTime.now().isBefore(
                 LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
         ))? true : false);
+        System.out.println("지금은" + LocalDateTime.now());
+        System.out.println("그것은" + LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
+        System.out.println(result.get(0)[5].toString());
         subjectMap.put("leader", connStudyRepository.findByStudy_StudyIdAndRole(studyId,"LEADER").get().getUser().getGithubId());
 
         return new ResponseEntity<>(subjectMap, HttpStatus.OK);
