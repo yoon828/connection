@@ -26,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -135,6 +136,7 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setRole("LEADER");
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
+            connStudy.setJoinedDate(LocalDateTime.now());
             connStudyRepository.save(connStudy);
             Workbook workbook = new Workbook();
             workbook.setWorkbookName(study.getStudyName());
@@ -207,6 +209,7 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setRole("MEMBER");
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
+            connStudy.setJoinedDate(LocalDateTime.now());
             connStudyRepository.save(connStudy);
             studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()+1);
             studyRepository.save(studyEntity);
