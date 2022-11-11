@@ -36,11 +36,12 @@ function SubjectkView() {
       data: { inProgress, subjects, leader }
     } = await getSubject();
     // console.log(inProgress);
-    // console.log(subjects);
+
     dispatch(updateUserInfo({ studyLeader: leader }));
     setIsProgress(inProgress);
     setSubjectList(subjects);
-    setLen(isProgress ? subjects.length - 1 : subjects.length);
+    // console.log(inProgress ? subjects.length : subjects.length + 1);
+    setLen(inProgress ? subjects.length : subjects.length + 1);
   };
 
   useEffect(() => {
@@ -49,7 +50,7 @@ function SubjectkView() {
 
   if (len !== 0) {
     return (
-      <SliderLayout total={len}>
+      <SliderLayout len={len}>
         {subjectList.map(subject => {
           return (
             <Subject

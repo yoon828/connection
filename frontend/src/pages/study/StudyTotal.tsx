@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link as ReactLink, Navigate, useNavigate } from "react-router-dom";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -10,6 +10,7 @@ import {
   Image,
   Link,
   Text,
+  Tooltip,
   useClipboard,
   useColorMode
 } from "@chakra-ui/react";
@@ -24,6 +25,24 @@ import Challenge from "../../components/study/Challenge";
 import { useAppSelector } from "../../store/hooks";
 import { UserInfoType } from "../../store/ducks/auth/auth.type";
 import SubjectView from "../../components/study/subject/SubjectView";
+
+function RankInfo() {
+  return (
+    <Tooltip
+      label={
+        <div>
+          과제는 스터디장이 등록한 과제를 푼 점수에요
+          <br />
+          문제풀이 점수는 스터디원들과 같이 문제를 풀었을때 점수에요 <br />
+          보너스 점수는 꾸준히 풀 수록 점수가 쌓여요
+          <br />
+        </div>
+      }
+    >
+      <QuestionIcon w={6} h={6} cursor="help" />
+    </Tooltip>
+  );
+}
 
 function StudyTotal() {
   const { colorMode } = useColorMode();
@@ -92,7 +111,12 @@ function StudyTotal() {
           >
             <Challenge />
           </TotalLayout>
-          <TotalLayout title="랭킹" flex="2" height="200px">
+          <TotalLayout
+            title="랭킹"
+            flex="2"
+            height="200px"
+            RankInfo={<RankInfo />}
+          >
             <Ranking />
           </TotalLayout>
         </Flex>

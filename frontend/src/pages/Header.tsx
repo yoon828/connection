@@ -52,6 +52,7 @@ function Header() {
   ];
 
   useEffect(() => {
+    // onOpen();
     setCode(v4().substring(0, 6).toUpperCase());
   }, []);
 
@@ -139,7 +140,7 @@ function Header() {
               </MenuButton>
               <MenuList _dark={{ bg: "#121212" }}>
                 <MenuGroup title={`${auth.information?.name}님 반가워요😀`}>
-                  <MenuItem onClick={() => logout()}>로그아웃</MenuItem>
+                  <MenuItem onClick={logout}>로그아웃</MenuItem>
                 </MenuGroup>
               </MenuList>
             </Menu>
@@ -165,6 +166,7 @@ function Header() {
             onClose={onClose}
             content={
               !auth.information.backjoonId ? (
+                // true ? (
                 <BackjoonModal code={code} />
               ) : !auth.information.ismember ? (
                 <GithubModal />

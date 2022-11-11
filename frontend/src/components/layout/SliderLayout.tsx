@@ -4,17 +4,18 @@ import { Box } from "@chakra-ui/react";
 import SlideArrow from "../study/subject/SlideArrow";
 
 interface SliderLayoutProps {
-  total: number;
+  len: number;
   children: ReactNode;
 }
 
-function SliderLayout({ total, children }: SliderLayoutProps) {
-  const [currentIdx, setCurrentIdx] = useState(total);
+function SliderLayout({ len, children }: SliderLayoutProps) {
+  const [currentIdx, setCurrentIdx] = useState(len - 1);
+  const [total, setTotal] = useState(len - 1);
   const slideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setCurrentIdx(total);
-  }, [total]);
+    setTotal(len - 1);
+  }, [len]);
 
   useEffect(() => {
     if (slideRef.current) {

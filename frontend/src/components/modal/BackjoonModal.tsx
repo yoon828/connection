@@ -77,10 +77,7 @@ function BackjoonModal({ code }: BackjoonModalProps) {
     });
   };
 
-  const onFinish = async () => {
-    if (loading) return;
-    setLoading(true);
-    // onClose();
+  const postSolved = async () => {
     // 백준에서 푼 문제 가져오기
     const res = await getUserProblems(id, 1);
     const total = res.data.count;
@@ -94,10 +91,8 @@ function BackjoonModal({ code }: BackjoonModalProps) {
         solved.push(item.problemId)
       )
     );
-    // console.log(solved);
     // 푼 문제 보내기
-    const resSolved = await postBJSolved({ list: solved });
-    // console.log(resSolved);
+    const resSolved = await postBJSolved(id, { list: solved });
     if (resSolved.msg === "success") {
       toast({
         title: "백준 인증 성공했습니다!",
@@ -107,6 +102,30 @@ function BackjoonModal({ code }: BackjoonModalProps) {
 
       // redux 수정하기
       dispatch(updateUserInfo({ backjoonId: id }));
+      setLoading(false);
+      setReady(true);
+    }
+  };
+
+  const onFinish = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    // 백준 연동 확인
+    try {
+      const data = await postBJConfirm({
+        baekjoonId: id,
+        code
+      });
+      if (data.msg === "success") {
+        // setMsg("인증되었습니다");
+        // 인증 된 경우만 풀었던 문제 보내기
+        await postSolved();
+      }
+    } catch (error) {
+      console.log(error);
+      setMsg("인증에 실패했습니다");
+      setReady(false);
       setLoading(false);
     }
   };
@@ -135,7 +154,7 @@ function BackjoonModal({ code }: BackjoonModalProps) {
                 _dark={{ color: "white" }}
                 boxSize="15px"
                 mx="3px"
-                onClick={() => onCopyEvent()}
+                onClick={onCopyEvent}
                 cursor="pointer"
               />
             </Flex>
@@ -180,11 +199,6 @@ function BackjoonModal({ code }: BackjoonModalProps) {
               {msg}
             </Text>
           </Flex>
-          <Box ml="10px">
-            <Button bg="gra" _hover={{}} onClick={() => confirmBJ()}>
-              인증
-            </Button>
-          </Box>
         </Flex>
       </Center>
       <Center>
@@ -193,10 +207,10 @@ function BackjoonModal({ code }: BackjoonModalProps) {
           width="100px"
           _hover={{}}
           _active={{}}
-          disabled={!ready}
-          onClick={() => onFinish()}
+          disabled={id === "" || loading}
+          onClick={onFinish}
         >
-          {loading ? <Spinner /> : "완료"}
+          {loading ? <Spinner /> : "인증"}
         </Button>
       </Center>
     </ModalBody>

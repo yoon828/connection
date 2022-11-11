@@ -6,13 +6,14 @@ import { useAppSelector } from "../../store/hooks";
 import getMedalColor from "../../utils/getMedalColor";
 
 type RankingProps = {
-  homeworkScore: number;
+  bonusScore: number;
   ranking: number;
   studyId: number;
   studyName: string;
-  studyScore: number;
-  totalScore: number;
   studyRepository: string;
+  studyScore: number;
+  subjectScore: number;
+  totalScore: number;
 };
 
 function Ranking() {
@@ -25,6 +26,7 @@ function Ranking() {
     const {
       data: { data }
     } = await getRank();
+    // console.log(data);
     setRanks(data);
   };
 
@@ -70,8 +72,9 @@ function Ranking() {
                 <div>
                   {study.studyName}
                   <br />
-                  과제 점수 : {study.homeworkScore} <br />
-                  문제 풀이 점수 : {study.studyScore} <br /> 총 점수 :
+                  과제 점수 : {study.subjectScore} <br />
+                  문제 풀이 점수 : {study.studyScore} <br />
+                  보너스 점수 : {study.bonusScore} <br />총 점수 :
                   {study.totalScore}
                 </div>
               }
