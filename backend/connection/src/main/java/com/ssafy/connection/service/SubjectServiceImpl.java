@@ -72,7 +72,7 @@ public class SubjectServiceImpl implements SubjectService{
         for (Long problemid: problemList) {problemEntityList.add(problemRepository.getById(problemid));}
         if(subjectRepository.existsByProblemIn(problemEntityList)) return new ResponseEntity<>(new ResponseDto("already exist"), HttpStatus.CONFLICT);
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().toLocalDate().atTime(23,59,59,999999999);;
 
         for(int i = 0; i<problemList.size(); i++){
             Subject subject = new Subject();
