@@ -95,23 +95,23 @@ public class AuthService {
         if(solvedacUserDto.getBio().length() >= code.length()){ //상태메세지가 난수보다 짧음 안 됨
             String substr = solvedacUserDto.getBio().substring(solvedacUserDto.getBio().length()-code.length());
             if(substr.equals(code)){
-                User u = userRepository.findById(userId).get();
-                User user = new User();
-                user.setUserId(u.getUserId());
-                user.setName(u.getName());
-                user.setGithubId(u.getGithubId());
-                user.setEmail(u.getEmail());
-                user.setImageUrl(u.getImageUrl());
-                user.setTier(u.getTier());
-                user.setIsmember(u.isIsmember());
-                user.setPassword(u.getPassword());
-                user.setProvider(u.getProvider());
-                user.setRole(u.getRole());
-                user.setConnStudy(u.getConnStudy());
-                user.setSolve(u.getSolve());
-                user.setBackjoonId(baekjoonId);
-
-                userRepository.save(user);
+//                User u = userRepository.findById(userId).get();
+//                User user = new User();
+//                user.setUserId(u.getUserId());
+//                user.setName(u.getName());
+//                user.setGithubId(u.getGithubId());
+//                user.setEmail(u.getEmail());
+//                user.setImageUrl(u.getImageUrl());
+//                user.setTier(u.getTier());
+//                user.setIsmember(u.isIsmember());
+//                user.setPassword(u.getPassword());
+//                user.setProvider(u.getProvider());
+//                user.setRole(u.getRole());
+//                user.setConnStudy(u.getConnStudy());
+//                user.setSolve(u.getSolve());
+//                user.setBackjoonId(baekjoonId);
+//
+//                userRepository.save(user);
                 return new ResponseEntity(new ResponseDto("success"), HttpStatus.OK);
             }
         }
