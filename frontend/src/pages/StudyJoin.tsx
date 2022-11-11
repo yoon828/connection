@@ -1,13 +1,9 @@
-import {
-  Accordion,
-  Center,
-  Image,
-  useDisclosure,
-  useToast
-} from "@chakra-ui/react";
+import { Accordion, Center, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import useToast from "hooks/useToast";
 import { dupliChkStudy, getStudyInfo, GetStudyInfoRes } from "../api/studyJoin";
 import CreateChkModal from "../components/modal/CreateChkModal";
 import StudyInfoModal from "../components/modal/StudyInfoModal";

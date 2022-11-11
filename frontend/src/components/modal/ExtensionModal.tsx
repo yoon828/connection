@@ -1,14 +1,8 @@
 import React from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Center,
-  Flex,
-  Link,
-  ModalBody,
-  Text,
-  useToast
-} from "@chakra-ui/react";
+import { Button, Center, Flex, Link, ModalBody, Text } from "@chakra-ui/react";
+
+import useToast from "hooks/useToast";
 import checkExtension from "../../utils/checkExtension";
 
 type ExtensionModalProps = {

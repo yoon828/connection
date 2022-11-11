@@ -1,5 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Box, Flex, Grid, useToast } from "@chakra-ui/react";
+import { Box, Flex, Grid } from "@chakra-ui/react";
+
+import useToast from "hooks/useToast";
 import ProblemCard from "../ProblemCard";
 import SelectedProblem from "./SelectedProblem";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";

@@ -10,13 +10,14 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useToast,
   useColorMode,
   Image
 } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+import useToast from "hooks/useToast";
 import { GetStudyInfoRes, joinStudy } from "../../api/studyJoin";
 import { updateUserInfo } from "../../store/ducks/auth/authSlice";
 import { useAppDispatch } from "../../store/hooks";

@@ -11,9 +11,10 @@ import {
   Link,
   Text,
   useClipboard,
-  useColorMode,
-  useToast
+  useColorMode
 } from "@chakra-ui/react";
+
+import useToast from "hooks/useToast";
 import TotalLayout from "../../components/layout/TotalLayout";
 import Ranking from "../../components/study/Ranking";
 import GithubL from "../../asset/img/githubL.svg";

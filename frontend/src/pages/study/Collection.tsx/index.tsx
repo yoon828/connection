@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Text, useDisclosure, useToast } from "@chakra-ui/react";
-
+import { Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+
+import useToast from "hooks/useToast";
 import StudyLayout from "../../../components/layout/StudyLayout";
 import BackButton from "../../../components/common/BackButton";
 import SearchModal from "../../../components/collection/SearchModal";

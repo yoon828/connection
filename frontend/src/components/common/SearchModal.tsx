@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Grid,
   Input,
@@ -8,12 +7,12 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Text,
-  useToast
+  Text
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 
+import useToast from "hooks/useToast";
 import ProblemCard from "./ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
 import { searchProblem } from "../../api/problem";

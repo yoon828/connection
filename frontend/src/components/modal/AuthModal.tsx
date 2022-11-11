@@ -1,5 +1,7 @@
-import { Modal, ModalContent, ModalOverlay, useToast } from "@chakra-ui/react";
+import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import React from "react";
+
+import useToast from "hooks/useToast";
 
 type AuthModalProps = {
   isOpen: boolean;
