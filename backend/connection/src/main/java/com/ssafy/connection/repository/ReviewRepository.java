@@ -21,4 +21,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     int findCountBtProblem(long problemId);
 
     Optional<Review> findByUserAndProblem(User userEntity, Problem problemEntity);
+
+    List<Review> findAllByUser(User user);
+    void deleteAllByUser(User user);
 }
