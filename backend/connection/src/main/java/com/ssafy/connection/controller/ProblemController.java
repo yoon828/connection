@@ -113,7 +113,7 @@ public class ProblemController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "list", value = "유저가 푼 문제 리스트(1111, 2222, ....)", required = true)
     })
-    @PostMapping("/register/{baekjoonId}")
+    @PostMapping("/register/{beakjoonId}")
     public ResponseEntity<ResponseDto> saveSolve(@PathVariable("beakjoonId") String baekjoonId, @RequestBody Map<String, Object> map,
                                                 @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         boolean result = solveService.saveSolveList((List<Integer>) map.get("list"), userPrincipal.getId(), baekjoonId);
