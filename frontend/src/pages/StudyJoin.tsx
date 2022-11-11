@@ -1,4 +1,4 @@
-import { Accordion, Center, useDisclosure } from "@chakra-ui/react";
+import { Accordion, Center, Image, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
