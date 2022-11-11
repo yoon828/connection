@@ -156,8 +156,9 @@ public class AuthService {
                 if (connStudy.get().getRole().equals("LEADER")) { // 스터디장이면 스터디 관련 정보 삭제
                     studyService.deleteStudy(user.get().getUserId()); // 스터디 관련 삭제(스터디, 문제집, 과제, 스터디원)
                 }
-
-                connStudyRepository.delete(connStudy.get()); // 스터디원이면 스터디원 정보 삭제
+                else {
+                    connStudyRepository.delete(connStudy.get()); // 스터디원이면 스터디원 정보 삭제
+                }
             }
 
             reviewRepository.deleteAllByUser(user.get());
