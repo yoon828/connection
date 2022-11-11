@@ -25,7 +25,7 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND status = 1", nativeQuery = true)
     List<Solve> findStudyProblemByUserId(long userId);
 
-    @Query(value = "SELECT MID(s.time,1,10) AS date, COUNT(DISTINCT s.user_id) as count FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND s.status IN (0,1) AND s.time BETWEEN DATE_ADD(NOW(), INTERVAL -180 DAY) AND NOW() GROUP BY date;", nativeQuery = true)
+    @Query(value = "SELECT MID(s.time,1,10) AS date, COUNT(DISTINCT s.user_id) as count FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND s.status IN (0,1) AND s.time BETWEEN DATE_ADD(NOW(), INTERVAL -180 DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY date;", nativeQuery = true)
     List<SolveStudyInterface> findStudyStreakByStudyId(long studyId);
 
     List<Solve> findAllByUser_UserId(Long userId);
