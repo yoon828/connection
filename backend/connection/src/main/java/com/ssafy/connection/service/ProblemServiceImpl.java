@@ -320,7 +320,7 @@ public class ProblemServiceImpl implements ProblemService{
                     i--;
                     continue;
                 }
-                returnList.add(this.getPopularProblemList(entryList.get(i).getKey()).get(0));
+                returnList.add(problemReturnDto);
             }
         return returnList;
     }
