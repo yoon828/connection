@@ -133,7 +133,7 @@ public class ProblemController {
             case -1:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
             case 0:
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("duplicate"));
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("duplicate"));
         }
         return null;
     }
