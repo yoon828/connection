@@ -10,7 +10,7 @@ type ReviewBarProps = {
 };
 
 function ReviewBar({ problemId, title, level, setTiers }: ReviewBarProps) {
-  const defaultLevel = level < 2 ? 2 : level > 29 ? 29 : level;
+  const defaultLevel = level < 3 ? 3 : level > 29 ? 29 : level;
   const optArr = Array(5)
     .fill(defaultLevel - 2)
     .map((n, idx) => n + idx);
