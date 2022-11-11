@@ -111,55 +111,6 @@ function Ranking() {
           </Link>
         );
       })}
-      {ranks.map(study => {
-        return (
-          <Link href={study.studyRepository} key={v4()} _hover={{}}>
-            <Tooltip
-              label={
-                <div>
-                  {study.studyName}
-                  <br />
-                  과제 점수 : {study.homeworkScore} <br />
-                  문제 풀이 점수 : {study.studyScore} <br /> 총 점수 :
-                  {study.totalScore}
-                </div>
-              }
-            >
-              <Flex
-                // bg={id === study.studyId ? "gra" : "white"}
-                borderRadius="15px"
-                boxShadow="md"
-                p="8px 16px"
-                m="3px 0"
-                w="230px"
-                _dark={id === study.studyId ? {} : { bg: "dep_3" }}
-              >
-                {study.ranking <= 3 ? (
-                  <Image src={getMedalColor(study.ranking)} w="30px" mr="5px" />
-                ) : (
-                  <Text w="40px" color="main">
-                    {study.ranking}
-                  </Text>
-                )}
-                <Flex
-                  w="100%"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Text
-                    textOverflow="ellipsis"
-                    overflow="hidden"
-                    whiteSpace="nowrap"
-                  >
-                    {study.studyName}
-                  </Text>
-                  <Text fontSize="14px">{study.totalScore}</Text>
-                </Flex>
-              </Flex>
-            </Tooltip>
-          </Link>
-        );
-      })}
     </Box>
   );
 }
