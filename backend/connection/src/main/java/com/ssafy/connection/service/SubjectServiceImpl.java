@@ -103,6 +103,9 @@ public class SubjectServiceImpl implements SubjectService{
     @Override
     @Transactional
     public ResponseEntity getTeamStatus(Long userId) {
+        DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter returnFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
 
@@ -111,7 +114,7 @@ public class SubjectServiceImpl implements SubjectService{
         long userCnt = connStudy.get().getStudy().getConnStudy().size();    //스터디 유저 수
         List<Long> subjectCnts = subjectRepository.getTeamSubjectCount(studyId);//스터디 과제 수(데드라인별로 내림차순)
 
-        // result print
+//         result print
 //        for (int i = 0; i < result.size(); i++) {
 //            for (int j = 0; j < result.get(0).length; j++) {
 //                System.out.print(result.get(i)[j] + ",, ");
@@ -141,6 +144,10 @@ public class SubjectServiceImpl implements SubjectService{
             for (int j = 0; j < userCnt; j++) {
                 Map<String, Object> userInfo = new HashMap<>();
                 try {
+                    //데드라인 이후에 가입했는지 체크
+                    LocalDateTime joined = LocalDateTime.parse(result.get(j + startIdx)[7].toString().substring(0, 19), parseFormat).minusHours(9);
+                    LocalDateTime deadline = LocalDateTime.parse(result.get(j + startIdx)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+                    if(joined.isAfter(deadline)) continue;
                     userInfo.put("user_id", result.get(j + startIdx)[0]);
                     userInfo.put("user_name", result.get(j + startIdx)[1]);
                 }
@@ -148,16 +155,8 @@ public class SubjectServiceImpl implements SubjectService{
                     break;
                 }
 
-
                 int cnt = 0;
                 for (int k = 0; k < subjectCnts.get(i); k++) {
-//                    System.out.println("디버그");
-//                    System.out.println(startIdx + " " + j + " " + k + " " + userCnt);
-//                    System.out.println(result.get(startIdx + j + k * (int)userCnt)[4].toString());
-//                    System.out.println(" 얼니ㅏㅓㅏㅣㄴ더라디저리ㅏ"+startIdx + j + k * (int)userCnt);
-
-//                    System.out.println(result.get(startIdx + j + k * (int)userCnt).length);
-
                     try {
                         if (!result.get(startIdx + j + k * (int) userCnt)[4].toString().equals("0"))
                             cnt++;
@@ -182,6 +181,11 @@ public class SubjectServiceImpl implements SubjectService{
                 List solved = new ArrayList<>();
                 for (int k = 0; k < userCnt; k++) {
                     try {
+                        //데드라인 이후에 가입했는지 체크
+                        LocalDateTime joined = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[7].toString().substring(0, 19), parseFormat).minusHours(9);
+                        LocalDateTime deadline = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+                        if(joined.isAfter(deadline)) continue;
+
                         if (!result.get(startIdx + j * (int) userCnt + k)[4].toString().equals("0"))
                             solved.add(true);
                         else solved.add(false);
@@ -196,8 +200,6 @@ public class SubjectServiceImpl implements SubjectService{
             }
 
             List deadline = new ArrayList<>();
-            DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            DateTimeFormatter returnFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             LocalDateTime startDate = null ;
             LocalDateTime endDate = null;
