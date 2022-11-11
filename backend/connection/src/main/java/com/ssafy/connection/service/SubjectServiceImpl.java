@@ -145,8 +145,8 @@ public class SubjectServiceImpl implements SubjectService{
                 Map<String, Object> userInfo = new HashMap<>();
                 try {
                     //데드라인 이후에 가입했는지 체크
-                    LocalDateTime joined = LocalDateTime.parse(result.get(j + startIdx)[7].toString().substring(0, 19), parseFormat).minusHours(9);
-                    LocalDateTime deadline = LocalDateTime.parse(result.get(j + startIdx)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+                    LocalDateTime joined = LocalDateTime.parse(result.get(j + startIdx)[7].toString().substring(0, 19), parseFormat);
+                    LocalDateTime deadline = LocalDateTime.parse(result.get(j + startIdx)[5].toString().substring(0, 19), parseFormat);
                     if(joined.isAfter(deadline)) continue;
                     userInfo.put("user_id", result.get(j + startIdx)[0]);
                     userInfo.put("user_name", result.get(j + startIdx)[1]);
@@ -182,8 +182,8 @@ public class SubjectServiceImpl implements SubjectService{
                 for (int k = 0; k < userCnt; k++) {
                     try {
                         //데드라인 이후에 가입했는지 체크
-                        LocalDateTime joined = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[7].toString().substring(0, 19), parseFormat).minusHours(9);
-                        LocalDateTime deadline = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+                        LocalDateTime joined = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[7].toString().substring(0, 19), parseFormat);
+                        LocalDateTime deadline = LocalDateTime.parse(result.get(startIdx + j * (int) userCnt + k)[5].toString().substring(0, 19), parseFormat);
                         if(joined.isAfter(deadline)) continue;
 
                         if (!result.get(startIdx + j * (int) userCnt + k)[4].toString().equals("0"))
@@ -204,8 +204,8 @@ public class SubjectServiceImpl implements SubjectService{
             LocalDateTime startDate = null ;
             LocalDateTime endDate = null;
             try {
-                startDate = LocalDateTime.parse(result.get(startIdx)[6].toString().substring(0, 19), parseFormat).minusHours(9);
-                endDate = LocalDateTime.parse(result.get(startIdx)[5].toString().substring(0, 19), parseFormat).minusHours(9);
+                startDate = LocalDateTime.parse(result.get(startIdx)[6].toString().substring(0, 19), parseFormat);
+                endDate = LocalDateTime.parse(result.get(startIdx)[5].toString().substring(0, 19), parseFormat);
             }
             catch (IndexOutOfBoundsException e){
                 break;
@@ -225,7 +225,7 @@ public class SubjectServiceImpl implements SubjectService{
         }
         subjectMap.put("subjects", subjects);
         subjectMap.put("inProgress", (LocalDateTime.now().isBefore(
-                LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")).minusHours(9)
+                LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
         ))? true : false);
         subjectMap.put("leader", connStudyRepository.findByStudy_StudyIdAndRole(studyId,"LEADER").get().getUser().getGithubId());
 
