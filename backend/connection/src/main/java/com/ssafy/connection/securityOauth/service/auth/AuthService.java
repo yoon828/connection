@@ -25,6 +25,7 @@ import org.hibernate.jdbc.Work;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NameTokenizers;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,6 +61,8 @@ public class AuthService {
     private final SolveRepository solveRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
     private final OrganizationService organizationService;
+    private final String adminGithubToken = "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";
+    private WebClient webClient = WebClient.create("https://api.github.com");
     private WebClient solvedac = WebClient.create("https://solved.ac/api");
     private WebClient github = WebClient.create("https://solved.ac/api");
 
@@ -140,25 +143,31 @@ public class AuthService {
         DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
 
         if(user.isPresent()) {
-            Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userPrincipal.getId());
-            List<Solve> solveList = solveRepository.findAllByUser(user.get());
+            Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userPrincipal.getId()); // 스터디 참여중인지
+            Optional<List<Solve>> solveList = solveRepository.findAllByUser(user.get());
 
-            if(connStudy.isPresent()) {
-                Study study = studyRepository.findByConnStudy(connStudy.get());
-
-                Workbook workbook = workbookRepository.findByStudy(study).get();
-
-                //workbook optional로 받지 않아도 괜찮은가
-                connWorkbookRepository.deleteAllByWorkbook(workbook);
-                workbookRepository.deleteAllByStudy(study);
-                //============
-                subjectRepository.deleteAllByStudy(study);
-
-
-                studyService.quitStudy(user.get().getUserId(), null);
-
+            if (solveList.isPresent()) { // 푼 문제가 있다면
+                solveRepository.deleteAllByUser(user.get());
             }
-            solveRepository.deleteAllByUser(user.get());
+
+            if(connStudy.isPresent()) { // 스터디 참여중이면
+
+                if (connStudy.get().getRole().equals("LEADER")) { // 스터디장이면 스터디 관련 정보 삭제
+                    studyService.deleteStudy(user.get().getUserId()); // 스터디 관련 삭제(스터디, 문제집, 과제, 스터디원)
+                }
+
+                connStudyRepository.delete(connStudy.get()); // 스터디원이면 스터디원 정보 삭제
+            }
+
+            webClient.delete()
+                    .uri("/orgs/{org}/memberships/{username}",
+                            "co-nnection",
+                            user.get().getGithubId())
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Bearer " + adminGithubToken)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
 
             userRepository.delete(user.get());
             tokenRepository.delete(token.get());

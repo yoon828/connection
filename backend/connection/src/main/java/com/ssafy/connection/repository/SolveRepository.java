@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface SolveRepository extends JpaRepository<Solve, Long> {
     Optional<Solve> findByUserAndProblem(User user, Problem problem);
 
-    List<Solve> findAllByUser(User user);
+    Optional<List<Solve>> findAllByUser(User user);
 
     @Query(value = "SELECT count(*) FROM study st JOIN subject su ON st.study_id = su.study_id LEFT JOIN solve so ON so.problem_id = su.problem_id WHERE so.user_id = :userId AND su.study_id = :studyId AND so.status = 0", nativeQuery = true)
     int countsolvedSubject(Long userId, Long studyId);

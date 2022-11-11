@@ -52,8 +52,9 @@ public class SubjectController {
 
     @ApiOperation(value = "과제 출제")
     @ApiResponse(responseCode = "200", description = "success : 성공")
-    @ApiResponse(responseCode = "409", description = "empty : 해당회원 스터디 정보 없음<br>" +
-                                                    "wrong parameter value : 해당문제 존재하지 않거나 데드라인 잘못됨")
+    @ApiResponse(responseCode = "409", description = "{msg: 'empty'} 해당회원 스터디 정보 없음<br>" +
+                                                    "{msg: 'wrong parameter value'} 해당문제 존재하지 않거나 데드라인 잘못됨" +
+                                                    "{msg: 'already exist'} 이미 등록된 과제 입니다.")
 //    @ApiResponse(responseCode = "409", description = "성공")
     @PostMapping("")
     public ResponseEntity makeSubject(@RequestBody SubjectDto subjectDto, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal) throws IOException {

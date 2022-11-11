@@ -13,13 +13,20 @@ import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.auth.TokenRepository;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
 import com.ssafy.connection.util.RandomCodeGenerate;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -67,7 +74,7 @@ public class StudyServiceImpl implements StudyService {
                 throw new RestException(HttpStatus.BAD_REQUEST, "Already joined to another study");
 
             do { // 고유한 study 코드 생성
-                studyCode = RandomCodeGenerate.generate();
+                studyCode = RandomCodeGenerate.generate().toUpperCase();
             } while (studyRepository.findByStudyCode(studyCode) == null);
 
             //githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
@@ -129,6 +136,7 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setRole("LEADER");
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
+            connStudy.setJoinedDate(LocalDateTime.now());
             connStudyRepository.save(connStudy);
             Workbook workbook = new Workbook();
             workbook.setWorkbookName(study.getStudyName());
@@ -201,6 +209,7 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setRole("MEMBER");
             connStudy.setStudy(studyEntity);
             connStudy.setUser(userEntity);
+            connStudy.setJoinedDate(LocalDateTime.now());
             connStudyRepository.save(connStudy);
             studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()+1);
             studyRepository.save(studyEntity);
@@ -393,24 +402,25 @@ public class StudyServiceImpl implements StudyService {
         List<StudyRankingInterface> studyRanking = studyRepository.findStudyRanking();
         Map<String, Object> map = new HashMap<>();
 
-        int ranking = 1;
-        int add = 0;
-        int beforeScore = 0;
+        int ranking = 0;
+        int add = 1;
+        int beforeScore = -1;
 
         for (StudyRankingInterface studyInterface : studyRanking) {
-            StudyRankingDto studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking + add, studyInterface.getStudyRepository());
+            StudyRankingDto studyRankingDto = null;
 
-            if (beforeScore != studyInterface.getTotalScore()) {
-                ranking++;
-                studyRankingDto.setRanking(ranking + add);
-                add = 0;
-            }
-            else {
-                studyRankingDto.setRanking(ranking);
+            if (studyInterface.getTotalScore()==beforeScore) { // 이전과 동점인 경우
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking, studyInterface.getStudyRepository());
                 add++;
+            }
+            else { // 동점 아닐 경우
+                studyRankingDto = new StudyRankingDto(studyInterface.getStudyName(), studyInterface.getStudyId(), studyInterface.getStudyPersonnel(), studyInterface.getStudyScore(), studyInterface.getHomeworkScore(), studyInterface.getTotalScore(), ranking+add, studyInterface.getStudyRepository());
+                ranking += add;
+                add = 1;
             }
 
             beforeScore = studyInterface.getTotalScore();
+            System.out.println("beforeScore : "+beforeScore);
             studyRankingList.add(studyRankingDto);
         }
 
@@ -540,4 +550,104 @@ public class StudyServiceImpl implements StudyService {
         }
     }
 
+    @EventListener
+    @Async
+    @Override
+    @Transactional
+    public ResponseEntity updateStudyReadme(StudyReadmeDto studyReadmeDto){
+        Optional<Study> study = studyRepository.findById(studyReadmeDto.getStudyId());
+        if(!study.isPresent()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        List<ConnStudy> connStudyList = study.get().getConnStudy();
+        ConnStudy leaderConnStudy = connStudyRepository.findByStudy_StudyIdAndRole(studyReadmeDto.getStudyId(), "LEADER").get();
+        String githubId = leaderConnStudy.getUser().getGithubId();
+        String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
+
+        System.out.println(githubId);
+
+        //파일 처리
+        String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n\n";
+
+        exampleCode += "<div align=center>\n\n";
+
+        //제목
+        exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\uD83D\uDCBB\n" +
+                "우리는 함께 성장하며 보다 높은 곳을 바라보는 알고리즘 스터디 " + study.get().getStudyName() + "입니다.<br>" +
+                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n";
+
+        //멤버시작======================================================
+        exampleCode += "## \uD83D\uDD25 스터디 멤버 \uD83D\uDD25\n\n"
+                        + "<table>\n<tr>";
+        //리더 먼저 표시
+        exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + leaderConnStudy.getUser().getGithubId() + "\">" +
+                "<img src=\"" + leaderConnStudy.getUser().getImageUrl() + "\" width=\"100px;\" alt=\"\"/><br />" +
+                "<sub><b>\uD83D\uDC51" + leaderConnStudy.getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + leaderConnStudy.getUser().getBackjoonId() + "\">" +
+                "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + leaderConnStudy.getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
+
+        //나머지 멤버
+        for (int i = 0; i < connStudyList.size(); i++) {
+            if(connStudyList.get(i).getRole().equals("LEADER")) continue;    //멤버들만 표시
+            System.out.println(connStudyList.get(i).getRole());
+            exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + connStudyList.get(i).getUser().getGithubId() + "\">" +
+                    "<img src=\"" + connStudyList.get(i).getUser().getImageUrl() + "\" width=\"100px;\" alt=\"\"/><br />" +
+                    "<sub><b>" + connStudyList.get(i).getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + connStudyList.get(i).getUser().getBackjoonId() + "\">" +
+                    "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + connStudyList.get(i).getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
+        }
+        exampleCode += "</table>\n<br />\n\n";
+        //멤버소개 끝 =====================================================
+        exampleCode += "\n</div>\n";
+        exampleCode += "\n<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
+        String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
+        String fileName = "README.md";
+        String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
+                "\"content\":\""+ code +"\"}";
+
+        try {
+            webClient.put()
+                    .uri("/repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(createFileRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
+        catch (WebClientResponseException e) {
+            System.out.println("한번터짐 " + e);
+            if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
+                //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
+                Map<String, Object> contents = (Map<String, Object>)webClient.get()
+                        .uri("repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                        .retrieve()
+                        .bodyToMono(Object.class)
+                        .block();
+                String sha = contents.get("sha").toString();
+                createFileRequest = "{" +
+                        "\"message\":\"" + "updated README.md automatically via \'<connection/>\'" + "\","
+                        + "\"content\":\""+ code +"\","
+                        + "\"sha\":\"" + sha + "\""
+                        + "}";
+                try {
+                    webClient.put()
+                            .uri("/repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                            .bodyValue(createFileRequest)
+                            .retrieve()
+                            .bodyToMono(Void.class)
+                            .block();
+                }
+                catch (WebClientResponseException e2) {
+                    if(e2.getStatusCode().equals(HttpStatus.CONFLICT))
+                        return new ResponseEntity<>(new ResponseDto("same content"), HttpStatus.CONFLICT);
+                    System.out.println("같은 내용이라 업뎃 안됨" +e2);
+                    System.out.println(githubToken);
+                    System.out.println(sha);
+                    System.out.println(createFileRequest);
+                }
+
+            }
+            else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
+        }
+
+
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
 }

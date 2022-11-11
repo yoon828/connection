@@ -68,6 +68,9 @@ public class SubjectServiceImpl implements SubjectService{
 
         List<Subject> list = new ArrayList<>();
         List<Long> problemList = subjectDto.getProblemList();
+        List<Problem> problemEntityList = new ArrayList<>();
+        for (Long problemid: problemList) {problemEntityList.add(problemRepository.getById(problemid));}
+        if(subjectRepository.existsByProblemIn(problemEntityList)) return new ResponseEntity<>(new ResponseDto("already exist"), HttpStatus.CONFLICT);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -178,9 +181,14 @@ public class SubjectServiceImpl implements SubjectService{
 
                 List solved = new ArrayList<>();
                 for (int k = 0; k < userCnt; k++) {
-                    if(!result.get(startIdx + j*(int)userCnt + k)[4].toString().equals("0"))
-                        solved.add(true);
-                    else solved.add(false);
+                    try {
+                        if (!result.get(startIdx + j * (int) userCnt + k)[4].toString().equals("0"))
+                            solved.add(true);
+                        else solved.add(false);
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        break;
+                    }
                 }
                 problemInfo.put("problem_solved", solved);
 
@@ -217,6 +225,7 @@ public class SubjectServiceImpl implements SubjectService{
         subjectMap.put("inProgress", (LocalDateTime.now().isBefore(
                 LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")).minusHours(9)
         ))? true : false);
+        subjectMap.put("leader", connStudyRepository.findByStudy_StudyIdAndRole(studyId,"LEADER").get().getUser().getGithubId());
 
         return new ResponseEntity<>(subjectMap, HttpStatus.OK);
     }
@@ -271,8 +280,6 @@ public class SubjectServiceImpl implements SubjectService{
     @Override
     @Transactional
     public ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException {
-
-//        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
         User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
         if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
         Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
@@ -292,7 +299,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
 //                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
@@ -304,7 +311,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                        .uri("repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .uri("repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
@@ -317,7 +324,7 @@ public class SubjectServiceImpl implements SubjectService{
 
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
@@ -325,14 +332,74 @@ public class SubjectServiceImpl implements SubjectService{
                             .block();
                 }
                 catch (WebClientResponseException e2) {
-                    System.out.println("답이없네용");
                 }
 
             }
             else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
         }
+        return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
+    }
 
+    @Override
+    @Transactional
+    public ResponseEntity submitStudy(GitPushDto gitPushDto) throws IOException {
+        User user = userRepository.findByBackjoonId(gitPushDto.getUserId());
+        if(user == null || !user.isIsmember()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(user.getUserId());
+        if(!connStudy.isPresent()) return new ResponseEntity<>(new ResponseDto("empty"), HttpStatus.CONFLICT);
+        long studyId = connStudy.get().getStudy().getStudyId();
+        String repositoryName = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get().getUser().getGithubId();
+        String githubId = connStudy.get().getUser().getGithubId();
+        String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
+        //파일 처리
+        String problemNo = gitPushDto.getProblemNo().trim();
+        String code = new String(Base64.encodeBase64(gitPushDto.getCode().getBytes()));
+        String fileName = problemNo + "_" + githubId + "." + gitPushDto.getLang();
+
+        String createFileRequest = "{\"message\":\"" + "created " + fileName + " automatically via \'<connection/>\'" + "\"," +
+                "\"content\":\""+ code +"\"}";
+
+        try {
+            webClient.put()
+                    .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+//                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                    .bodyValue(createFileRequest)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        }
+        catch (WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
+                //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
+                Map<String, Object> contents = (Map<String, Object>)webClient.get()
+                        .uri("repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .retrieve()
+                        .bodyToMono(Object.class)
+                        .block();
+                String sha = contents.get("sha").toString();
+                createFileRequest = "{" +
+                        "\"message\":\"" + "updated " + fileName + " automatically via \'<connection/>\'" + "\","
+                        + "\"content\":\""+ code +"\","
+                        + "\"sha\":\"" + sha + "\""
+                        + "}";
+
+                try {
+                    webClient.put()
+                            .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+                            .bodyValue(createFileRequest)
+                            .retrieve()
+                            .bodyToMono(Void.class)
+                            .block();
+                }
+                catch (WebClientResponseException e2) {
+                }
+
+            }
+            else return new ResponseEntity(new ResponseDto(e.getMessage()),HttpStatus.CONFLICT);
+        }
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
 
@@ -398,7 +465,7 @@ public class SubjectServiceImpl implements SubjectService{
                     .block();
         }
         catch (WebClientResponseException e) {
-            System.out.println("한번터짐 " + e);
+//            System.out.println("한번터짐 " + e);
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
@@ -425,9 +492,9 @@ public class SubjectServiceImpl implements SubjectService{
                     if(e2.getStatusCode().equals(HttpStatus.CONFLICT))
                         return new ResponseEntity<>(new ResponseDto("same content"), HttpStatus.CONFLICT);
                     System.out.println("같은 내용이라 업뎃 안됨" +e2);
-                    System.out.println(githubToken);
-                    System.out.println(sha);
-                    System.out.println(createFileRequest);
+//                    System.out.println(githubToken);
+//                    System.out.println(sha);
+//                    System.out.println(createFileRequest);
                 }
 
             }

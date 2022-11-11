@@ -1,6 +1,7 @@
 package com.ssafy.connection.repository;
 
 import com.ssafy.connection.dto.GetDateAndCountInterface;
+import com.ssafy.connection.entity.Problem;
 import com.ssafy.connection.entity.Study;
 import com.ssafy.connection.entity.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +28,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
             "\tleft join solve sv \n" +
             "\ton a.user_id = sv.user_id \n" +
             "\t\tand a.problem_id = sv.problem_id\n" +
-            "where sv.status = 0 or isnull(sv.status) \n" +
+            "and sv.status = 0 AND sv.time BETWEEN a.start and a.deadline \n" +
             "group by a.user_id, a.problem_id\n" +
             "order by a.deadline, a.problem_id, a.user_id;", nativeQuery = true)
     List<Object[]> getTeamStatus(long studyId);
@@ -43,4 +44,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject where study_id = :studyId AND problem_id = :problemId ORDER BY deadline desc", nativeQuery = true)
     List<Subject> findAllByStudyAndProblemOrderByDeadLine(long studyId, Long problemId);
+
+    boolean existsByProblemIn(List<Problem> efd);
 }

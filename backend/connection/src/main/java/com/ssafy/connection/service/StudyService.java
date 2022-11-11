@@ -1,6 +1,7 @@
 package com.ssafy.connection.service;
 
 import com.ssafy.connection.dto.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -26,4 +27,5 @@ public interface StudyService {
 
     void ckeckStudy(long userId, String studyName);
 
+    ResponseEntity updateStudyReadme(StudyReadmeDto studyReadmeDto);
 }
