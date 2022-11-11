@@ -191,7 +191,7 @@ function Main() {
           })}
         </Center>
       </Box>
-      <Box as="section" p="100px 0 0">
+      <Box as="section" p="60px 0 0">
         <Center m="0 auto" flexDir="column" w="800px">
           <Box
             w="100%"
@@ -236,15 +236,16 @@ function Main() {
       <Center
         as="section"
         p="100px 0 0"
-        h="250px"
+        h="330px"
         bg={
           colorMode === "light"
             ? "linear-gradient(180deg, #FFFFFF 0%, #88BFFF 100%)"
             : "linear-gradient(180deg, #121212 0%, #1581FF 100%)"
         }
+        flexDir="column"
       >
         <Center
-          m="0 auto"
+          m="0 auto 50px"
           flexDir="column"
           h="100%"
           justifyContent="space-evenly"
@@ -260,28 +261,28 @@ function Main() {
             와 함께라면 더 높은 곳 까지 갈 수 있어요
           </Text>
         </Center>
-      </Center>
-      <Box as="footer" h="200px" display="flex">
-        <Box m="0 auto" w="800px">
-          <Box
-            display="flex"
-            flexDir="column"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-            mr="20px"
-            h="100%"
-            fontSize="12px"
-          >
-            <Text>connection by 우건공주와 다섯난쟁이</Text>
-            <Text color="dep_3" mb="60px">
-              김우건 김윤민 김준우 염진호 이기영 최진합
-            </Text>
-            <Text color="dep_3" mb="30px">
-              © 2022 connection All Rights Reserved
-            </Text>
+        <Box as="footer" h="200px" display="flex">
+          <Box m="0 auto" w="800px">
+            <Box
+              display="flex"
+              flexDir="column"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+              mr="20px"
+              h="100%"
+              fontSize="12px"
+            >
+              <Text>connection by 우건공주와 다섯난쟁이</Text>
+              <Text color="dep_1" mb="60px">
+                김우건 김윤민 김준우 염진호 이기영 최진합
+              </Text>
+              <Text color="dep_1" mb="10px">
+                © 2022 connection All Rights Reserved
+              </Text>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </Center>
     </Box>
   );
 }

@@ -59,12 +59,7 @@ function ExtensionModal({ onClose }: ExtensionModalProps) {
             <ExternalLinkIcon mx="2px" />
           </Link>
         </Flex>
-        <Button
-          bg="gra"
-          width="100px"
-          _hover={{}}
-          onClick={() => confirmExtension()}
-        >
+        <Button bg="gra" width="100px" _hover={{}} onClick={confirmExtension}>
           확인
         </Button>
       </Center>

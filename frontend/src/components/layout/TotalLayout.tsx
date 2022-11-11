@@ -1,5 +1,5 @@
 import { Box, Center, Container, Flex, Heading, Text } from "@chakra-ui/react";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 
 interface TotalLayoutProps {
   children: ReactNode;
@@ -8,6 +8,7 @@ interface TotalLayoutProps {
   height: string;
   mr?: string;
   end?: string;
+  RankInfo?: JSX.Element;
 }
 
 function TotalLayout({
@@ -16,16 +17,22 @@ function TotalLayout({
   flex,
   height,
   mr,
-  end
+  end,
+  RankInfo
 }: TotalLayoutProps) {
   return (
     <Box maxW="900px" w="100%">
-      <Heading mb="14px">
+      <Heading
+        mb="10px"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Text
           as="span"
           bg="white"
           _dark={{ bg: "dep_2" }}
-          p="6px 15px"
+          p="8px 15px"
           borderRadius=" 10px"
           boxShadow="md"
           fontSize="18px"
@@ -34,6 +41,7 @@ function TotalLayout({
         >
           {title}
         </Text>
+        {RankInfo}
       </Heading>
       <Center
         h="300px"
@@ -54,7 +62,8 @@ function TotalLayout({
 TotalLayout.defaultProps = {
   mr: "0",
   flex: 1,
-  end: "center"
+  end: "center",
+  RankInfo: null
 };
 
 export default TotalLayout;

@@ -30,8 +30,8 @@ export const getUserProblems = async (id: string, page: number) => {
 };
 
 // 백준에서 푼 문제 보내기
-export const postBJSolved = async (payload: SolvedProps) => {
-  const { data } = await api.post(`/problem/register`, payload);
+export const postBJSolved = async (id: string, payload: SolvedProps) => {
+  const { data } = await api.post(`/problem/register/${id}`, payload);
   return data;
 };
 
