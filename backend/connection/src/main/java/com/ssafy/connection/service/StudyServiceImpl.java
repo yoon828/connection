@@ -665,4 +665,29 @@ public class StudyServiceImpl implements StudyService {
 
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
+
+    @Transactional
+    @Override
+    public ResponseEntity getStudyMemberList(Long userId){
+        Optional<ConnStudy> connStudy = connStudyRepository.findByUser_UserId(userId);
+
+        if(connStudy.isPresent()){
+            List<Map<String,Object>> mapList = new ArrayList<>();
+            List<ConnStudy> memberList = connStudyRepository.findAllByStudy_StudyId(connStudy.get().getStudy().getStudyId());
+            for(ConnStudy cs:memberList){
+                Map<String,Object> map = new HashMap<>();
+                map.put("name", cs.getUser().getName());
+                map.put("user_id", cs.getUser().getUserId());
+                map.put("image_url", cs.getUser().getImageUrl());
+                map.put("github_id", cs.getUser().getGithubId());
+
+                mapList.add(map);
+                return ResponseEntity.ok((mapList));
+            }
+            return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+
+        }
+
+        return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
+    }
 }
