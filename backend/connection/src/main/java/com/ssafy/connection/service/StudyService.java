@@ -28,4 +28,6 @@ public interface StudyService {
     void ckeckStudy(long userId, String studyName);
 
     ResponseEntity updateStudyReadme(StudyReadmeDto studyReadmeDto);
+
+    ResponseEntity getStudyMemberList(Long userId);
 }

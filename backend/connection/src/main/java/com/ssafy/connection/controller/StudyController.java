@@ -165,4 +165,18 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "스터디 멤버 조희", notes = "study_code를 입력받아 일치하는 스터디 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 409, message = "스터디가 없는 경우")
+    })
+    @GetMapping("/memberlist")
+    public ResponseEntity getStudyMemberList(@Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
+        long userId = userPrincipal.getId();
+        return studyService.getStudyMemberList(userId);
+
+
+//        return ResponseEntity.status(HttpStatus.OK).body("studyDto");
+    }
+
 }
