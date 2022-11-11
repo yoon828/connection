@@ -4,6 +4,7 @@ package com.ssafy.connection.securityOauth.controller.auth;
 import com.ssafy.connection.dto.BaekjoonAuthDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.dto.StudyReadmeDto;
 import com.ssafy.connection.securityOauth.advice.payload.ErrorResponse;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
@@ -16,6 +17,7 @@ import com.ssafy.connection.securityOauth.payload.request.auth.SignUpRequest;
 import com.ssafy.connection.securityOauth.payload.response.AuthResponse;
 import com.ssafy.connection.securityOauth.payload.response.Message;
 import com.ssafy.connection.securityOauth.service.auth.AuthService;
+import com.ssafy.connection.service.StudyService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,6 +42,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final StudyService studyService;
 
     @Operation(summary = "유저 정보 확인", description = "현제 접속된 유저정보를 확인합니다.<br>" +
             "{<br>" +
@@ -190,5 +193,19 @@ public class AuthController {
 //    ) {
 //        return authService.signout(tokenRefreshRequest);
 //    }
+
+    @Operation(summary = "test", description = "스터디 리드미 생성 테스트.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } )
+    })
+    @PostMapping(value="/testtest/")
+    public ResponseEntity<?> testtest(
+        @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.", required = true) @RequestParam Long studyId
+    ) {
+        StudyReadmeDto studyReadmeDto = new StudyReadmeDto();
+        studyReadmeDto.setMsg("test");
+        studyReadmeDto.setStudyId(studyId);
+        return studyService.updateStudyReadme(studyReadmeDto);
+    }
 
 }
