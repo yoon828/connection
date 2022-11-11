@@ -30,12 +30,12 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     List<Solve> findAllByUser_UserId(Long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(s.time, '%Y-%m-01') AS date, COUNT(s.time) AS count FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND c.user_id =?2 AND s.status IN (0,1) AND s.time BETWEEN  DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY date;", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(s.time, '%Y-%m-01') AS date, COUNT(s.time) AS count FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND c.user_id =?2 AND s.status IN (0,1) AND s.time BETWEEN  DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY date;", nativeQuery = true)
     List<GetDateAndCountInterface> findStudyMemberRecordByStudyIdAndUserId(long studyId, long userId);
 
     void deleteAllByUser(User user);
 
-    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count  FROM solve s LEFT OUTER JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id=?1 AND s.status =1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW() GROUP BY date;", nativeQuery = true)
+    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count  FROM solve s LEFT OUTER JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id=?1 AND s.status =1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY date;", nativeQuery = true)
     List<GetDateAndCountInterface> findStudyProblemByStudyId(long studyId); // 스터디에서 함께 푼 문제
 
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND problem_id = :problemId AND status = 2", nativeQuery = true)
@@ -47,7 +47,7 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND problem_id = :problemId AND status = 1", nativeQuery = true)
     Optional<Solve> findStudyByUserAndProblem(long userId, long problemId);
 
-    @Query(value = "SELECT res.time AS date, COUNT(*)/res.cnt AS count FROM (SELECT ss.status AS status, DATE_FORMAT(ss.time, '%Y-%m-01') AS time, ss.problem_id AS problem_id, ss.user_id AS user_id, ss.cnt AS cnt FROM (SELECT s.status AS status, MAX(s.time) AS time, s.problem_id AS problem_id, s.user_id AS user_id, (SELECT COUNT(*) FROM conn_study WHERE study_id =?1) AS cnt FROM solve s GROUP BY s.user_id, s.problem_id) AS ss LEFT JOIN conn_study cc ON ss.user_id=cc.user_id WHERE cc.study_id=?1 AND ss.status IN (0,1) AND ss.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND NOW()) AS res GROUP BY date;", nativeQuery = true)
+    @Query(value = "SELECT res.time AS date, COUNT(*)/res.cnt AS count FROM (SELECT ss.status AS status, DATE_FORMAT(ss.time, '%Y-%m-01') AS time, ss.problem_id AS problem_id, ss.user_id AS user_id, ss.cnt AS cnt FROM (SELECT s.status AS status, MAX(s.time) AS time, s.problem_id AS problem_id, s.user_id AS user_id, (SELECT COUNT(*) FROM conn_study WHERE study_id =?1) AS cnt FROM solve s GROUP BY s.user_id, s.problem_id) AS ss LEFT JOIN conn_study cc ON ss.user_id=cc.user_id WHERE cc.study_id=?1 AND ss.status IN (0,1) AND ss.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY)) AS res GROUP BY date;", nativeQuery = true)
     List<GetDateAndCountFloatInterface> findStudyAvgSolveByStudyId(long studyId); // 월별 스터디 해결 문제 평균 갯수
 
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND (status = 0 OR status = 1)", nativeQuery = true)
