@@ -18,8 +18,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     void deleteAllByStudy(Study study);
 
-    @Query(value = "select a.user_id, a.name, a.problem_id, a.title, COUNT(solve_id) as solve, a.deadline, a.start\n" +
-            "from (select u.user_id, u.name, s.problem_id, s.deadline , p.title, s.start \n" +
+    @Query(value = "select a.user_id, a.name, a.problem_id, a.title, COUNT(solve_id) as solve, a.deadline, a.start, a.joined_date\n" +
+            "from (select u.user_id, u.name, s.problem_id, s.deadline , p.title, s.start, cs.joined_date \n" +
             "\tfrom user u, conn_study cs, subject s, problem p\n" +
             "\twhere u.user_id = cs.user_id\n" +
             "\t\t\tand cs.study_id = s.study_id\n" +
@@ -33,7 +33,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
             "order by a.deadline, a.problem_id, a.user_id;", nativeQuery = true)
     List<Object[]> getTeamStatus(long studyId);
 
-    @Query(value = "select count(s.subjcet_id) from subject s where s.study_id =?1 group by s.deadline order by deadline desc;", nativeQuery = true)
+    @Query(value = "select count(s.subjcet_id) from subject s where s.study_id =?1 group by s.deadline order by deadline;", nativeQuery = true)
     List<Long> getTeamSubjectCount(long studyId);
 
     @Query(value = "select * from subject where study_id = :studyId order by deadline desc limit 4", nativeQuery = true)
