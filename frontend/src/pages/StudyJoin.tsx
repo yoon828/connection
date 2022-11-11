@@ -1,13 +1,13 @@
 import { Accordion, Center, useDisclosure, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dupliChkStudy, getStudyInfo, GetStudyInfoRes } from "../api/studyJoin";
 import CreateChkModal from "../components/modal/CreateChkModal";
 import StudyInfoModal from "../components/modal/StudyInfoModal";
 import JoinAccordionItem from "../components/study/JoinAccordionItem";
 import { updateUserInfo } from "../store/ducks/auth/authSlice";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 type ErrorMsgType =
   | ""
@@ -40,6 +40,13 @@ function StudyJoin() {
   const navigator = useNavigate();
   const toast = useToast();
   const dispatch = useAppDispatch();
+  const info = useAppSelector(state => state.auth.information);
+
+  useEffect(() => {
+    if (info.studyName) {
+      navigator("/study");
+    }
+  }, []);
 
   const handleCreateBtn = async () => {
     if (!studyName) {

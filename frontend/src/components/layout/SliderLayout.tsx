@@ -13,6 +13,10 @@ function SliderLayout({ total, children }: SliderLayoutProps) {
   const slideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setCurrentIdx(total);
+  }, [total]);
+
+  useEffect(() => {
     if (slideRef.current) {
       slideRef.current.style.transition = "all 0.5s ease-in-out";
       slideRef.current.style.transform = `translateX(-${currentIdx}00%)`;

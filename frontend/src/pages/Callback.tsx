@@ -14,7 +14,7 @@ function Callback() {
       localStorage.setItem("token", token);
       dispatch(getUserInfo()); // redux에 유저 정보 setting
     } else {
-      alert("문제 발생");
+      alert("토큰에 값이 없어요ㅠ");
     }
     navigator("/");
   }, []);

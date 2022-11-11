@@ -146,20 +146,6 @@ function BackjoonModal({ code }: BackjoonModalProps) {
               </Text>{" "}
               버튼을 눌러주세요
             </Text>
-            <Box h="20px">
-              <Link
-                href={`https://solved.ac/profile/${id}`}
-                isExternal
-                fontSize={12}
-                display="flex"
-                alignItems="center"
-                textDecorationLine="underline"
-                pointerEvents={id === "" ? "none" : "auto"}
-              >
-                Solved.ac로 이동하기
-                <ExternalLinkIcon mx="2px" />
-              </Link>
-            </Box>
           </Flex>
         </Flex>
         <Flex w="350px">
@@ -173,6 +159,22 @@ function BackjoonModal({ code }: BackjoonModalProps) {
               placeholder="백준 ID를 입력해주세요"
               onChange={e => setId(e.target.value)}
             />
+            <Box h="15px">
+              {id !== "" ? (
+                <Link
+                  href={`https://solved.ac/profile/${id}`}
+                  isExternal
+                  fontSize={12}
+                  display="flex"
+                  alignItems="center"
+                  textDecorationLine="underline"
+                  pointerEvents={id === "" ? "none" : "auto"}
+                >
+                  Solved.ac로 이동하기
+                  <ExternalLinkIcon mx="2px" />
+                </Link>
+              ) : null}
+            </Box>
             <Text fontSize={12} mt="5px" color={ready ? "green" : "red"}>
               {msg}
             </Text>
