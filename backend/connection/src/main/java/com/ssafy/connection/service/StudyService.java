@@ -27,5 +27,5 @@ public interface StudyService {
 
     void ckeckStudy(long userId, String studyName);
 
-    ResponseEntity updateStudyReadme(Long studyId);
+    ResponseEntity updateStudyReadme(StudyReadmeDto studyReadmeDto);
 }

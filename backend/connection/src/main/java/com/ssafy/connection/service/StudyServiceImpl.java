@@ -550,13 +550,15 @@ public class StudyServiceImpl implements StudyService {
     @Async
     @Override
     @Transactional
-    public ResponseEntity updateStudyReadme(Long studyId){
-        Optional<Study> study = studyRepository.findById(studyId);
+    public ResponseEntity updateStudyReadme(StudyReadmeDto studyReadmeDto){
+        Optional<Study> study = studyRepository.findById(studyReadmeDto.getStudyId());
         if(!study.isPresent()) return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
         List<ConnStudy> connStudyList = study.get().getConnStudy();
-        ConnStudy leaderConnStudy = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get();
+        ConnStudy leaderConnStudy = connStudyRepository.findByStudy_StudyIdAndRole(studyReadmeDto.getStudyId(), "LEADER").get();
         String githubId = leaderConnStudy.getUser().getGithubId();
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
+
+        System.out.println(githubId);
 
         //파일 처리
         String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n\n";

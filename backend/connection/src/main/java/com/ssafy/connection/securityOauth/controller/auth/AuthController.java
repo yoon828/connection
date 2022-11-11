@@ -4,6 +4,7 @@ package com.ssafy.connection.securityOauth.controller.auth;
 import com.ssafy.connection.dto.BaekjoonAuthDto;
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.StudyDto;
+import com.ssafy.connection.dto.StudyReadmeDto;
 import com.ssafy.connection.securityOauth.advice.payload.ErrorResponse;
 import com.ssafy.connection.securityOauth.config.security.token.CurrentUser;
 import com.ssafy.connection.securityOauth.config.security.token.UserPrincipal;
@@ -203,8 +204,10 @@ public class AuthController {
     public ResponseEntity<?> testtest(
         @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.", required = true) @RequestParam Long studyId
     ) {
-
-        return studyService.updateStudyReadme(studyId);
+        StudyReadmeDto studyReadmeDto = new StudyReadmeDto();
+        studyReadmeDto.setMsg("test");
+        studyReadmeDto.setStudyId(studyId);
+        return studyService.updateStudyReadme(studyReadmeDto);
     }
 
 }
