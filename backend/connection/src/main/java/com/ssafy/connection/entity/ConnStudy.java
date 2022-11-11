@@ -24,6 +24,15 @@ public class ConnStudy {
 
     private String role;
 
+    @Column(name = "study_score", columnDefinition = "integer default 0")
+    private int studyScore;
+
+    @Column(name = "subject_score", columnDefinition = "integer default 0")
+    private int subjectScore;
+
+    @Column(name = "bonus_score", columnDefinition = "integer default 0")
+    private int bonusScore;
+
     /* 연관관계 매핑 */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

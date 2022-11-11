@@ -22,12 +22,6 @@ public class StudyDto {
 
     private int studyPersonnel;
 
-    private int studyScore;
-
-    private int homeworkScore;
-
-    private int totalScore;
-
     private String studyLeaderName;
 
     public static StudyDto of(Study studyEntity) {

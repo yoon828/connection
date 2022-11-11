@@ -5,16 +5,10 @@ import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.domain.entity.user.User;
 import com.ssafy.connection.securityOauth.repository.user.UserRepository;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -106,8 +100,7 @@ public class SolveServiceImpl implements SolveService{
                     if(!temp.getTime().isAfter(subject.getStart())){
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
-                        study.setTotalScore((int) (study.getTotalScore() + problemEntity.get().getLevel()));
+                        // check
                         studyRepository.save(study);
                         this.pushGithub(gitPushDto);
                         break;
@@ -119,8 +112,7 @@ public class SolveServiceImpl implements SolveService{
                     }
                 } else {    // 이전에 과제로 푼 풀이가 등록되어 있지 않은 경우 Score up & Save & Github Push
                     solveEntity.setStatus(0);
-                    study.setHomeworkScore((int) (study.getHomeworkScore() + problemEntity.get().getLevel()));
-                    study.setTotalScore((int) (study.getTotalScore() + problemEntity.get().getLevel()));
+                    // check
                     solveRepository.save(solveEntity);
                     studyRepository.save(study);
                     this.pushGithub(gitPushDto);
@@ -183,8 +175,7 @@ public class SolveServiceImpl implements SolveService{
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
-            studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
-            studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+            // check
             studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;
@@ -193,16 +184,14 @@ public class SolveServiceImpl implements SolveService{
             LocalDateTime recentDeadLine = recentSubjectEntity.getDeadline();
             if(recentDeadLine.isAfter(LocalDateTime.now())){
                 solveRepository.save(solveEntity);
-                studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
-                studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+                // check
                 studyRepository.save(studyEntity);
                 this.pushGithub(gitPushDto);
                 return true;
             }
         } else {
             solveRepository.save(solveEntity);
-            studyEntity.setStudyScore((int) (studyEntity.getStudyScore() + problemEntity.get().getLevel()));
-            studyEntity.setTotalScore((int) (studyEntity.getTotalScore() + problemEntity.get().getLevel()));
+            // check
             studyRepository.save(studyEntity);
             this.pushGithub(gitPushDto);
             return true;

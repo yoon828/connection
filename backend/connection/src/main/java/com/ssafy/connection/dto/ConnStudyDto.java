@@ -8,6 +8,11 @@ public class ConnStudyDto {
 
     private String role;
 
+    private int studyScore;
+
+    private int subjectScore;
+
+    private int bonusScore;
 
     public static ConnStudyDto of(ConnStudy connStudyEntity) {
         ConnStudyDto connStudyDto = ModelMapperUtils.getModelMapper().map(connStudyEntity, ConnStudyDto.class);
