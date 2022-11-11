@@ -39,7 +39,7 @@ interface menuType {
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const [code, setCode] = useState("");
-  const AllModal = useDisclosure();
+  const { onClose, onOpen, isOpen } = useDisclosure();
   const location = useLocation();
   const auth = useAppSelector(state => state.auth) as InitialStateType;
   const dispatch = useAppDispatch();
@@ -64,9 +64,9 @@ function Header() {
     const { information, extension, check } = auth;
     if (check) {
       if (!information.backjoonId || !information.ismember || !extension) {
-        AllModal.onOpen();
+        onOpen();
       } else {
-        AllModal.onClose();
+        onClose();
       }
     }
   }, [auth, location]);
@@ -85,7 +85,7 @@ function Header() {
       zIndex="5"
       h="68px"
     >
-      <Center maxW="1200px" m="0 auto" w="100%" flex={1}>
+      <Center maxW="1200px" minW="900px" m="0 auto" w="100%" flex={1}>
         <Center p="14px">
           <Link as={ReactLink} to="/">
             <Image
@@ -161,15 +161,15 @@ function Header() {
             </Tooltip>
           )}
           <AuthModal
-            isOpen={AllModal.isOpen}
-            onClose={AllModal.onClose}
+            isOpen={isOpen}
+            onClose={onClose}
             content={
               !auth.information.backjoonId ? (
                 <BackjoonModal code={code} />
               ) : !auth.information.ismember ? (
                 <GithubModal />
               ) : !auth.extension ? (
-                <ExtensionModal onClose={AllModal.onClose} />
+                <ExtensionModal onClose={onClose} />
               ) : null
             }
           />

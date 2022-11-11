@@ -41,6 +41,7 @@ function SubjectTable({ problems, users, flex }: SubjectTableProps) {
               borderRight="0.5px solid"
               borderBottom="0.5px solid"
               borderColor="border_gray"
+              w="13%"
             >
               번호
             </Th>
@@ -52,6 +53,7 @@ function SubjectTable({ problems, users, flex }: SubjectTableProps) {
                   color="inherit"
                   borderBottom="0.5px solid"
                   borderColor="border_gray"
+                  w={`${100 / users.length}%`}
                 >
                   {user.user_name}
                 </Th>
@@ -67,6 +69,7 @@ function SubjectTable({ problems, users, flex }: SubjectTableProps) {
                   borderRight="0.5px solid"
                   borderColor="border_gray"
                   textAlign="center"
+                  w="13%"
                 >
                   <Tooltip label={problem.problem_name} placement="right">
                     <Link
@@ -84,6 +87,7 @@ function SubjectTable({ problems, users, flex }: SubjectTableProps) {
                         href={`https://github.com/co-nnection/${studyLeader}/tree/main/${problem.problem_id}`}
                         cursor={solved ? "pointer" : "default"}
                         pointerEvents={solved ? "auto" : "none"}
+                        w={`${100 / users.length}%`}
                       >
                         <Circle
                           size="20px"

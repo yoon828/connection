@@ -76,7 +76,7 @@ function SubjectChart({ users, flex }: SubjectChartProps) {
           </Badge>
         </Center>
       ) : (
-        <Alert status="info" ml="20px" w="155px">
+        <Alert status="info" ml="20px" w="155px" transform="translateY(-32px)">
           <Text fontSize="14px" textAlign="center">
             과제를 제출한 사람이 아무도 없어요😥
           </Text>

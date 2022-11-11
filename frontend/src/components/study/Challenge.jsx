@@ -9,7 +9,7 @@ function Challenge() {
   const { colorMode } = useColorMode();
   const [selected, setSelected] = useState("");
   const [streak, setStreak] = useState([]);
-  const [info, setInfo] = useState();
+  const [info, setInfo] = useState({});
 
   const getChallenge = async () => {
     const {
@@ -42,6 +42,9 @@ function Challenge() {
       startDate={new Date(info?.startDate)}
       endDate={new Date(info?.endDate)}
       legendCellSize={12}
+      legendRender={props => {
+        return <rect {...props} rx={3} pointerEvents="none" />;
+      }}
       monthLabels={[
         "1월",
         "2월",
