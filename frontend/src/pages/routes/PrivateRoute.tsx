@@ -1,6 +1,7 @@
-import { useToast } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
+
+import useToast from "hooks/useToast";
 import { InitialStateType } from "../../store/ducks/auth/auth.type";
 
 export type PrivateRouteProps = {

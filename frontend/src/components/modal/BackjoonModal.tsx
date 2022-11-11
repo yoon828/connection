@@ -10,9 +10,10 @@ import {
   ModalBody,
   Text,
   useClipboard,
-  useToast,
   Spinner
 } from "@chakra-ui/react";
+
+import useToast from "hooks/useToast";
 import { getUserProblems, postBJConfirm, postBJSolved } from "../../api/auth";
 import { useAppDispatch } from "../../store/hooks";
 import { updateUserInfo } from "../../store/ducks/auth/authSlice";

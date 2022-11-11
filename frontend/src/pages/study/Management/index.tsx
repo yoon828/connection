@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useDisclosure, useToast } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
+import useToast from "hooks/useToast";
 import { deleteStudy, getMember, quitStudy } from "../../../api/study";
 import BackButton from "../../../components/common/BackButton";
 import Confirm from "../../../components/common/Confirm";

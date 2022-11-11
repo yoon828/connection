@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Grid, useToast } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 
+import useToast from "hooks/useToast";
 import { addWorkbook, deleteWorkbook } from "../../api/workbook";
 import { useAppSelector } from "../../store/hooks";
 import ProblemCard from "../common/ProblemCard";

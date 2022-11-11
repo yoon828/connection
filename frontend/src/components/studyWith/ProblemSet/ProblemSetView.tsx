@@ -1,6 +1,8 @@
 import { Search2Icon } from "@chakra-ui/icons";
-import { Box, Button, Center, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, useDisclosure } from "@chakra-ui/react";
 import React from "react";
+
+import useToast from "hooks/useToast";
 import { UserProfileType } from "../../../asset/data/socket.type";
 import { useAppSelector } from "../../../store/hooks";
 import ProblemSelect from "../../common/ProblemSelect/ProblemSelect";
