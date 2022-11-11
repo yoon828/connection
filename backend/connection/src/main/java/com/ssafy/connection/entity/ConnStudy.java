@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +24,9 @@ public class ConnStudy {
     private long connStudyId;
 
     private String role;
+
+    @Column(name = "joined_date")
+    private LocalDateTime joinedDate;
 
     /* 연관관계 매핑 */
     @OneToOne(fetch = FetchType.LAZY)
