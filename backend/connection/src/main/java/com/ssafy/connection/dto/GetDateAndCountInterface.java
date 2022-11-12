@@ -4,5 +4,5 @@ import java.time.LocalDate;
 
 public interface GetDateAndCountInterface {
     LocalDate getDate();
-    Long getCount();
+    int getCount();
 }

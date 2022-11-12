@@ -453,94 +453,73 @@ public class StudyServiceImpl implements StudyService {
 
         List<ConnStudy> studyMemberList = connStudyRepository.findAllByStudy_StudyId(studyEntity.getStudyId()); // 스터디의 스터디원 정보 리스트로 저장
         ArrayList<SolveStudyMemberListDto> result = new ArrayList<>(); // 최종적으로 반환할 결과값
-
-        Map<String, GetDateAndCountDto> studySubjectMap = new HashMap<>(); // 월별 스터디 과제 수 정보 저장
-        List<GetDateAndCountInterface> studySubject = subjectRepository.findStudySubject(studyEntity.getStudyId()); // DB에서 월별 스터디 과제 수 가져오기
-        for (GetDateAndCountInterface getDateAndCountInterface : studySubject) {
-            studySubjectMap.put(getDateAndCountInterface.getDate().toString(), new GetDateAndCountDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount()));
-        }
-
-        Map<String, GetDateAndCountDto> studyProblemMap = new HashMap<>(); // 월별 스터디 함께 푼 문제 수 정보 저장
-        List<GetDateAndCountInterface> studyProblem = solveRepository.findStudyProblemByStudyId(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
-        for (GetDateAndCountInterface getDateAndCountInterface : studyProblem) {
-            studyProblemMap.put(getDateAndCountInterface.getDate().toString(), new GetDateAndCountDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount()));
-        }
-
-        Map<String, GetDateAndCountFloatDto> studyAvgSolveMap = new HashMap<>(); // 월별 스터디원 평균 해결 문제 수 정보 저장
-        List<GetDateAndCountFloatInterface> studyAvgSolve = solveRepository.findStudyAvgSolveByStudyId(studyEntity.getStudyId()); // DB에서 월별 스터디 함께 푼 문제 수 가져오기
-        for (GetDateAndCountFloatInterface getDateAndCountFloatInterface : studyAvgSolve) {
-            studyAvgSolveMap.put(getDateAndCountFloatInterface.getDate().toString(), new GetDateAndCountFloatDto(getDateAndCountFloatInterface.getDate(), getDateAndCountFloatInterface.getCount()));
-        }
+        Map<String, Float> solveProblemAvgMap = new HashMap<>();
+        Map<String, Float> solveSubjectAvgMap = new HashMap<>();
 
         for (ConnStudy connStudy : studyMemberList) { // 각각의 스터디원별로
             long selectUserId = connStudy.getUser().getUserId(); // 현재 스터디원의 userId
             User selectUserEntity = userRepository.findById(selectUserId).get(); // 현재 스터디원 정보
 
             List<SolveStudyMemberDto> solveStudyMemberList = new ArrayList<>(); // 월별 스터디원 문제풀이 현황 정보 저장
-            List<GetDateAndCountInterface> solveStudyMember = solveRepository.findStudyMemberRecordByStudyIdAndUserId(studyEntity.getStudyId(), selectUserId); // DB에서 월별 스터디원 문제풀이 현황 정보 가져오기
+            List<GetDateAndCountInterface> solveProblemList = solveRepository.findSolveProblemByUserId(selectUserId); // 월별 함께 푼 문제 제출 현황 정보 가져오기
+            List<GetDateAndCountInterface> solveSubjectList = solveRepository.findSolveSubjectByUserId(selectUserId); // 월별 과제 제출 현황 정보 가져오기
 
-            for (GetDateAndCountInterface getDateAndCountInterface : solveStudyMember) {
-                // 월별 Total 갯수 구하기 위한 logic
-                GetDateAndCountDto studySubjectDto = null;
-                GetDateAndCountDto studyProblemDto = null;
+            Map<String, Integer> solveProblemMap = new HashMap<>();
+            Map<String, Integer> solveSubjectMap = new HashMap<>();
 
-                // DB에 더미 데이터에서 발생한 오류 때문에 사용한거라 실제는 필요 없을듯!
-                if (studySubjectMap.containsKey(getDateAndCountInterface.getDate().toString())) {
-                    studySubjectDto = studySubjectMap.get(getDateAndCountInterface.getDate().toString());
+            for (GetDateAndCountInterface getDateAndCountInterface : solveProblemList) {
+                solveProblemMap.put(getDateAndCountInterface.getDate().toString(), getDateAndCountInterface.getCount());
+                if (solveProblemAvgMap.containsKey(getDateAndCountInterface.getDate().toString())) {
+                    float lastvalue = solveProblemAvgMap.get(getDateAndCountInterface.getDate().toString());
+                    solveProblemAvgMap.replace(getDateAndCountInterface.getDate().toString(), getDateAndCountInterface.getCount() + lastvalue);
                 }
                 else {
-                    studySubjectDto = new GetDateAndCountDto(LocalDate.now(), 0);
+                    solveProblemAvgMap.put(getDateAndCountInterface.getDate().toString(), (float) getDateAndCountInterface.getCount());
                 }
-                if (studyProblemMap.containsKey(getDateAndCountInterface.getDate().toString())) {
-                    studyProblemDto = studyProblemMap.get(getDateAndCountInterface.getDate().toString());
-                }
-                else {
-                    studyProblemDto = new GetDateAndCountDto(LocalDate.now(), 0);
-                }
-                //
-
-                // 월별 평균 Solve 갯수 구하기 위한 logic
-                GetDateAndCountFloatDto studyAvgSolveDto = null;
-                if (studyAvgSolveMap.containsKey(getDateAndCountInterface.getDate().toString())) {
-                    studyAvgSolveDto = studyAvgSolveMap.get(getDateAndCountInterface.getDate().toString());
-                }
-                else {
-                    studyAvgSolveDto = new GetDateAndCountFloatDto(LocalDate.now(), 0);
-                }
-                //
-
-                solveStudyMemberList.add(new SolveStudyMemberDto(getDateAndCountInterface.getDate(), getDateAndCountInterface.getCount(), studySubjectDto.getCount()+studyProblemDto.getCount(), studyAvgSolveDto.getCount()));
+                System.out.println(getDateAndCountInterface.getDate().toString());
             }
 
-            // 해당 월에 과제가 존재하는데 들어가지 않은 경우 체크하기 위한 logic
-            for (String key : studySubjectMap.keySet()) {
-                boolean check= false; // 정보가 있는지 체크하기 위한 변수
-
-                for (int i=0; i<solveStudyMemberList.size(); i++) {
-                    if(key.equals(solveStudyMemberList.get(i).getDate().toString())) { // 해당 정보가 있는 경우
-                        check = true; // 상태 변경
-                        break; // 종료
-                    }
+            for (GetDateAndCountInterface getDateAndCountInterface : solveSubjectList) {
+                solveSubjectMap.put(getDateAndCountInterface.getDate().toString(), getDateAndCountInterface.getCount());
+                if (solveSubjectAvgMap.containsKey(getDateAndCountInterface.getDate().toString())) {
+                    float lastvalue = solveSubjectAvgMap.get(getDateAndCountInterface.getDate().toString());
+                    solveSubjectAvgMap.replace(getDateAndCountInterface.getDate().toString(), getDateAndCountInterface.getCount() + lastvalue);
                 }
-
-                if (!check) { // 해당 정보가 없는 경우
-                    // 월별 평균 Solve 갯수 구하기 위한 logic
-                    GetDateAndCountFloatDto studyAvgSolveDto = null;
-                    if (studyAvgSolveMap.containsKey(studySubjectMap.get(key).getDate().toString())) {
-                        studyAvgSolveDto = studyAvgSolveMap.get(studySubjectMap.get(key).getDate().toString());
-                    }
-                    else {
-                        studyAvgSolveDto = new GetDateAndCountFloatDto(LocalDate.now(), 0);
-                    }
-                    //
-
-                    solveStudyMemberList.add(new SolveStudyMemberDto(studySubjectMap.get(key).getDate(), 0, studySubjectMap.get(key).getCount(), studyAvgSolveDto.getCount()));
+                else {
+                    solveSubjectAvgMap.put(getDateAndCountInterface.getDate().toString(), (float) getDateAndCountInterface.getCount());
                 }
             }
-            //
+
+            LocalDate now = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth()-1);
+
+            for (int i=0; i<6; i++) {
+                float problemCnt = 0;
+                float subjectCnt = 0;
+
+                if (solveProblemMap.containsKey(now.minusMonths(i).toString())) {
+                    problemCnt = solveProblemMap.get(now.minusMonths(i).toString());
+                }
+                if (solveSubjectMap.containsKey(now.minusMonths(i).toString())) {
+                    subjectCnt = solveSubjectMap.get(now.minusMonths(i).toString());
+                }
+
+                solveStudyMemberList.add(new SolveStudyMemberDto(now.minusMonths(i), problemCnt, subjectCnt, (float)0, (float)0));
+            }
 
             SolveStudyMemberListDto solveStudyMemberListDto = new SolveStudyMemberListDto(selectUserId, selectUserEntity.getName(), selectUserEntity.getImageUrl(), solveStudyMemberList);
             result.add(solveStudyMemberListDto);
+        }
+
+        for (int i=0; i<result.size(); i++) {
+            List<SolveStudyMemberDto> selectSeries = result.get(i).getSeries();
+            for (int j=0; j<selectSeries.size(); j++) {
+                if(solveProblemAvgMap.containsKey(selectSeries.get(j).getDate().toString())) {
+                    selectSeries.get(j).setProblemAvgCnt((float) (Math.round(solveProblemAvgMap.get(selectSeries.get(j).getDate().toString())/studyEntity.getStudyPersonnel()*10)/10.0));
+                }
+                if(solveSubjectAvgMap.containsKey(selectSeries.get(j).getDate().toString())) {
+                    selectSeries.get(j).setSubjectAvgCnt((float) (Math.round(solveSubjectAvgMap.get(selectSeries.get(j).getDate().toString())/studyEntity.getStudyPersonnel()*10)/10.0));
+                }
+            }
         }
 
         return result;
