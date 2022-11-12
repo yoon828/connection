@@ -30,13 +30,13 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     List<Solve> findAllByUser_UserId(Long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(s.time, '%Y-%m-01') AS date, COUNT(s.time) AS count FROM solve s LEFT JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id =?1 AND c.user_id =?2 AND s.status IN (0,1) AND s.time BETWEEN  DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY date;", nativeQuery = true)
-    List<GetDateAndCountInterface> findStudyMemberRecordByStudyIdAndUserId(long studyId, long userId);
+    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count FROM solve s WHERE s.user_id=?1 AND s.status=1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time;", nativeQuery = true)
+    List<GetDateAndCountInterface> findSolveProblemByUserId(long userId);
+
+    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count FROM solve s WHERE s.user_id=?1 AND s.status=0 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time;", nativeQuery = true)
+    List<GetDateAndCountInterface> findSolveSubjectByUserId(long userId);
 
     void deleteAllByUser(User user);
-
-    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count  FROM solve s LEFT OUTER JOIN conn_study c ON s.user_id=c.user_id WHERE c.study_id=?1 AND s.status =1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY date;", nativeQuery = true)
-    List<GetDateAndCountInterface> findStudyProblemByStudyId(long studyId); // 스터디에서 함께 푼 문제
 
     @Query(value = "SELECT * FROM solve WHERE user_id = :userId AND problem_id = :problemId AND status = 2", nativeQuery = true)
     Optional<Solve> findNormalByUserAndProblem(Long userId, Long problemId);

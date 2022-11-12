@@ -15,9 +15,12 @@ public class SolveStudyMemberDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM", timezone = "Asia/Seoul")
     private LocalDate date;
 
-    private long count;
+    private Float problemCnt;
 
-    private long total;
+    private Float subjectCnt;
 
-    private float avg;
+    private Float problemAvgCnt;
+
+    private Float subjectAvgCnt;
+
 }
