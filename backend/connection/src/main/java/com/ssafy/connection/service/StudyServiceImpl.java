@@ -143,6 +143,9 @@ public class StudyServiceImpl implements StudyService {
             workbook.setStudy(study);
             workbookRepository.save(workbook);
             StudyInfoReturnDto createdStudy = StudyInfoReturnDto.of(study);
+
+            //DB처리 완료 후 리드미생성 비동기 호출
+            updateStudyReadme(StudyReadmeDto.builder().studyId(study.getStudyId()).msg("Create study '" + studyName + "'").build());
             return createdStudy;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -596,7 +599,7 @@ public class StudyServiceImpl implements StudyService {
         exampleCode += "\n<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
         String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
         String fileName = "README.md";
-        String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
+        String createFileRequest = "{\"message\":\"" + studyReadmeDto.getMsg() + " via \'<connection/>\'" + "\"," +
                 "\"content\":\""+ code +"\"}";
 
         try {
@@ -619,7 +622,7 @@ public class StudyServiceImpl implements StudyService {
                         .block();
                 String sha = contents.get("sha").toString();
                 createFileRequest = "{" +
-                        "\"message\":\"" + "updated README.md automatically via \'<connection/>\'" + "\","
+                        "\"message\":\"" + studyReadmeDto.getMsg() +" via \'<connection/>\'" + "\","
                         + "\"content\":\""+ code +"\","
                         + "\"sha\":\"" + sha + "\""
                         + "}";
