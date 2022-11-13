@@ -14,6 +14,7 @@ import java.util.Map;
 public interface SubjectService {
     ResponseEntity makeSubject(SubjectDto subjectDto, Long userId) throws IOException;
     ResponseEntity getTeamStatus(Long userId);
+    ResponseEntity getTeamStatus(String studyName);
     Map<String, Object> getMyStatus(Long userId, List<Subject> totalSubjectList);
     List<Subject> getTotalSubjectList(Long userId);
     ResponseEntity submitSubject(GitPushDto gitPushDto) throws IOException;

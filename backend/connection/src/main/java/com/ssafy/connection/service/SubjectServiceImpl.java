@@ -99,7 +99,22 @@ public class SubjectServiceImpl implements SubjectService{
 
         return new ResponseEntity<>(new ResponseDto("success"), HttpStatus.OK);
     }
-
+    @Override
+    @Transactional
+    public ResponseEntity getTeamStatus(String studyName) {
+        try {
+            Optional<Study> study = studyRepository.findByStudyName(studyName);
+            if (study.isPresent()) {
+                Long studyId = study.get().getStudyId();
+                ConnStudy connStudy = connStudyRepository.findByStudy_StudyIdAndRole(studyId, "LEADER").get();
+                return getTeamStatus(connStudy.getUser().getUserId());
+            }
+        }
+        catch (Exception e){
+            return null;
+        }
+        return null;
+    }
     @Override
     @Transactional
     public ResponseEntity getTeamStatus(Long userId) {
@@ -227,9 +242,6 @@ public class SubjectServiceImpl implements SubjectService{
         subjectMap.put("inProgress", (LocalDateTime.now().isBefore(
                 LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
         ))? true : false);
-        System.out.println("지금은" + LocalDateTime.now());
-        System.out.println("그것은" + LocalDateTime.parse(result.get(0)[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S")));
-        System.out.println(result.get(0)[5].toString());
         subjectMap.put("leader", connStudyRepository.findByStudy_StudyIdAndRole(studyId,"LEADER").get().getUser().getGithubId());
 
         return new ResponseEntity<>(subjectMap, HttpStatus.OK);

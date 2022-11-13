@@ -564,12 +564,12 @@ public class StudyServiceImpl implements StudyService {
         exampleCode += "<div align=center>\n\n";
 
         //제목
-        exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\uD83D\uDCBB\n" +
+        exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\n" +
                 "우리는 함께 성장하며 보다 높은 곳을 바라보는 알고리즘 스터디 " + study.get().getStudyName() + "입니다.<br>" +
                 "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n";
 
         //멤버시작======================================================
-        exampleCode += "## \uD83D\uDD25 스터디 멤버 \uD83D\uDD25\n\n"
+        exampleCode += "## \uD83D\uDD25 스터디 멤버"
                         + "<table>\n<tr>";
         //리더 먼저 표시
         exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + leaderConnStudy.getUser().getGithubId() + "\">" +
@@ -588,6 +588,10 @@ public class StudyServiceImpl implements StudyService {
         }
         exampleCode += "</table>\n<br />\n\n";
         //멤버소개 끝 =====================================================
+
+        //과제
+        exampleCode += "## \uD83D\uDCBB과제\n" +
+                "![과제](https://www.coalla.co.kr/api/svg/"+ study.get().getStudyName() + ")\n";
         exampleCode += "\n</div>\n";
         exampleCode += "\n<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
         String code = new String(Base64.encodeBase64(exampleCode.getBytes()));

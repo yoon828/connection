@@ -206,7 +206,7 @@ public class AuthController {
 //        return authService.signout(tokenRefreshRequest);
 //    }
 
-    @Operation(summary = "test", description = "스터디 리드미 생성 테스트.")
+    @Operation(summary = "readme.md test", description = "스터디 리드미 생성 테스트.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } )
     })
