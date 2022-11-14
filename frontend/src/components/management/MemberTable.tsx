@@ -34,7 +34,10 @@ function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
             fontSize="xl"
           >
             <Image
-              src={member.imageUrl}
+              src={
+                member.imageUrl ||
+                "https://avatars.githubusercontent.com/u/48246705?s=40&v=4"
+              }
               alt={member.name}
               width="36px"
               onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {

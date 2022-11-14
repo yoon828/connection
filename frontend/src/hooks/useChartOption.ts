@@ -52,7 +52,7 @@ function useChartOption() {
       legend: {
         show: true,
         showForSingleSeries: true,
-        customLegendItems: ["푼 문제", "푼 과제", "스터디 평균"],
+        customLegendItems: ["푼 과제", "푼 문제", "스터디 평균"],
         markers: {
           fillColors: ["#88BFFF", "#88bbBf", "#775DD0"]
         },
