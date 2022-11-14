@@ -18,7 +18,7 @@ function StudyLayout({
   children
 }: StudyLayoutProps) {
   return (
-    <Container marginTop="40px" maxW="1200px" position="relative">
+    <Container marginY="40px" maxW="1200px" position="relative">
       <Flex
         width="180px"
         top="20px"

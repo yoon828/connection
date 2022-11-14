@@ -31,7 +31,6 @@ function Recommend() {
     if (e.target instanceof HTMLDivElement && e.target.dataset.id) {
       const targetId = Number(e.target.dataset.id);
       setSelectedTap(targetId);
-      getAndSetRecommend();
     }
   };
 
