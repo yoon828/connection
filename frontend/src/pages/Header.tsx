@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   Center,
   Flex,
@@ -48,6 +55,8 @@ function Header() {
   const dispatch = useAppDispatch();
   const navigator = useNavigate();
   const toast = useToast();
+  const quitAlert = useDisclosure();
+  const cancelRef = useRef(null);
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
@@ -79,20 +88,29 @@ function Header() {
   const logout = () => {
     dispatch(resetUserInfo());
     navigator("/");
+    if (quitAlert.isOpen) {
+      quitAlert.onClose();
+    }
   };
 
   const userQuit = async () => {
-    if (window.confirm("정말로 탈퇴하시겠습니까?😭")) {
-      const { data } = await quitUser();
-      if (data.check) {
-        toast({
-          title: "회원탈퇴가 완료되었습니다.",
-          position: "top",
-          isClosable: true,
-          status: "info"
-        });
-        logout();
-      }
+    navigator("/");
+    const { data } = await quitUser();
+    if (data.check) {
+      toast({
+        title: "회원탈퇴가 완료되었습니다.",
+        position: "top",
+        isClosable: true,
+        status: "info"
+      });
+      logout();
+    } else {
+      toast({
+        title: "회원탈퇴 과정 중 문제가 발생했습니다.",
+        position: "top",
+        isClosable: true,
+        status: "error"
+      });
     }
   };
 
@@ -160,7 +178,7 @@ function Header() {
               <MenuList _dark={{ bg: "#121212" }}>
                 <MenuGroup title={`${auth.information?.name}님 반가워요😀`}>
                   <MenuItem onClick={logout}>로그아웃</MenuItem>
-                  <MenuItem onClick={userQuit} color="custom_red">
+                  <MenuItem onClick={quitAlert.onOpen} color="custom_red">
                     회원탈퇴
                   </MenuItem>
                 </MenuGroup>
@@ -196,6 +214,28 @@ function Header() {
               ) : null
             }
           />
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={quitAlert.onClose}
+            isOpen={quitAlert.isOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+            <AlertDialogContent>
+              <AlertDialogHeader>회원탈퇴</AlertDialogHeader>
+              <AlertDialogCloseButton />
+              <AlertDialogBody>탈퇴하시겠습니까?😭</AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={quitAlert.onClose}>
+                  No
+                </Button>
+                <Button colorScheme="red" ml={3} onClick={userQuit}>
+                  Yes
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </Center>
       </Center>
     </Flex>

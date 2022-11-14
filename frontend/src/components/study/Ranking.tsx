@@ -26,7 +26,7 @@ function Ranking() {
     const {
       data: { data }
     } = await getRank();
-    // console.log(data);
+    console.log(data);
     setRanks(data);
   };
 
@@ -74,7 +74,7 @@ function Ranking() {
                   <br />
                   과제 점수 : {study.subjectScore} <br />
                   문제 풀이 점수 : {study.studyScore} <br />
-                  보너스 점수 : {study.bonusScore} <br />총 점수 :
+                  보너스 점수 : {study.bonusScore} <br />총 점수 :{" "}
                   {study.totalScore}
                 </div>
               }

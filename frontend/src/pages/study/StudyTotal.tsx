@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link as ReactLink, Navigate, useNavigate } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -18,17 +18,19 @@ import {
 import useToast from "hooks/useToast";
 import { getMemberList } from "api/study";
 import { v4 } from "uuid";
+import { getUserInfo } from "store/ducks/auth/authThunk";
+import axios from "axios";
 import TotalLayout from "../../components/layout/TotalLayout";
 import Ranking from "../../components/study/Ranking";
 import GithubL from "../../asset/img/githubL.svg";
 import GithubD from "../../asset/img/githubD.svg";
 import MyActivity from "../../components/study/MyActivity";
 import Challenge from "../../components/study/Challenge";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { UserInfoType } from "../../store/ducks/auth/auth.type";
 import SubjectView from "../../components/study/subject/SubjectView";
 
-type UserListProps = Pick<
+export type UserListProps = Pick<
   UserInfoType,
   "name" | "userId" | "imageUrl" | "githubId"
 >;
@@ -57,6 +59,8 @@ function StudyTotal() {
   const info: UserInfoType = useAppSelector(state => state.auth.information);
   const { onCopy } = useClipboard(info.studyCode);
   const toast = useToast();
+  const navigator = useNavigate();
+  const dispatch = useAppDispatch();
 
   function onCopyEvent() {
     onCopy();
@@ -69,8 +73,22 @@ function StudyTotal() {
   }
 
   const getUserList = async () => {
-    const { data } = await getMemberList();
-    setUsers(data);
+    const res = await getMemberList();
+    if (axios.isAxiosError(res)) {
+      if (res.response?.status === 409) {
+        toast({
+          title: "스터디에서 추방당했습니다.",
+          status: "error",
+          duration: 1000,
+          position: "top",
+          isClosable: true
+        });
+        navigator("/");
+        dispatch(getUserInfo());
+      }
+    } else {
+      setUsers(res.data);
+    }
   };
 
   useEffect(() => {
