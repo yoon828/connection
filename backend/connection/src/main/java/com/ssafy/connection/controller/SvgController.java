@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class SvgController {
     private final SvgService svgService;
 
-//    @Autowired
     public SvgController(SvgService svgService){
         this.svgService = svgService;
     }
