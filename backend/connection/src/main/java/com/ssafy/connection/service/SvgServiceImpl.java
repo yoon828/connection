@@ -64,28 +64,71 @@ public class SvgServiceImpl implements SvgService{
                 "      </feMerge>\n" +
                 "    </filter>\n" +
                 "  </defs>\n" +
-                "  <style>\n" +
+                " <style type=\"text/css\">\n" +
+                "    <!-- @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&displayblock'); -->\n" +
+                "    @keyframes delayFadeIn {\n" +
+                "        0%{\n" +
+                "            opacity:0\n" +
+                "        }\n" +
+                "        60%{\n" +
+                "            opacity:0\n" +
+                "        }\n" +
+                "        100%{\n" +
+                "            opacity:1\n" +
+                "        }\n" +
+                "    }\n" +
+                "    @keyframes fadeIn {\n" +
+                "        from {\n" +
+                "            opacity: 0;\n" +
+                "        }\n" +
+                "        to {\n" +
+                "            opacity: 1;\n" +
+                "        }\n" +
+                "    }\n" +
+                "    @keyframes rateBarAnimation {\n" +
+                "        0% {\n" +
+                "            stroke-dashoffset: 190.54999999999998;\n" +
+                "        }\n" +
+                "        70% {\n" +
+                "            stroke-dashoffset: 190.54999999999998;\n" +
+                "        }\n" +
+                "        100%{\n" +
+                "            stroke-dashoffset: 35;\n" +
+                "        }\n" +
+                "    }\n" +
                 "    text {\n" +
-                "      font-family: 'MDN', sans-serif;\n" +
+                "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                "      animation: delayFadeIn 0.8s ease-in-out forwards;\n" +
+                "      opacity: 0;\n" +
                 "    }\n" +
                 "    .f1 {\n" +
-                "      font: 14px sans-serif;\n" +
+                "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                "      font: 14px;\n" +
                 "      font-weight: 700;\n" +
                 "      fill: #1A202C;\n" +
                 "    }\n" +
                 "    .f2 {\n" +
-                "      font: 14px sans-serif;\n" +
+                "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                "      font: 14px;\n" +
                 "      fill: #1A202C;\n" +
                 "    }\n" +
                 "    .f3 {\n" +
-                "      font: 12px sans-serif;\n" +
+                "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                "      font: 12px;\n" +
                 "      font-weight: 700;\n" +
                 "      fill: #1A202C;\n" +
                 "    }\n" +
-                "  </style>\n" +
+                "    circle {\n" +
+                "      animation: delayFadeIn 0.6s ease-in-out forwards;\n" +
+                "      opacity: 0;\n" +
+                "    }\n" +
+                "    line {\n" +
+                "      animation: delayFadeIn 1.4s ease-in-out forwards;\n" +
+                "      opacity: 0;\n" +
+                "    }\n" +
+                "  </style>" +
                 "  \n" +
-                "  <rect width=\"760\" height=\"300\" x=\"10\" y=\"10\" rx=\"10\" ry=\"10\" fill=\"#e9ebee\" filter=\"url(#shadow)\" />\n" +
-//                    "  <circle cx=\"50\" cy=\"50%\" r=\"40\" style=\"fill:pink;\" />\n" +
+                "  <rect width=\"760\" height=\"300\" x=\"10\" y=\"10\" rx=\"10\" ry=\"10\" fill=\"#f0f7ff\" filter=\"url(#shadow)\" />\n" +
                 "\n" +
                 "  <!-- 가로선 -->\n" +
                 "  <line x1=\"41\" y1=\"110\" x2=\"520\" y2=\"110\" stroke=\"#D1D1D1\" stroke-width=\"1.5\" />\n" +
@@ -94,8 +137,8 @@ public class SvgServiceImpl implements SvgService{
                 "  <line x1=\"540\" y1=\"80\" x2=\"540\" y2=\"290\" stroke=\"#D1D1D1\" stroke-width=\"1.5\" /> <!-- 마지막선 -->\n" +
                 "\n" +
                 "  <text x='45' y='40' class=\"f1\">총 문제수 : " + problems.size() + "문제</text>\n" +
-                "  <text x='45' y='65' class=\"f2\">과제 기간 : " + deadline.get(0) + " ~ " + deadline.get(1) + "</text>\n" +
-                "  <text x='72' y='100' text-anchor=\"middle\" class=\"f3\">번호</text>\n";
+                "  <text x='45' y='65' class=\"f2\" style=\"animation-delay: 200ms\">과제 기간 : " + deadline.get(0) + " ~ " + deadline.get(1) + "</text>\n" +
+                "  <text x='72' y='100' text-anchor=\"middle\" class=\"f3\" style=\"animation-delay: 400ms\">번호</text>\n";
 
         for(int i = 0; i<users.size(); i++){
             Map<String,String> usermap = users.get(i);
@@ -108,7 +151,7 @@ public class SvgServiceImpl implements SvgService{
                         +"\" y1=\"80\" " +
                         "x2=\"" + vline_x + "\" y2=\"290\" stroke=\"#D1D1D1\" stroke-width=\"1.5\" /> \n";
             str += "  <text x='" +
-                    username_x +"' y='100' text-anchor=\"middle\" class=\"f3\">"
+                    username_x +"' y='100' text-anchor=\"middle\" class=\"f3\" style=\"animation-delay: 400ms\">"
                     + usermap.get("user_name") + "</text>\n";
 
         }
@@ -119,7 +162,7 @@ public class SvgServiceImpl implements SvgService{
             Map<String,Object> problemmap = problems.get(i);
             long y = (135 + 30 * i);
             str += "  <text x='72' " +
-                    "y='" + y + "' text-anchor=\"middle\" class=\"f2\">"
+                    "y='" + y + "' text-anchor=\"middle\" class=\"f2\" style=\"animation-delay: 400ms\">"
                     + problemmap.get("problem_id").toString() + "</text>\n";
             List<Boolean> solved = (List<Boolean>)problemmap.get("problem_solved");
             for (int j = 0; j < solved.size(); j++) {
@@ -134,7 +177,7 @@ public class SvgServiceImpl implements SvgService{
                 }
                 str += "<circle cx=\"" + circle_x  + "\" " +
                         "cy=\"" + y + "\" r=\"10\" " +
-                        "style=\"fill:" + color + ";\" />";
+                        "style=\"fill:" + color + ";animation-delay: 600ms;\" />";
             }
         }
 
@@ -159,11 +202,12 @@ public class SvgServiceImpl implements SvgService{
                         "    stroke-width=\"80\"\n" +
                         "    stroke-dasharray=\"calc(" + percent + " * calc(2*3.14*40) / 100) calc(2*3.14*40)\"\n" +
                         "    transform=\"rotate(-90)  translate(-40)\"\n" +
+                        "    style=\"animation-delay: 800ms\"" +
                         "  />" + chart;
             }
             str += chart;
             str += "\n" +
-                    "  <rect width=\"65\" height=\"20\" x=\"617.5\" y=\"258\" fill=\"#C8E9FB\" />\n" +
+                    "  <rect width=\"81\" height=\"25\" x=\"610\" y=\"254\" fill=\"#C8E9FB\" />\n" +
                     "  <text x='650' y='272' text-anchor=\"middle\" class=\"f3\">과제 현황</text>";
         }
         str +="</svg>";
