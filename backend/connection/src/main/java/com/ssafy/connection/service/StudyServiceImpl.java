@@ -80,7 +80,7 @@ public class StudyServiceImpl implements StudyService {
             //githubToken = tokenRepository.findByGithubId(userEntity.getGithubId()).get().getGithubToken(); // 스터디장 깃토큰
 
             String createTeamRequest = "{\"name\":\"" + userEntity.getGithubId() + "\"," +
-                    "\"description\":\"This is your study repository\"," +
+                    "\"description\":\"" + studyName + "\"," +
                     "\"permission\":\"push\"," +
                     "\"privacy\":\"closed\"}";
             webClient.post()
@@ -102,8 +102,9 @@ public class StudyServiceImpl implements StudyService {
                     .block();
 
             String createRepositoryRequest = "{\"name\":\"" + userEntity.getGithubId() + "\"," +
-                    "\"description\":\"This is your Study repository\"," +
-                    "\"homepage\":\"https://github.com\"," +
+//                    "\"description\":\"This is your Study repository\"," +
+                    "\"description\":\"\uD83D\uDD25알고리즘 스터디 " + studyName + "\uD83D\uDD25\"," +
+                    "\"homepage\":\"https://k7c202.p.ssafy.io\"," +
                     "\"private\":false," +
                     "\"has_issues\":true," +
                     "\"has_projects\":true," +
@@ -216,6 +217,9 @@ public class StudyServiceImpl implements StudyService {
             connStudyRepository.save(connStudy);
             studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()+1);
             studyRepository.save(studyEntity);
+
+            //DB처리 완료 후 리드미수정 비동기 호출
+            updateStudyReadme(StudyReadmeDto.builder().studyId(studyEntity.getStudyId()).msg(userEntity.getGithubId() + "has joined '" + studyEntity.getStudyName() + "'").build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -280,6 +284,9 @@ public class StudyServiceImpl implements StudyService {
             studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()-1);
             connStudyRepository.delete(connStudyEntity);
             studyRepository.save(studyEntity);
+
+            //DB처리 완료 후 리드미수정 비동기 호출
+            updateStudyReadme(StudyReadmeDto.builder().studyId(studyEntity.getStudyId()).msg(quitUserEntity.getGithubId() + "has quit '" + studyEntity.getStudyName() + "'").build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -569,7 +576,7 @@ public class StudyServiceImpl implements StudyService {
         //제목
         exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\n" +
                 "우리는 함께 성장하며 보다 높은 곳을 바라보는 알고리즘 스터디 " + study.get().getStudyName() + "입니다.<br>" +
-                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n";
+                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n<br><br><br>";
 
         //멤버시작======================================================
         exampleCode += "## \uD83D\uDD25 스터디 멤버"
@@ -589,12 +596,12 @@ public class StudyServiceImpl implements StudyService {
                     "<sub><b>" + connStudyList.get(i).getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + connStudyList.get(i).getUser().getBackjoonId() + "\">" +
                     "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + connStudyList.get(i).getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
         }
-        exampleCode += "</table>\n<br />\n\n";
+        exampleCode += "</table>\n<br><br><br>";
         //멤버소개 끝 =====================================================
 
         //과제
         exampleCode += "## \uD83D\uDCBB과제\n" +
-                "![과제](https://www.coalla.co.kr/api/svg/"+ study.get().getStudyName() + ")\n";
+                "![과제](https://www.coalla.co.kr/api/svg/"+ study.get().getStudyName() + ")\n<br><br><br>";
         exampleCode += "\n</div>\n";
         exampleCode += "\n<div><img src=\"https://user-images.githubusercontent.com/116149736/200578139-c971c35c-12fb-4f41-a730-db93e0301797.jpg\" width=\"1000\"/>";
         String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
