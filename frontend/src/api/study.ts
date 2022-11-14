@@ -32,9 +32,15 @@ export const getRank = async () => {
   return res;
 };
 
-// 스터디 멤버
+// 스터디 멤버 활동 현황
 export const getMember = async () => {
   const res = await api.get("/study/member");
+  return res;
+};
+
+// 스터디 멤버 조회
+export const getMemberList = async () => {
+  const res = await api.get("/study/memberlist");
   return res;
 };
 
