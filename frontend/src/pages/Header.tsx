@@ -11,12 +11,15 @@ import {
   MenuItem,
   MenuList,
   Spacer,
+  Toast,
   Tooltip,
   useColorMode,
   useDisclosure
 } from "@chakra-ui/react";
 import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+import { quitUser } from "api/auth";
+import useToast from "hooks/useToast";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
 import GithubLight from "../asset/img/githubL.svg";
@@ -44,6 +47,7 @@ function Header() {
   const auth = useAppSelector(state => state.auth) as InitialStateType;
   const dispatch = useAppDispatch();
   const navigator = useNavigate();
+  const toast = useToast();
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
@@ -75,6 +79,21 @@ function Header() {
   const logout = () => {
     dispatch(resetUserInfo());
     navigator("/");
+  };
+
+  const userQuit = async () => {
+    if (window.confirm("정말로 탈퇴하시겠습니까?😭")) {
+      const { data } = await quitUser();
+      if (data.check) {
+        toast({
+          title: "회원탈퇴가 완료되었습니다.",
+          position: "top",
+          isClosable: true,
+          status: "info"
+        });
+        logout();
+      }
+    }
   };
 
   return (
@@ -141,6 +160,9 @@ function Header() {
               <MenuList _dark={{ bg: "#121212" }}>
                 <MenuGroup title={`${auth.information?.name}님 반가워요😀`}>
                   <MenuItem onClick={logout}>로그아웃</MenuItem>
+                  <MenuItem onClick={userQuit} color="custom_red">
+                    회원탈퇴
+                  </MenuItem>
                 </MenuGroup>
               </MenuList>
             </Menu>
@@ -166,7 +188,6 @@ function Header() {
             onClose={onClose}
             content={
               !auth.information.backjoonId ? (
-                // true ? (
                 <BackjoonModal code={code} />
               ) : !auth.information.ismember ? (
                 <GithubModal />

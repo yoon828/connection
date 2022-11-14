@@ -15,6 +15,11 @@ export const getUser = async () => {
   return res;
 };
 
+export const quitUser = async () => {
+  const res = await api.delete("/auth/");
+  return res;
+};
+
 // 백준 연동 확인
 export const postBJConfirm = async (payload: BjProps) => {
   const { data } = await api.post(`/auth/baekjoon`, payload);

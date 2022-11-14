@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Center, Image, Text } from "@chakra-ui/react";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 interface MainSquareProps {
   data: {
@@ -13,9 +11,6 @@ interface MainSquareProps {
 }
 
 function MainSquare({ data, dir }: MainSquareProps) {
-  useEffect(() => {
-    // AOS.init();
-  }, []);
   return (
     <Center
       w="280px"

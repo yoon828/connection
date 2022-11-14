@@ -10,13 +10,14 @@ import {
   useColorMode
 } from "@chakra-ui/react";
 import { v4 } from "uuid";
-// import AOS from "aos";
-// import "aos/dist/aos.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import C from "../asset/img/c.png";
 import Java from "../asset/img/java.png";
 import JS from "../asset/img/js.png";
 import Python from "../asset/img/python.png";
 import Kotlin from "../asset/img/kotlin.png";
+import Airplane from "../asset/img/airplane.png";
 import MainBox from "../components/common/MainBox";
 import { studyInfos, etcInfos, squares } from "../asset/data/main";
 import MainSquare from "../components/common/MainSquare";
@@ -35,9 +36,9 @@ function Main() {
   const mainRef = useRef<HTMLDivElement>(null);
   const imgs = [C, Java, JS, Python, Kotlin];
 
-  // useEffect(() => {
-  //   AOS.init();
-  // }, []);
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   function onDown() {
     mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -54,8 +55,8 @@ function Main() {
         minH="550px"
         py="30px"
       >
-        <Flex>
-          <Center flexDir="column" flex="1" alignItems="">
+        <Flex h="60%">
+          <Center flexDir="column" alignItems="">
             <Box fontSize="32px" fontWeight="bold" flexDir="column" my="50px">
               <Text>
                 <Text as="span" color="main">
@@ -78,6 +79,7 @@ function Main() {
             <Button
               bg="gra"
               width="200px"
+              minH="40px"
               _hover={{}}
               _active={{}}
               onClick={() => navigate("/recommend")}
@@ -85,18 +87,18 @@ function Main() {
               시작하기
             </Button>
           </Center>
-          <Box flex="1">
+          <Flex alignItems="center">
             <Image src={MainImg} alt="main" w="430px" />
-          </Box>
+          </Flex>
         </Flex>
         <Center flexDir="column">
           <Center mb="10px">
             {imgs.map((img, idx) => {
               return (
                 <Box
-                  // data-aos="flip-left"
-                  // data-aos-delay={idx * 300}
-                  // data-aos-duration="1500"
+                  data-aos="flip-left"
+                  data-aos-delay={idx * 300}
+                  data-aos-duration="1500"
                   key={v4()}
                 >
                   <Image src={img} alt="language" w="80px" mx="20px" />
@@ -132,12 +134,7 @@ function Main() {
         p="100px 0 0"
       >
         <Center m="0 auto" flexDir="column" pt="30px" w="800px">
-          <Box
-            w="100%"
-            display="flex"
-            alignItems="center"
-            // data-aos="fade-up"
-          >
+          <Box w="100%" display="flex" alignItems="center" data-aos="fade-up">
             <Box
               bg="gra"
               w="500px"
@@ -198,7 +195,7 @@ function Main() {
             display="flex"
             alignItems="center"
             justifyContent="flex-end"
-            // data-aos="fade-up"
+            data-aos="fade-up"
           >
             <Image src={Notebook} alt="code" w="200px" mr="50px" />
             <Box
@@ -236,7 +233,6 @@ function Main() {
       <Center
         as="section"
         p="100px 0 0"
-        h="330px"
         bg={
           colorMode === "light"
             ? "linear-gradient(180deg, #FFFFFF 0%, #88BFFF 100%)"
@@ -245,10 +241,11 @@ function Main() {
         flexDir="column"
       >
         <Center
-          m="0 auto 50px"
           flexDir="column"
           h="100%"
           justifyContent="space-evenly"
+          w="100%"
+          position="relative"
         >
           <Text>더 이상 혼자가 아닌 스터디원들과 같이 알고리즘 공부하세요</Text>
           <Text display="flex" alignItems="center">
@@ -260,6 +257,7 @@ function Main() {
             />
             와 함께라면 더 높은 곳 까지 갈 수 있어요
           </Text>
+          <Image src={Airplane} position="absolute" w="200px" left="15%" />
         </Center>
         <Box as="footer" h="200px" display="flex">
           <Box m="0 auto" w="800px">
@@ -273,12 +271,8 @@ function Main() {
               fontSize="12px"
             >
               <Text>connection by 우건공주와 다섯난쟁이</Text>
-              <Text color="dep_1" mb="60px">
-                김우건 김윤민 김준우 염진호 이기영 최진합
-              </Text>
-              <Text color="dep_1" mb="10px">
-                © 2022 connection All Rights Reserved
-              </Text>
+              <Text mb="60px">김우건 김윤민 김준우 염진호 이기영 최진합</Text>
+              <Text mb="10px">© 2022 connection All Rights Reserved</Text>
             </Box>
           </Box>
         </Box>
