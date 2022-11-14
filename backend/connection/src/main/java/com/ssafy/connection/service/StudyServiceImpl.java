@@ -660,18 +660,18 @@ public class StudyServiceImpl implements StudyService {
         if(connStudy.isPresent()){
             List<Map<String,Object>> mapList = new ArrayList<>();
             List<ConnStudy> memberList = connStudyRepository.findAllByStudy_StudyId(connStudy.get().getStudy().getStudyId());
+            System.out.println(memberList.size());
             for(ConnStudy cs:memberList){
                 Map<String,Object> map = new HashMap<>();
+                System.out.println(cs.getUser().getName() + cs.getUser().getUserId() + cs.getUser().getImageUrl() + cs.getUser().getGithubId());
                 map.put("name", cs.getUser().getName());
                 map.put("userId", cs.getUser().getUserId());
                 map.put("imageUrl", cs.getUser().getImageUrl());
                 map.put("githubId", cs.getUser().getGithubId());
 
                 mapList.add(map);
-                return ResponseEntity.ok((mapList));
             }
-            return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
-
+            return ResponseEntity.ok((mapList));
         }
 
         return new ResponseEntity(new ResponseDto("empty"),HttpStatus.CONFLICT);
