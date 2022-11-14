@@ -663,9 +663,9 @@ public class StudyServiceImpl implements StudyService {
             for(ConnStudy cs:memberList){
                 Map<String,Object> map = new HashMap<>();
                 map.put("name", cs.getUser().getName());
-                map.put("user_id", cs.getUser().getUserId());
-                map.put("image_url", cs.getUser().getImageUrl());
-                map.put("github_id", cs.getUser().getGithubId());
+                map.put("userId", cs.getUser().getUserId());
+                map.put("imageUrl", cs.getUser().getImageUrl());
+                map.put("githubId", cs.getUser().getGithubId());
 
                 mapList.add(map);
                 return ResponseEntity.ok((mapList));
