@@ -16,7 +16,7 @@
   left: 0;
   pointer-events: all;
   cursor: pointer;
-
+  z-index: 3;
   filter: opacity(var(--chakra-opacity-bubble))
     drop-shadow(0 0 0 var(--chakra-colors-bubble));
 
