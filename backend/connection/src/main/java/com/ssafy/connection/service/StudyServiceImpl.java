@@ -576,10 +576,10 @@ public class StudyServiceImpl implements StudyService {
         //제목
         exampleCode += "## \uD83D\uDCBB" + study.get().getStudyName() + "\n" +
                 "우리는 함께 성장하며 보다 높은 곳을 바라보는 알고리즘 스터디 " + study.get().getStudyName() + "입니다.<br>" +
-                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n<br><br><br>";
+                "[\\<connection/> 바로가기](https://k7c202.p.ssafy.io/)\n<br><br><br>\n";
 
         //멤버시작======================================================
-        exampleCode += "## \uD83D\uDD25 스터디 멤버"
+        exampleCode += "## \uD83D\uDD25 스터디 멤버<br>\n"
                         + "<table>\n<tr>";
         //리더 먼저 표시
         exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + leaderConnStudy.getUser().getGithubId() + "\">" +
@@ -594,9 +594,9 @@ public class StudyServiceImpl implements StudyService {
             exampleCode += "<td align=\"center\"><a href=\"https://github.com/" + connStudyList.get(i).getUser().getGithubId() + "\">" +
                     "<img src=\"" + connStudyList.get(i).getUser().getImageUrl() + "\" width=\"100px;\" alt=\"\"/><br />" +
                     "<sub><b>" + connStudyList.get(i).getUser().getName() + "</b></a><br><a href=\"https://solved.ac/profile/" + connStudyList.get(i).getUser().getBackjoonId() + "\">" +
-                    "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + connStudyList.get(i).getUser().getBackjoonId() + "\" /></sub></a><br /></td>";
+                    "<img src=\"http://mazassumnida.wtf/api/mini/generate_badge?boj=" + connStudyList.get(i).getUser().getBackjoonId() + "\" /></sub></a></td>";
         }
-        exampleCode += "</table>\n<br><br><br>";
+        exampleCode += "</table>\n<br><br>\n\n";
         //멤버소개 끝 =====================================================
 
         //과제
