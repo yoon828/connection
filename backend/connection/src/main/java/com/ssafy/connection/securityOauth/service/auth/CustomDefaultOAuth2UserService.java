@@ -54,42 +54,38 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = userOptional.get();
             DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
             user = updateExistingUser(user, oAuth2UserInfo);
-
-//            멤버여부 동기화 이제 필요없음 웹훅덕분에
-//            if(!user.isIsmember()){
-//                ResponseEntity responseEntity = organizationService.checkOrganization(user.getUserId());
-//                if(!responseEntity.getStatusCode().equals(HttpStatus.OK))
-//                    organizationService.joinOrganization(user.getUserId());
-//            }
-
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
             System.out.println("레지스터유저");
 
             String githubId = user.getGithubId();
 
-            if(user.getImageUrl() == null) { // Github image_url이 null인 경우
-                if(oAuth2UserInfo.getImageUrl() == null) {
-//                        System.out.println("이프문");
-                        GithubUserDto githubUserDto = webClient.get()
-                                .uri(uriBuilder -> uriBuilder
-                                        .path(String.format("/search/users"))
-                                        .queryParam("q", "user:" + githubId)
-                                        .build())
-                                .retrieve()
-                                .bodyToMono(GithubUserDto.class)
-                                .block();
-//                        System.out.println("잘가져왔음");
-                        System.out.println(githubUserDto.getItems().get(0).getAvatar_url());
-                        user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
-//                        System.out.println("세터햇음");
-                        userRepository.save(user);
-                        System.out.println("유저저장");
-                }
-                else {
-                    user.setImageUrl(oAuth2UserInfo.getImageUrl());
-                }
-            }
+            user.setImageUrl(oAuth2User.getAttributes().get("avatar_url").toString());
+//            if(user.getImageUrl() == null) { // Github image_url이 null인 경우
+//                user.setImageUrl(oAuth2UserInfo.getId());
+//                oAuth2User.getAttributes().get("")
+//
+//                if(oAuth2UserInfo.getImageUrl() == null) {
+////                        System.out.println("이프문");
+//                        GithubUserDto githubUserDto = webClient.get()
+//                                .uri(uriBuilder -> uriBuilder
+//                                        .path(String.format("/search/users"))
+//                                        .queryParam("q", "user:" + githubId)
+//                                        .build())
+//                                .retrieve()
+//                                .bodyToMono(GithubUserDto.class)
+//                                .block();
+////                        System.out.println("잘가져왔음");
+//                        System.out.println(githubUserDto.getItems().get(0).getAvatar_url());
+//                        user.setImageUrl(githubUserDto.getItems().get(0).getAvatar_url());
+////                        System.out.println("세터햇음");
+//                        userRepository.save(user);
+//                        System.out.println("유저저장");
+//                }
+//                else {
+//                    user.setImageUrl(oAuth2UserInfo.getImageUrl());
+//                }
+//            }
             try {
                 organizationService.joinOrganization(user.getUserId());
             }

@@ -2,6 +2,7 @@ package com.ssafy.connection.securityOauth.service.auth;
 
 import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.dto.SolvedacUserDto;
+import com.ssafy.connection.dto.StudyReadmeDto;
 import com.ssafy.connection.entity.*;
 import com.ssafy.connection.repository.*;
 import com.ssafy.connection.securityOauth.advice.assertThat.DefaultAssert;
@@ -157,9 +158,18 @@ public class AuthService {
                     studyService.deleteStudy(user.get().getUserId()); // 스터디 관련 삭제(스터디, 문제집, 과제, 스터디원)
                 }
                 else {
+                    try {
+                        studyService.updateStudyReadme(StudyReadmeDto.builder()
+                                .studyId(connStudy.get().getStudy().getStudyId())
+                                .msg(user.get().getGithubId() + "has quit <connection/>")
+                                .build());
+                    }
+                    catch (Exception e){}
+
                     Study study = connStudy.get().getStudy();
                     study.setStudyPersonnel(study.getStudyPersonnel()-1);
                     studyRepository.save(study);
+
                     connStudyRepository.delete(connStudy.get()); // 스터디원이면 스터디원 정보 삭제
                 }
             }
