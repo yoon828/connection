@@ -76,6 +76,16 @@ const semanticTokens = {
     solved: {
       _light: "#6fb2ff",
       _dark: "#1581FF"
+    },
+    bubble: {
+      _light: "#1581FF",
+      _dark: "#0256ff"
+    }
+  },
+  opacity: {
+    bubble: {
+      _light: "0.2",
+      _dark: "0.4"
     }
   }
 };

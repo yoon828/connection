@@ -1,4 +1,4 @@
-import { Center, CircularProgress, Text } from "@chakra-ui/react";
+import { Center, CircularProgress, Text, Image } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { reset } from "../store/ducks/selectedProblem/selectedProblemSlice";
 import WaitingView from "../components/studyWith/WaitingView";
+import Wave from "../asset/img/wave.png";
 
 function StudyWith() {
   const [socket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>(
@@ -158,6 +159,15 @@ function StudyWith() {
           })}
         </Center>
       )}
+      <Image
+        src={Wave}
+        alt="wave"
+        position="fixed"
+        bottom="0px"
+        zIndex="3"
+        w="100%"
+        h="20%"
+      />
     </Center>
   );
 }

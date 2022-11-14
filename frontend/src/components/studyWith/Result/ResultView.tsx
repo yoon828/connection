@@ -23,8 +23,8 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
     socket.emit("getResult", setResults);
     socket.on("newResult", newResult => {
       setResults(newResult);
-      popper();
     });
+    popper();
   }, []);
   return (
     <Center w="1200px" m="auto" flexDir="column">
