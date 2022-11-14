@@ -495,7 +495,7 @@ public class StudyServiceImpl implements StudyService {
 
             LocalDate now = LocalDate.now().minusDays(LocalDate.now().getDayOfMonth()-1);
 
-            for (int i=0; i<6; i++) {
+            for (int i=5; i>-1; i--) {
                 float problemCnt = 0;
                 float subjectCnt = 0;
 
