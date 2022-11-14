@@ -13,7 +13,7 @@ interface ViewTitleProps {
 function ViewTitle({ main, mt, mb, des, highLight, desSize }: ViewTitleProps) {
   return (
     <>
-      <Text fontSize="48px" fontWeight="700" mt={`${mt}px`} mb="20px">
+      <Text fontSize="40px" fontWeight="700" mt={`${mt}px`} mb="20px">
         {main}
       </Text>
       {des && (
