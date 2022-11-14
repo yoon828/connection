@@ -20,12 +20,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/workbook")
 public class WorkbookController {
-    private final ProblemService problemService;
     private final WorkbookService workbookService;
 
     @Autowired
-    public WorkbookController(ProblemService problemService, WorkbookService workbookService){
-        this.problemService = problemService;
+    public WorkbookController(WorkbookService workbookService){
         this.workbookService = workbookService;
     }
 
@@ -41,14 +39,14 @@ public class WorkbookController {
     @PostMapping("")
     public ResponseEntity<ResponseDto> addProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.addProblem(problemId, userPrincipal.getId())){
-            case 1:
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
-            case 0:
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already exist"));
-            case 2:
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
             case -1:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("no study"));
+            case 0:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already exist"));
+            case 1:
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
+            case 2:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("fail"));
     }
@@ -65,14 +63,14 @@ public class WorkbookController {
     @DeleteMapping("")
     public ResponseEntity<ResponseDto> deleteProblem(@RequestParam("problemId") Long problemId, @Parameter(description = "Accesstoken", required = true) @CurrentUser UserPrincipal userPrincipal){
         switch(workbookService.deleteProblem(problemId, userPrincipal.getId())){
-            case 1:
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
-            case 0:
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already delete"));
             case -2:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
             case -1 :
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("no study"));
+            case 0:
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("already delete"));
+            case 1:
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("fail"));
     }
@@ -89,11 +87,10 @@ public class WorkbookController {
         returnMap.put("data", list);
         if(list.size() > 0){
             returnMap.put("msg", "success");
-            return ResponseEntity.status(HttpStatus.OK).body(returnMap);
         } else {
             returnMap.put("msg", "empty");
-            return ResponseEntity.status(HttpStatus.OK).body(returnMap);
         }
+        return ResponseEntity.status(HttpStatus.OK).body(returnMap);
     }
 
 }
