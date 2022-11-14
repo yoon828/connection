@@ -42,7 +42,93 @@ public class SvgServiceImpl implements SvgService{
         Map<String,Object> subjectMap = (Map<String,Object>)subjectService.getTeamStatus(studyName).getBody();
         List<Map<String,Object> > sublist = (List<Map<String,Object> >)subjectMap.get("subjects");
         if(sublist.size() == 0){   //등록한과제가 없어요
-            return null;
+//            System.out.println("널");
+            String nosub = "<svg  width=\"780\" height=\"320\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+                    "  <!-- filter -->\n" +
+                    "  <defs>\n" +
+                    "    <filter id=\"shadow\" height=\"130%\">\n" +
+                    "      <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"3\"/> <!-- stdDeviation is how much to blur -->\n" +
+                    "      <feOffset in=\"blur\" dx=\"3\" dy=\"3\" result=\"offsetBlur\"/>\n" +
+                    "      <feFlood flood-color=\"rgba(0,0,0,0.3)\" flood-opacity=\"0.5\" result=\"offsetColor\"/>\n" +
+                    "      <feComposite in=\"offsetColor\" in2=\"offsetBlur\" operator=\"in\" result=\"offsetBlur\"/>\n" +
+                    "      <feMerge> \n" +
+                    "        <feMergeNode /> this contains the offset blurred image\n" +
+                    "        <feMergeNode in=\"SourceGraphic\"/> this contains the element that the filter is applied to\n" +
+                    "      </feMerge>\n" +
+                    "    </filter>\n" +
+                    "  </defs>\n" +
+                    " <style type=\"text/css\">\n" +
+                    "    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700');\n" +
+                    "    @keyframes delayFadeIn {\n" +
+                    "        0%{\n" +
+                    "            opacity:0\n" +
+                    "        }\n" +
+                    "        60%{\n" +
+                    "            opacity:0\n" +
+                    "        }\n" +
+                    "        100%{\n" +
+                    "            opacity:1\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    @keyframes fadeIn {\n" +
+                    "        from {\n" +
+                    "            opacity: 0;\n" +
+                    "        }\n" +
+                    "        to {\n" +
+                    "            opacity: 1;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    @keyframes rateBarAnimation {\n" +
+                    "        0% {\n" +
+                    "            stroke-dashoffset: 190.54999999999998;\n" +
+                    "        }\n" +
+                    "        70% {\n" +
+                    "            stroke-dashoffset: 190.54999999999998;\n" +
+                    "        }\n" +
+                    "        100%{\n" +
+                    "            stroke-dashoffset: 35;\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "    text {\n" +
+                    "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                    "      animation: delayFadeIn 0.8s ease-in-out forwards;\n" +
+                    "      opacity: 0;\n" +
+                    "    }\n" +
+                    "    .f1 {\n" +
+                    "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                    "      font: 14px;\n" +
+                    "      font-weight: 700;\n" +
+                    "      fill: #1A202C;\n" +
+                    "    }\n" +
+                    "    .f2 {\n" +
+                    "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                    "      font: 14px;\n" +
+                    "      fill: #1A202C;\n" +
+                    "    }\n" +
+                    "    .f3 {\n" +
+                    "      font-family: 'Noto Sans KR', sans-serif;\n" +
+                    "      font: 12px;\n" +
+                    "      font-weight: 700;\n" +
+                    "      fill: #1A202C;\n" +
+                    "    }\n" +
+                    "    circle {\n" +
+                    "      animation: delayFadeIn 0.6s ease-in-out forwards;\n" +
+                    "      opacity: 0;\n" +
+                    "    }\n" +
+                    "    line {\n" +
+                    "      animation: delayFadeIn 1.4s ease-in-out forwards;\n" +
+                    "      opacity: 0;\n" +
+                    "    }\n" +
+                    "  </style>  \n" +
+                    "  <rect width=\"760\" height=\"300\" x=\"10\" y=\"10\" rx=\"10\" ry=\"10\" fill=\"#f0f7ff\" filter=\"url(#shadow)\" />\n" +
+                    "\n" +
+                    "\n" +
+                    "  <text x='380' y='150' class=\"f2\" text-anchor=\"middle\">등록된 과제가 아직 없어요\uD83D\uDE25</text>\n" +
+                    "</svg>";
+            byte[] nosubBytes = nosub.getBytes();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.valueOf("image/svg+xml"))
+                    .body(nosubBytes);
         }
 
         Map<String,Object> map = sublist.get(sublist.size()-1);
@@ -65,7 +151,7 @@ public class SvgServiceImpl implements SvgService{
                 "    </filter>\n" +
                 "  </defs>\n" +
                 " <style type=\"text/css\">\n" +
-                "    <!-- @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&displayblock'); -->\n" +
+                "    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700');\n" +
                 "    @keyframes delayFadeIn {\n" +
                 "        0%{\n" +
                 "            opacity:0\n" +
@@ -184,8 +270,8 @@ public class SvgServiceImpl implements SvgService{
         if(solved_cnt <= 0){
             str +=  "  <!-- 아무도 제출하지 않으면 -->\n" +
                     "  <rect width=\"157\" height=\"66\" x=\"573\" y=\"122\" fill=\"#bee3f8\" />\n" +
-                    "  <text x='584' y='152' class=\"f2\">과제를 제출한 사람이</text>\n" +
-                    "  <text x='603' y='173' class=\"f2\">아무도없어요\uD83D\uDE25</text>\n";
+                    "  <text x='582' y='152' class=\"f2\">과제를 제출한 사람이</text>\n" +
+                    "  <text x='599' y='173' class=\"f2\">아무도없어요\uD83D\uDE25</text>\n";
         }
         else{
             String chart = "";
