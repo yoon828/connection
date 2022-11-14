@@ -49,7 +49,7 @@ export const getMemberList = async (): Promise<
     const res = await api.get("/study/memberlist");
     return res;
   } catch (error) {
-    const e = error as AxiosError | Error;
+    const e = error as AxiosError<ErrMsgType, null> | Error;
     if (axios.isAxiosError(e)) {
       return e;
     }
