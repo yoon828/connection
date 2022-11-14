@@ -52,7 +52,6 @@ function StudyWith() {
     []
   );
   const navigate = useNavigate();
-
   const bossView: React.FunctionComponentElement<undefined>[] = [
     // <NumberSetView
     //   key={PageViewState.NumberSet}
@@ -153,7 +152,7 @@ function StudyWith() {
           </Text>
         </Center>
       ) : (
-        <Center>
+        <Center zIndex={4}>
           {bossView.map((view, ind) => {
             return ind === step && view;
           })}
@@ -163,8 +162,8 @@ function StudyWith() {
         src={Wave}
         alt="wave"
         position="fixed"
+        zIndex={3}
         bottom="0px"
-        zIndex="3"
         w="100%"
         h="20%"
       />
