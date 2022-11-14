@@ -28,18 +28,14 @@ public class ProblemServiceImpl implements ProblemService{
     private final ProblemRepository problemRepository;
     private final TagRepository tagRepository;
     private final ConnWorkbookRepository connWorkbookRepository;
-    private final ConnStudyRepository connStudyRepository;
-    private final StudyService studyService;
     private final ReviewService reviewService;
     private final SolveRepository solveRepository;
 
     public ProblemServiceImpl(ProblemRepository problemRepository, TagRepository tagRepository, ConnWorkbookRepository connWorkbookRepository,
-                              ConnStudyRepository connStudyRepository, StudyService studyService, ReviewService reviewService, SolveRepository solveRepository){
+                                ReviewService reviewService, SolveRepository solveRepository){
         this.problemRepository = problemRepository;
         this.tagRepository = tagRepository;
         this.connWorkbookRepository = connWorkbookRepository;
-        this.connStudyRepository = connStudyRepository;
-        this.studyService = studyService;
         this.reviewService = reviewService;
         this.solveRepository = solveRepository;
     }
@@ -48,35 +44,32 @@ public class ProblemServiceImpl implements ProblemService{
     private static int recommendWorkbookCount = 1;  // 문제 추천에서 스터디 문제집에 많이 담긴 기준 값
     private static int searchSize = 100;    // 문제 검색에서 반환할 문제 최대 개수
     private static String[] recommendTagList = {"구현", "다이나믹 프로그래밍", "그래프 이론", "문자열", "그리디 알고리즘", "브루트포스 알고리즘", "그래프 탐색",
-                                                    "트리", "이분 탐색", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "데이크스트라",
-                                                        "백트래킹", "분할 정복", "재귀" };
+                                                    "트리", "이분 탐색", "너비 우선 탐색", "시뮬레이션", "깊이 우선 탐색", "데이크스트라", "백트래킹", "분할 정복", "재귀" };
 
     @Override
     public List<ProblemReturnDto> getPopularProblemList(String tag) {
-        List<Problem> problemList = problemRepository.findPopularProblemListByTag(tag);
         List<ProblemReturnDto> returnList = new ArrayList<>();
-
+        List<Problem> problemList = problemRepository.findPopularProblemListByTag(tag);
         Collections.shuffle(problemList);
 
         for(Problem problem : problemList){
             ProblemDto problemDto = ProblemDto.of(problem);
-            int difficulty = reviewService.getAvgDifficulty(problemDto);
             ArrayList<TagDto> tagList = tagRepository.findAllByProblem(problem);
+            int difficulty = reviewService.getAvgDifficulty(problemDto);
             returnList.add(new ProblemReturnDto(problemDto, tagList, difficulty));
             if(returnList.size() == recommendSize){
                 break;
             }
         }
-
         return returnList;
     }
 
     @Override
     public List<ProblemReturnDto> getPopularProblemList(long level, String tag) {
-        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
-
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         Collections.shuffle(problemDtoList);
+
         for(ProblemDto problemDto : problemDtoList){
             if(problemDto.getLevel() == level){
                 ArrayList<TagDto> tagList = tagRepository.findAllByProblem(Problem.of(problemDto));
@@ -97,10 +90,10 @@ public class ProblemServiceImpl implements ProblemService{
 
     @Override
     public List<ProblemReturnDto> getPopularProblemList(Long level) {
-        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
-
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         Collections.shuffle(problemDtoList);
+
         for(ProblemDto problemDto : problemDtoList){
             if(problemDto.getLevel() == level){
                 int difficulty = reviewService.getAvgDifficulty(problemDto);
@@ -115,10 +108,10 @@ public class ProblemServiceImpl implements ProblemService{
 
     @Override
     public List<ProblemReturnDto> getPopularProblemList() {
-        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
-
+        List<ProblemDto> problemDtoList = problemRepository.findPopularProblemList().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         Collections.shuffle(problemDtoList);
+
         for(ProblemDto problemDto : problemDtoList){
             int difficulty = reviewService.getAvgDifficulty(problemDto);
             returnList.add(new ProblemReturnDto(problemDto, tagRepository.findAllByProblem(Problem.of(problemDto)), difficulty));
@@ -133,8 +126,9 @@ public class ProblemServiceImpl implements ProblemService{
     @Transactional
     public List<ProblemReturnDto> getProblem(long problemId) {
         List<ProblemReturnDto> returnList = new ArrayList<>();
-        Optional<Problem> problem = problemRepository.findById(problemId);
         ProblemDto problemDto = new ProblemDto();
+
+        Optional<Problem> problem = problemRepository.findById(problemId);
         if(problem.isPresent()){
             problemDto = ProblemDto.of(problem.get());
         }
@@ -182,7 +176,6 @@ public class ProblemServiceImpl implements ProblemService{
                 tagDtoList.add(new TagDto(temp.getTagId(), temp.getKo(), temp.getEn()));
             }
         }
-
         return returnList;
     }
 
@@ -228,8 +221,8 @@ public class ProblemServiceImpl implements ProblemService{
     @Override
     @Transactional
     public List<ProblemReturnDto> getProblemList() {
-        List<ProblemDto> problemDtoList = problemRepository.findAll().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
         List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<ProblemDto> problemDtoList = problemRepository.findAll().stream().map(entity -> ProblemDto.of(entity)).collect(Collectors.toList());
 
         for(int i = 0; i < recommendSize; i++){
             int difficulty = reviewService.getAvgDifficulty(problemDtoList.get(i));

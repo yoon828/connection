@@ -13,7 +13,6 @@ public interface ProblemService {
 
     void loadAllProblemFromApi();
 
-
     List<ProblemReturnDto> getPopularProblemList(long level, String tag);
 
     List<ProblemReturnDto> getWorkBookProblemList();

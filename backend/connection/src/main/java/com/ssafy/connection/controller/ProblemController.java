@@ -64,8 +64,10 @@ public class ProblemController {
             returnMap.put("popular", problemService.getPopularProblemList());
         }
 
+        // 스터디 문제집에 많이 담겨있는 문제 추천
         returnMap.put("workbook", problemService.getWorkBookProblemList());
 
+        // 유저가 많이 안 푼 유형의 문제 추천 & 유저가 유형별 푼 문제 개수 반환
         List<Map.Entry<String, Integer>> userStat = problemService.getUserStat(userPrincipal.getId());
         returnMap.put("weak", problemService.getWeakProblemList(userStat));
         returnMap.put("stat", problemService.getUserStatList(userStat));
@@ -128,12 +130,11 @@ public class ProblemController {
     public ResponseEntity<ResponseDto> saveReview(@PathVariable("beakjoonId") String beakjoonId, @RequestBody List<Map<String, Object>> list){
         int result = reviewService.saveReview(beakjoonId, list);
         switch (result){
+            case 0:
             case 1:
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
             case -1:
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto("wrong parameter value"));
-            case 0:
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("success"));
         }
         return null;
     }
