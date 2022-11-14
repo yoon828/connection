@@ -30,10 +30,10 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     List<Solve> findAllByUser_UserId(Long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count FROM solve s WHERE s.user_id=?1 AND s.status=1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time;", nativeQuery = true)
+    @Query(value = "SELECT ss.date AS date, COUNT(*) AS count FROM (SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date FROM solve s WHERE s.user_id=?1 AND s.status=1 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time) ss GROUP BY ss.date;", nativeQuery = true)
     List<GetDateAndCountInterface> findSolveProblemByUserId(long userId);
 
-    @Query(value = "SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date, COUNT(DISTINCT s.problem_id) as count FROM solve s WHERE s.user_id=?1 AND s.status=0 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time;", nativeQuery = true)
+    @Query(value = "SELECT ss.date AS date, COUNT(*) AS count FROM (SELECT DATE_FORMAT(s.time,'%Y-%m-01') AS date FROM solve s WHERE s.user_id=?1 AND s.status=0 AND s.time BETWEEN DATE_ADD(DATE_ADD(NOW(), INTERVAL -5 MONTH), INTERVAL -DAY(NOW()) DAY) AND DATE_ADD(NOW(), INTERVAL 1 DAY) GROUP BY s.time) ss GROUP BY ss.date;", nativeQuery = true)
     List<GetDateAndCountInterface> findSolveSubjectByUserId(long userId);
 
     void deleteAllByUser(User user);
