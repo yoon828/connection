@@ -69,6 +69,7 @@ public class User extends DefaultTime {
         this.provider = provider;
         this.role = role;
         this.githubId = githubId;
+        this.imageUrl = imageUrl;
     }
 
     public void updateName(String name){
