@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 import useToast from "hooks/useToast";
 import { InitialStateType } from "../../store/ducks/auth/auth.type";
@@ -13,6 +13,7 @@ export type PrivateRouteProps = {
 function PrivateRoute({ auth, outlet, study }: PrivateRouteProps) {
   const { check, extension, information } = auth;
   const toast = useToast();
+  const location = useLocation();
 
   // 로그인x, 백준연동x, 깃허브 ismember x, extension x 인 경우 메인으로
   if (
@@ -23,7 +24,7 @@ function PrivateRoute({ auth, outlet, study }: PrivateRouteProps) {
   ) {
     if (!check) {
       toast({ title: "로그인 해주세요!", position: "top", duration: 1000 });
-      window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`;
+      // window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`;
     }
     return <Navigate to="/" />;
   }

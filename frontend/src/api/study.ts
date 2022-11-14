@@ -1,4 +1,7 @@
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { UserListProps } from "pages/study/StudyTotal";
 import api from "./api";
+import { ErrMsgType } from "./studyJoin";
 
 // 스터디 스트릭
 export const getStrict = async () => {
@@ -39,9 +42,19 @@ export const getMember = async () => {
 };
 
 // 스터디 멤버 조회
-export const getMemberList = async () => {
-  const res = await api.get("/study/memberlist");
-  return res;
+export const getMemberList = async (): Promise<
+  AxiosResponse<UserListProps[], null> | AxiosError<ErrMsgType, null>
+> => {
+  try {
+    const res = await api.get("/study/memberlist");
+    return res;
+  } catch (error) {
+    const e = error as AxiosError | Error;
+    if (axios.isAxiosError(e)) {
+      return e;
+    }
+    throw e;
+  }
 };
 
 // 스터디 팀 과제
