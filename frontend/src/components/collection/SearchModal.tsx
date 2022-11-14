@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   Grid,
+  Icon,
   Input,
   Modal,
   ModalBody,
@@ -12,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
+import { AiFillFolderOpen } from "react-icons/ai";
 
 import ProblemCard from "../common/ProblemCard";
 import useDebounce from "../../hooks/useDebounce";
@@ -108,11 +110,11 @@ function SearchModal({
             justifyContent="center"
             alignItems="center"
             gap={4}
-            fontSize="3xl"
+            fontSize="2xl"
             fontWeight="bold"
           >
-            <Text>검색 결과가 없습니다.</Text>
-            <Text>검색어를 입력해주세요.</Text>
+            <Icon w="50px" h="50px" as={AiFillFolderOpen} />
+            <Text>검색 결과가 없어요</Text>
           </Flex>
         )}
 

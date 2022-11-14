@@ -14,9 +14,10 @@ import Style from "./index.style";
 
 interface StatSeriesType {
   date: string;
-  count: number;
-  total: number;
-  avg: number;
+  problemAvgCnt: number;
+  problemCnt: number;
+  subjectAvgCnt: number;
+  subjectCnt: number;
 }
 export interface MemberType {
   userId: number;

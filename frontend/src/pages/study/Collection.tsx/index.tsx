@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { Flex, Icon, Text, useDisclosure } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { AiFillFolderOpen } from "react-icons/ai";
 
 import useToast from "hooks/useToast";
 import StudyLayout from "../../../components/layout/StudyLayout";
@@ -76,9 +77,16 @@ function Collection() {
             fontWeight="bold"
           >
             <Link to="/recommend">
-              <Text textDecoration="underline" _hover={{ opacity: 0.7 }}>
-                문제집이 비어있어요
-              </Text>
+              <Flex
+                direction="column"
+                alignItems="center"
+                gap="10px"
+                _hover={{ opacity: 0.7 }}
+                cursor="pointer"
+              >
+                <Icon w="50px" h="50px" as={AiFillFolderOpen} />
+                <Text>문제집이 비어있어요</Text>
+              </Flex>
             </Link>
           </Flex>
         )}

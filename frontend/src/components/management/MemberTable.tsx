@@ -15,6 +15,7 @@ interface MemberTableProps {
 function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
   const auth = useAppSelector(state => state.auth);
   const chartOption = useChartOption();
+  console.log(members.map(member => ({ ...member, series: member.series })));
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
       {members.map(member => (
@@ -24,11 +25,18 @@ function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
           borderRadius="20px"
           shadow="2px 4px 4px rgba(0, 0, 0, 0.25)"
         >
-          <Flex bg="dep_2" p={2} textAlign="center" borderTopRadius="20px">
+          <Flex
+            bg="dep_2"
+            p={2}
+            textAlign="center"
+            borderTopRadius="20px"
+            alignItems="center"
+            fontSize="xl"
+          >
             <Image
               src={member.imageUrl}
               alt={member.name}
-              width="24px"
+              width="36px"
               onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                 e.currentTarget.src =
                   "https://avatars.githubusercontent.com/u/48246705?s=40&v=4";
@@ -51,41 +59,47 @@ function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
               </Text>
             )}
           </Flex>
-          {member.series.length === 0 ? (
-            <Flex
-              w="100%"
-              h="235px"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text>데이터가 없습니다.</Text>
-            </Flex>
-          ) : (
-            <ReactApexChart
-              type="bar"
-              height={220}
-              width="100%"
-              options={chartOption}
-              series={[
-                {
-                  name: "참여율",
-                  data: [
-                    ...member.series.map(data => ({
-                      x: `${data.date.split("-")[1]}월`,
-                      y: Math.round((100 * data.count) / data.total),
-                      goals: [
-                        {
-                          name: "평균",
-                          value: (100 * data.avg) / data.total,
-                          strokeColor: "#775DD0"
-                        }
-                      ]
-                    }))
-                  ]
-                }
-              ]}
-            />
-          )}
+          <ReactApexChart
+            type="bar"
+            height={220}
+            width="100%"
+            options={chartOption}
+            series={[
+              {
+                name: "푼 과제",
+                data: [
+                  ...member.series.map(data => ({
+                    x: `${data.date.split("-")[1]}월`,
+                    y: data.subjectCnt,
+                    goals: [
+                      {
+                        name: "스터디 평균",
+                        value: data.subjectAvgCnt,
+                        strokeColor: "#775DD0"
+                      }
+                    ]
+                  }))
+                ]
+              },
+              {
+                name: "푼 문제",
+                data: [
+                  ...member.series.map(data => ({
+                    x: `${data.date.split("-")[1]}월`,
+                    y: data.problemCnt,
+                    goals: [
+                      {
+                        name: "스터디 평균",
+                        value: data.problemAvgCnt,
+                        strokeColor: "#775DD0"
+                      }
+                    ]
+                  }))
+                ]
+              }
+            ]}
+          />
+          {/* )} */}
         </Box>
       ))}
     </Grid>
