@@ -7,6 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Box,
   Button,
   Center,
   Flex,
@@ -18,6 +19,7 @@ import {
   MenuItem,
   MenuList,
   Spacer,
+  Spinner,
   Toast,
   Tooltip,
   useColorMode,
@@ -49,6 +51,7 @@ interface menuType {
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const [code, setCode] = useState("");
+  const [loging, setLoging] = useState(false);
   const { onClose, onOpen, isOpen } = useDisclosure();
   const location = useLocation();
   const auth = useAppSelector(state => state.auth) as InitialStateType;
@@ -146,7 +149,11 @@ function Header() {
                 }
                 mr="50px"
                 key={v4()}
-                color={location.pathname === menu.link ? "main" : ""}
+                color={
+                  `/${location.pathname.split("/")[1]}` === menu.link
+                    ? "main"
+                    : ""
+                }
                 _hover={{}}
                 fontWeight="bold"
                 fontSize={18}
@@ -190,13 +197,23 @@ function Header() {
                 href={`${process.env.REACT_APP_API_URL}/oauth2/authorize/github?redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URL}`}
                 _hover={{}}
               >
-                <Button>
-                  로그인
-                  <Image
-                    w="18px"
-                    ml="5px"
-                    src={colorMode === "light" ? GithubLight : GithubDark}
-                  />
+                <Button
+                  onClick={() => setLoging(true)}
+                  disabled={loging}
+                  w="100px"
+                >
+                  {loging ? (
+                    <Spinner />
+                  ) : (
+                    <Center>
+                      로그인
+                      <Image
+                        w="18px"
+                        ml="5px"
+                        src={colorMode === "light" ? GithubLight : GithubDark}
+                      />
+                    </Center>
+                  )}
                 </Button>
               </Link>
             </Tooltip>
