@@ -267,12 +267,13 @@ public class StudyServiceImpl implements StudyService {
             if(connStudyRepository.findByUser_UserIdAndStudy_StudyId(quitUserEntity.getUserId(),studyEntity.getStudyId()).isEmpty()) // userId, studyId와 일치하는 결과가 없을 경우 예외처리(study의 스터디원이 아닌 경우)
                 throw new RestException(HttpStatus.BAD_REQUEST, "Already not a member");
 
+            studyLeaderEntity = userRepository.findById(connStudyRepository.findByStudy_StudyIdAndRole(studyEntity.getStudyId(), "LEADER").get().getUser().getUserId()).get();
             //githubToken = tokenRepository.findByGithubId(studyLeaderEntity.getGithubId()).get().getGithubToken();
 
             webClient.delete()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}",
                             "connection-official",
-                            studyEntity.getStudyRepository().substring(31),
+                            studyLeaderEntity.getGithubId(),
                             quitUserEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
                             "Bearer " + adminGithubToken)
