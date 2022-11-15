@@ -136,7 +136,6 @@ public class SolveServiceImpl implements SolveService{
     @Transactional
     public boolean checkBonus(User userEntity) {
         List<Solve> todaySolveList = solveRepository.findAllByUserToday(userEntity.getUserId());
-        System.out.println(todaySolveList.toString());
         return todaySolveList.size() == 0;
     }
 
