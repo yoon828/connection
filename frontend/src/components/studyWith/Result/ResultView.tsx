@@ -21,15 +21,7 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
   const [results, setResults] = useState<ResultBarProps[]>();
   useEffect(() => {
     socket.emit("getResult", setResults);
-    socket.on("newResult", newResult => {
-      const newResultArr = newResult;
-      newResultArr.sort((a, b) =>
-        a.problem !== b.problem
-          ? b.problem - a.problem
-          : (a.time || 0) - (b.time || 0)
-      );
-      setResults(newResultArr);
-    });
+    socket.on("newResult", setResults);
     popper();
   }, []);
   return (
