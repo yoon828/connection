@@ -42,5 +42,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query(value = "SELECT * FROM subject where study_id = :studyId AND problem_id = :problemId ORDER BY deadline desc", nativeQuery = true)
     List<Subject> findAllByStudyAndProblemOrderByDeadLine(long studyId, Long problemId);
 
-    boolean existsByProblemIn(List<Problem> efd);
+    boolean existsByProblemInAndAndStudy_StudyId(List<Problem> efd, Long studyId);
 }
