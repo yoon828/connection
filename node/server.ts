@@ -112,12 +112,20 @@ const getUserInfo = (bojId: string): UserInfoType => {
   throw new Error(`BOJ_ID : ${bojId} 가 존재하지 않습니다.`);
 };
 
+const sortStudyInfoUsers = (studyId: string) => {
+  const studyInfo = getStudyInfo(studyId);
+  studyInfo.users.sort((a, b) =>
+    a.problem !== b.problem
+      ? b.problem - a.problem
+      : (a.time || 0) - (b.time || 0)
+  );
+};
+
 app.post("/problem/submit", (req, res) => {
   const { userId, problemNo, submitNo, code, lang } = req.body;
   const problemId = +`${problemNo}`.trim();
   console.log(userId, +problemNo, submitNo, lang, code);
   const userInfo = getUserInfo(userId);
-  // if (userInfo) {
   const { studyId, name } = userInfo;
   const problems = getStudyInfo(studyId).problems;
   if (problems) {
@@ -138,11 +146,7 @@ app.post("/problem/submit", (req, res) => {
       }
     });
 
-    studyInfo.users.sort((a, b) =>
-      a.problem !== b.problem
-        ? b.problem - a.problem
-        : (a.time || 0) - (b.time || 0)
-    );
+    sortStudyInfoUsers(studyId);
 
     const { problemList, isAllSol } = getSolvingInfo(studyId, userId);
     io.to(studyId).emit("solvedByExtension", userId, problemList, isAllSol);
@@ -154,23 +158,26 @@ app.post("/problem/submit", (req, res) => {
             user.time = moment().diff(studyInfo.startTime, "seconds");
           }
         });
+        sortStudyInfoUsers(studyId);
         io.to(studyId).emit("newResult", [...studyInfo.users]);
       }
     }
+    if (problems.includes(problemNo)) {
+      fetch(`https://k7c202.p.ssafy.io/api/problem/submit/study`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          submitNo,
+          userId,
+          problemNo: problemId,
+          code,
+          lang,
+        }),
+      }).then(() => console.log("백에 전송 성공"));
+    }
   }
-  fetch(`https://k7c202.p.ssafy.io/api/problem/submit/study`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      submitNo,
-      userId,
-      problemNo: problemId,
-      code,
-      lang,
-    }),
-  }).then(() => console.log("백에 전송 성공"));
 
   res.sendStatus(200);
 });
