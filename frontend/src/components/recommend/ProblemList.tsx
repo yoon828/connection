@@ -2,27 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Grid } from "@chakra-ui/react";
 
 import useToast from "hooks/useToast";
-import { addWorkbook, deleteWorkbook } from "../../api/workbook";
+import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
 import { useAppSelector } from "../../store/hooks";
 import ProblemCard from "../common/ProblemCard";
 import { Problem } from "../../@types/Problem";
 
 interface ProblemListProps {
   problemList: Problem[];
-  myWorkbook: Problem[];
 }
 
-function ProblemList({ problemList, myWorkbook }: ProblemListProps) {
+function ProblemList({ problemList }: ProblemListProps) {
   const auth = useAppSelector(state => state.auth);
-  const [btnTypes, setBtnTypes] = useState(
-    problemList.map(problem =>
-      myWorkbook.findIndex(
-        p => p.problemInfo.problemId === problem.problemInfo.problemId
-      ) >= 0
-        ? "delete"
-        : "add"
-    )
-  );
+  const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
+  const [btnTypes, setBtnTypes] = useState<("delete" | "add")[]>([]);
+
   const toast = useToast();
 
   const addProblem = async (problemId: number, idx: number) => {
@@ -51,6 +44,13 @@ function ProblemList({ problemList, myWorkbook }: ProblemListProps) {
     console.log(problemId);
   };
   useEffect(() => {
+    const fetch = async () => {
+      const res2 = await getWorkbook();
+      setMyWorkbook(res2.data);
+    };
+    fetch();
+  }, [problemList]);
+  useEffect(() => {
     setBtnTypes(
       problemList.map(problem =>
         myWorkbook.findIndex(
@@ -60,7 +60,7 @@ function ProblemList({ problemList, myWorkbook }: ProblemListProps) {
           : "add"
       )
     );
-  }, [problemList]);
+  }, [myWorkbook]);
 
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
