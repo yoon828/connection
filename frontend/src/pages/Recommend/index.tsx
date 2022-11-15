@@ -10,19 +10,15 @@ import ProblemList from "../../components/recommend/ProblemList";
 import { Problem } from "../../@types/Problem";
 import Tooltip from "../../components/recommend/Tooltip";
 import Style from "./index.style";
-import { getWorkbook } from "../../api/workbook";
 
 function Recommend() {
   const [recommends, setRecommends] = useState<null | GetRecommendRes>(null);
   const [pending, setPending] = useState(false);
   const [selectedTap, setSelectedTap] = useState(0);
-  const [myWorkbook, setMyWorkbook] = useState<Problem[]>([]);
 
   const getAndSetRecommend = async () => {
     if (pending) return;
     setPending(true);
-    const res2 = await getWorkbook();
-    setMyWorkbook(res2.data);
     const res1 = await getRecommend();
     setRecommends(res1.data);
     setPending(false);
@@ -70,7 +66,6 @@ function Recommend() {
               RECOMMEND_TAPS[selectedTap].category as keyof GetRecommendRes
             ] as Problem[]
           }
-          myWorkbook={myWorkbook}
         />
       ) : (
         <Flex justifyContent="center" alignItems="center" h="500px">

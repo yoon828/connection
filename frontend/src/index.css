@@ -12,3 +12,6 @@ code {
     monospace;
 }
 
+#chakra-toast-manager-top {
+  top: 50px !important;
+}
