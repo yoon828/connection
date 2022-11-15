@@ -49,7 +49,7 @@ const semanticTokens = {
       default: "linear-gradient(180deg, #E1EFFF, #BBDBFF)"
     },
     white_lin: {
-      _light: "linear-gradient(180deg, #B2D6FF, #F7F8F9)",
+      _light: "linear-gradient(180deg, #B2D6FF, #7ebafe)",
       _dark: "linear-gradient(180deg, #88BFFF, #1581FF)"
     },
     main: {

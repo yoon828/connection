@@ -15,7 +15,6 @@ function Challenge() {
     const {
       data: { data, startDate, endDate, studyPersonnel }
     } = await getStrict();
-
     setInfo({
       startDate,
       endDate,

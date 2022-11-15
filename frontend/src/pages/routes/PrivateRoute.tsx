@@ -15,7 +15,7 @@ function PrivateRoute({ auth, outlet, study }: PrivateRouteProps) {
   const toast = useToast();
   const location = useLocation();
 
-  // 로그인x, 백준연동x, 깃허브 ismember x, extension x 인 경우 메인으로
+  // 로그인x, 백준연동x, 깃허브 ismember x, extension x
   if (
     !check ||
     !information.backjoonId ||
