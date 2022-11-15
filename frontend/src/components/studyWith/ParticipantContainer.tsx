@@ -15,7 +15,10 @@ function ParticipantContainer({ users }: ParticipantContainerProps) {
           <Tooltip key={v4()} label={user.name}>
             <Image
               ml="8px"
-              src={user.imageUrl}
+              src={
+                user.imageUrl ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYS4ItI44R4hI66qjzhinqY5-Miyb30PelnQ&usqp=CAU"
+              }
               borderRadius="50px"
               minW="35px"
               w="35px"

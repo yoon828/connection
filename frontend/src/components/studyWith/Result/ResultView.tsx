@@ -22,7 +22,13 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
   useEffect(() => {
     socket.emit("getResult", setResults);
     socket.on("newResult", newResult => {
-      setResults(newResult);
+      const newResultArr = newResult;
+      newResultArr.sort((a, b) =>
+        a.problem !== b.problem
+          ? b.problem - a.problem
+          : (a.time || 0) - (b.time || 0)
+      );
+      setResults(newResultArr);
     });
     popper();
   }, []);
