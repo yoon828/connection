@@ -101,19 +101,19 @@ public class SolveServiceImpl implements SolveService{
                         this.addSubjectScore(userEntity, problemEntity.get());
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        this.pushGithub(gitPushDto);
+                        this.pushSubject(gitPushDto);
                         break;
                     } else {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
-                        this.pushGithub(gitPushDto);
+                        this.pushSubject(gitPushDto);
                         break;
                     }
                 } else {    // 이전에 과제로 푼 풀이가 등록되어 있지 않은 경우 Score up & Save & Github Push
                     solveEntity.setStatus(0);
                     this.addSubjectScore(userEntity, problemEntity.get());
                     solveRepository.save(solveEntity);
-                    this.pushGithub(gitPushDto);
+                    this.pushSubject(gitPushDto);
                     break;
                 }
             } else {    // 입력받은 problemId가 과제에 등록되어 있지 않은 경우 일반(2)으로 등록
@@ -158,10 +158,19 @@ public class SolveServiceImpl implements SolveService{
         connStudyRepository.save(connStudyEntity);
     }
 
-    public void pushGithub(GitPushDto gitPushDto){
+    public void pushSubject(GitPushDto gitPushDto){
         try {
             gitPushDto.setProblemNo(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
             subjectService.submitSubject(gitPushDto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void pushStudy(GitPushDto gitPushDto){
+        try {
+            gitPushDto.setProblemNo(gitPushDto.getProblemNo().replace("\u00a0", "").trim());
+            subjectService.submitStudy(gitPushDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -199,7 +208,7 @@ public class SolveServiceImpl implements SolveService{
             temp.setStatus(1);
             temp.setTime(LocalDateTime.now());
             solveRepository.save(temp);
-            this.pushGithub(gitPushDto);
+            this.pushStudy(gitPushDto);
             return true;
         } else if(subjectList.size() > 0){
             Subject recentSubjectEntity = subjectList.get(0);
@@ -207,13 +216,13 @@ public class SolveServiceImpl implements SolveService{
             if(recentDeadLine.isAfter(LocalDateTime.now())){
                 this.addStudyScore(userEntity, problemEntity.get());
                 solveRepository.save(solveEntity);
-                this.pushGithub(gitPushDto);
+                this.pushStudy(gitPushDto);
                 return true;
             }
         } else {
             this.addStudyScore(userEntity, problemEntity.get());
             solveRepository.save(solveEntity);
-            this.pushGithub(gitPushDto);
+            this.pushStudy(gitPushDto);
             return true;
         }
         return false;
