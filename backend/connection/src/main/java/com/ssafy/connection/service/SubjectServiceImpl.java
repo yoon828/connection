@@ -434,6 +434,7 @@ public class SubjectServiceImpl implements SubjectService{
             gitPushDto.setUserId(baekjoonId);
             gitPushDto.setDeadline(subjectDto.getDeadline().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             gitPushDto.setStart(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            gitPushDto.setLang("subject");
             updateProblemReadme(gitPushDto);
         }
 
@@ -457,7 +458,6 @@ public class SubjectServiceImpl implements SubjectService{
         String githubToken = tokenRepository.findByGithubId(githubId).get().getGithubToken();
 
         //파일 처리
-//        System.out.println(gitPushDto.getProblemNo() + "이거 진행중");//=======-=-=567-=65-756=7-=+-
         String exampleCode = "<div><img src=\"https://user-images.githubusercontent.com/116149736/200574871-cf4ba89d-73f1-461e-adb7-7dd300720fff.jpg\" width=\"1000\"/>\n" +
                 "\n" +
                 "### :speaker: " + problem.getTitle() + " <img src=\"https://static.solved.ac/tier_small/" + problem.getLevel() + ".svg\" height=\"19\"/>\n" +
@@ -469,12 +469,13 @@ public class SubjectServiceImpl implements SubjectService{
         String code = new String(Base64.encodeBase64(exampleCode.getBytes()));
         String fileName = "README.md";
         String problemNo = gitPushDto.getProblemNo();
+        String lang = gitPushDto.getLang();
         String createFileRequest = "{\"message\":\"" + "created README.md automatically via \'<connection/>\'" + "\"," +
                 "\"content\":\""+ code +"\"}";
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/{lang}/{path}/{file}", "connection-official", repositoryName, lang, problemNo, fileName)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
                     .retrieve()
@@ -486,7 +487,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                                            .uri("repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
+                                            .uri("repos/{owner}/{repo}/contents/{lang}/{path}/{file}", "connection-official", repositoryName, lang, problemNo, fileName)
                                             .retrieve()
                                             .bodyToMono(Object.class)
                                             .block();
@@ -498,7 +499,7 @@ public class SubjectServiceImpl implements SubjectService{
                         + "}";
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/{lang}/{path}/{file}", "connection-official", repositoryName, lang, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
