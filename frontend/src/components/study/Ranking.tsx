@@ -104,7 +104,11 @@ function Ranking() {
                     {study.ranking}
                   </Center>
                 )}
-                <Flex justifyContent="space-between" alignItems="center">
+                <Flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  w="80%"
+                >
                   <Text
                     textOverflow="ellipsis"
                     overflow="hidden"
