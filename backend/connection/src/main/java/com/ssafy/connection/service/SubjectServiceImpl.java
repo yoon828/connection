@@ -316,7 +316,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
 //                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
@@ -328,7 +328,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                        .uri("repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .uri("repos/{owner}/{repo}/contents/subject/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
@@ -341,7 +341,7 @@ public class SubjectServiceImpl implements SubjectService{
 
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/subject/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
@@ -379,7 +379,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
 //                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "lastbest", "test2", "gidd1Id", "test.md")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
@@ -391,7 +391,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                        .uri("repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                        .uri("repos/{owner}/{repo}/contents/study/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
@@ -404,7 +404,7 @@ public class SubjectServiceImpl implements SubjectService{
 
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/study/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()
@@ -474,7 +474,7 @@ public class SubjectServiceImpl implements SubjectService{
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
                     .retrieve()
@@ -486,7 +486,7 @@ public class SubjectServiceImpl implements SubjectService{
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                                            .uri("repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                                            .uri("repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                                             .retrieve()
                                             .bodyToMono(Object.class)
                                             .block();
@@ -498,7 +498,7 @@ public class SubjectServiceImpl implements SubjectService{
                         + "}";
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "co-nnection", repositoryName, problemNo, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/{path}/{file}", "connection-official", repositoryName, problemNo, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()

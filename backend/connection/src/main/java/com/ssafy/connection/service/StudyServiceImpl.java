@@ -84,7 +84,7 @@ public class StudyServiceImpl implements StudyService {
                     "\"permission\":\"push\"," +
                     "\"privacy\":\"closed\"}";
             webClient.post()
-                    .uri("/orgs/{org}/teams", "co-nnection")
+                    .uri("/orgs/{org}/teams", "connection-official")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(createTeamRequest)
                     .retrieve()
@@ -94,7 +94,7 @@ public class StudyServiceImpl implements StudyService {
 
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
             webClient.put()
-                    .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "co-nnection",userEntity.getGithubId(), userEntity.getGithubId())
+                    .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}", "connection-official",userEntity.getGithubId(), userEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(inviteUserRequest)
                     .retrieve()
@@ -110,7 +110,7 @@ public class StudyServiceImpl implements StudyService {
                     "\"has_projects\":true," +
                     "\"has_wiki\":true}";
             webClient.post()
-                    .uri("/orgs/{org}/repos", "co-nnection")
+                    .uri("/orgs/{org}/repos", "connection-official")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(createRepositoryRequest)
                     .retrieve()
@@ -119,7 +119,7 @@ public class StudyServiceImpl implements StudyService {
 
             String connectTeamRepositoryRequest = "{\"permission\":\"push\"}";
             webClient.put()
-                    .uri("/orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}","co-nnection",userEntity.getGithubId(), "co-nnection",userEntity.getGithubId())
+                    .uri("/orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}","connection-official",userEntity.getGithubId(), "connection-official",userEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(connectTeamRepositoryRequest)
                     .retrieve()
@@ -129,7 +129,7 @@ public class StudyServiceImpl implements StudyService {
             Study study = new Study();
             study.setStudyCode(studyCode);
             study.setStudyName(studyName);
-            study.setStudyRepository("https://github.com/co-nnection/" + userEntity.getGithubId());
+            study.setStudyRepository("https://github.com/connection-official/" + userEntity.getGithubId());
             study.setStudyPersonnel(1);
             studyRepository.save(study);
             Study studyEntity = studyRepository.findByStudyCode(studyCode).get();
@@ -199,7 +199,7 @@ public class StudyServiceImpl implements StudyService {
             String inviteUserRequest = "{\"role\":\"maintainer\"}";
             webClient.put()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}",
-                            "co-nnection",
+                            "connection-official",
                             studyLeaderEntity.getGithubId(),
                             userEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
@@ -271,7 +271,7 @@ public class StudyServiceImpl implements StudyService {
 
             webClient.delete()
                     .uri("/orgs/{org}/teams/{team_slug}/memberships/{username}",
-                            "co-nnection",
+                            "connection-official",
                             studyEntity.getStudyRepository().substring(31),
                             quitUserEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
@@ -304,7 +304,7 @@ public class StudyServiceImpl implements StudyService {
 
         webClient.delete()
                 .uri("/orgs/{org}/teams/{team_slug}",
-                        "co-nnection",
+                        "connection-official",
                         userEntity.getGithubId())
                 .header(HttpHeaders.AUTHORIZATION,
                         "Bearer " + adminGithubToken)
@@ -314,7 +314,7 @@ public class StudyServiceImpl implements StudyService {
 
         webClient.delete()
                 .uri("/repos/{owner}/{repo}",
-                        "co-nnection",
+                        "connection-official",
                         userEntity.getGithubId())
                 .header(HttpHeaders.AUTHORIZATION,
                         "Bearer " + adminGithubToken)
@@ -611,7 +611,7 @@ public class StudyServiceImpl implements StudyService {
 
         try {
             webClient.put()
-                    .uri("/repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                    .uri("/repos/{owner}/{repo}/contents/{file}", "connection-official", githubId, fileName)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                     .bodyValue(createFileRequest)
                     .retrieve()
@@ -623,7 +623,7 @@ public class StudyServiceImpl implements StudyService {
             if(e.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY)){
                 //422 터졌으니 레포에서 Get해서 SHA값 가져오기 (수정할땐 필요함)
                 Map<String, Object> contents = (Map<String, Object>)webClient.get()
-                        .uri("repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                        .uri("repos/{owner}/{repo}/contents/{file}", "connection-official", githubId, fileName)
                         .retrieve()
                         .bodyToMono(Object.class)
                         .block();
@@ -635,7 +635,7 @@ public class StudyServiceImpl implements StudyService {
                         + "}";
                 try {
                     webClient.put()
-                            .uri("/repos/{owner}/{repo}/contents/{file}", "co-nnection", githubId, fileName)
+                            .uri("/repos/{owner}/{repo}/contents/{file}", "connection-official", githubId, fileName)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
                             .bodyValue(createFileRequest)
                             .retrieve()

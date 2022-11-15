@@ -178,7 +178,7 @@ public class AuthService {
 
             webClient.delete()
                     .uri("/orgs/{org}/memberships/{username}",
-                            "co-nnection",
+                            "connection-official",
                             user.get().getGithubId())
                     .header(HttpHeaders.AUTHORIZATION,
                             "Bearer " + adminGithubToken)

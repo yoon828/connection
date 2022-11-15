@@ -44,7 +44,7 @@ public class OrganizationServiceImpl implements OrganizationService{
                     "\"role\":\"direct_member\"," +
                     "\"team_ids\":[]}";
             webClient.post()
-                    .uri("/orgs/{org}/invitations", "co-nnection")
+                    .uri("/orgs/{org}/invitations", "connection-official")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .bodyValue(inviteUserRequest)
                     .retrieve()
@@ -62,7 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 
         try {
             webClient.get()
-                    .uri("/orgs/{org}/members/{username}", "co-nnection", userEntity.getGithubId())
+                    .uri("/orgs/{org}/members/{username}", "connection-official", userEntity.getGithubId())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
                     .retrieve()
                     .bodyToMono(void.class)
@@ -95,22 +95,4 @@ public class OrganizationServiceImpl implements OrganizationService{
 
         return new ResponseEntity(new ResponseDto("success"),HttpStatus.OK);
     }
-/* 우건이형거
-    @Override
-    @Transactional
-    public void checkOrganization(long userId) {
-        User userEntity = userRepository.findById(userId).get(); // 로그인 한 사용자 정보
-
-        webClient.get()
-                .uri("/orgs/{org}/members/{username}","co-nnection",userEntity.getGithubId())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminGithubToken)
-                .exchangeToMono(response -> {
-                    if (response.statusCode().equals(HttpStatus.NO_CONTENT)) {
-                        throw new RestException(HttpStatus.OK, "Organization join completed");
-                    }
-                    else {
-                        throw new RestException(HttpStatus.NOT_FOUND, "Organization join incomplete");
-                    }})
-                .block();
-    }*/
 }
