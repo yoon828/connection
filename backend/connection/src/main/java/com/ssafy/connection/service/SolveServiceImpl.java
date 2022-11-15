@@ -103,7 +103,13 @@ public class SolveServiceImpl implements SolveService{
                         solveRepository.save(temp);
                         this.pushSubject(gitPushDto);
                         break;
-                    } else {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
+                    } else if(temp.getStatus() != 2) {    // 이전 풀이가 현재 진행중인 과제로 등록되어 있는 경우(추가로 제출한 경우), Update & Github Push
+                        temp.setTime(LocalDateTime.now());
+                        solveRepository.save(temp);
+                        this.pushSubject(gitPushDto);
+                        break;
+                    } else {
+                        this.addSubjectScore(userEntity, problemEntity.get());
                         temp.setTime(LocalDateTime.now());
                         solveRepository.save(temp);
                         this.pushSubject(gitPushDto);
@@ -111,6 +117,7 @@ public class SolveServiceImpl implements SolveService{
                     }
                 } else {    // 이전에 과제로 푼 풀이가 등록되어 있지 않은 경우 Score up & Save & Github Push
                     solveEntity.setStatus(0);
+                    System.out.println("aa");
                     this.addSubjectScore(userEntity, problemEntity.get());
                     solveRepository.save(solveEntity);
                     this.pushSubject(gitPushDto);
