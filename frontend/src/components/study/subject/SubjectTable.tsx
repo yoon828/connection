@@ -84,7 +84,7 @@ function SubjectTable({ problems, users, flex }: SubjectTableProps) {
                   return (
                     <Td key={v4()} textAlign="center">
                       <Link
-                        href={`https://github.com/co-nnection/${studyLeader}/tree/main/subject/${problem.problem_id}`}
+                        href={`https://github.com/connection-official/${studyLeader}/tree/main/subject/${problem.problem_id}`}
                         cursor={solved ? "pointer" : "default"}
                         pointerEvents={solved ? "auto" : "none"}
                         w={`${100 / users.length}%`}

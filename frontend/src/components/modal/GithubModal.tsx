@@ -38,7 +38,7 @@ function GithubModal() {
       </Text>
       <Center p="50px 0 30px" flexDir="column">
         <Text fontSize={20} mt="5px" textAlign="center">
-          Github에서 “co-nnection”
+          Github에서 “connection-official”
           <br /> Organization 초대 수락 후,
           <br />
           <Text as="span" color="main" display="inline" fontWeight="bold">
@@ -48,7 +48,7 @@ function GithubModal() {
         </Text>
         <Flex direction="column">
           <Link
-            href="https://github.com/orgs/co-nnection/invitation"
+            href="https://github.com/orgs/connection-official/invitation"
             isExternal
             fontSize={12}
             display="flex"
