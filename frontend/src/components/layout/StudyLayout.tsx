@@ -22,7 +22,6 @@ function StudyLayout({
       <Flex
         width="180px"
         top="20px"
-        // left="40px"
         position="absolute"
         direction="column"
         gap={4}
@@ -41,7 +40,7 @@ function StudyLayout({
           position="relative"
         >
           <Box mb="40px">
-            <Text fontSize="3xl" fontWeight="bold" mt="20px" mb="20px">
+            <Text fontSize="3xl" fontWeight="bold" mb="20px">
               {title}
             </Text>
             {description.split("/").map(text => (
