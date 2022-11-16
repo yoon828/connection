@@ -34,7 +34,7 @@ public class SubjectDto {
                     , 0, 0);
         }
         catch (Exception e){
-            System.out.println("날짜 잘못됨");
+//            System.out.println("날짜 잘못됨");
         }
         this.deadline = localDateTime;
     }

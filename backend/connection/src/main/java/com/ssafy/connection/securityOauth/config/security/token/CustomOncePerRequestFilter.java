@@ -1,6 +1,7 @@
 package com.ssafy.connection.securityOauth.config.security.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.connection.dto.ResponseDto;
 import com.ssafy.connection.securityOauth.service.auth.CustomTokenProviderService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -40,7 +41,7 @@ public class CustomOncePerRequestFilter extends OncePerRequestFilter{
             }
         }
         catch(ExpiredJwtException jwtException){
-            System.out.println("토큰만료");
+//            System.out.println("토큰만료");
 
             ObjectMapper mapper = new ObjectMapper();
 
@@ -48,11 +49,12 @@ public class CustomOncePerRequestFilter extends OncePerRequestFilter{
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
 
-            ResponseStatusException responseStatusException = new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.expiredtoken");
+            mapper.writeValue(response.getWriter(), new ResponseDto("expired_token"));
+            System.out.println("tdddttt");
 
-
-            mapper.writeValue(response.getWriter(), responseStatusException);
+//            ResponseStatusException responseStatusException = new ResponseStatusException(
+//                    HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.expiredtoken");
+//            mapper.writeValue(response.getWriter(), responseStatusException);
         }catch (JwtException | IllegalArgumentException exception) {
             log.info("jwtException : {}", exception);
             throw exception;
