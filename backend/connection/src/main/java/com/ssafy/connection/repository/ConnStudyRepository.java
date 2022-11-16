@@ -17,4 +17,6 @@ public interface ConnStudyRepository extends JpaRepository<ConnStudy, Long> {
     Optional<ConnStudy> findByUser_UserIdAndStudy_StudyId(long userId, long studyId);
     Optional<ConnStudy> findByUser_UserIdAndRole(long studyId, String role);
     Optional<ConnStudy>findByUser_UserIdAndStudy_StudyIdAndRole(long userId, long studyId, String role);
+
+    Long countByStudy_StudyId(long studyId);
 }
