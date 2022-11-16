@@ -215,7 +215,9 @@ public class StudyServiceImpl implements StudyService {
             connStudy.setUser(userEntity);
             connStudy.setJoinedDate(LocalDateTime.now());
             connStudyRepository.save(connStudy);
-            studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()+1);
+
+            long studyPersonnel = connStudyRepository.countByStudy_StudyId(studyEntity.getStudyId());
+            studyEntity.setStudyPersonnel((int)studyPersonnel);
             studyRepository.save(studyEntity);
 
             //DB처리 완료 후 리드미수정 비동기 호출
@@ -282,8 +284,10 @@ public class StudyServiceImpl implements StudyService {
                     .block();
 
             changeSolve(quitUserEntity.getUserId());
-            studyEntity.setStudyPersonnel(studyEntity.getStudyPersonnel()-1);
             connStudyRepository.delete(connStudyEntity);
+
+            long studyPersonnel = connStudyRepository.countByStudy_StudyId(studyEntity.getStudyId());
+            studyEntity.setStudyPersonnel((int)studyPersonnel);
             studyRepository.save(studyEntity);
 
             //DB처리 완료 후 리드미수정 비동기 호출
