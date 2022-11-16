@@ -179,6 +179,12 @@ public class ProblemServiceImpl implements ProblemService{
         return returnList;
     }
 
+    @Transactional
+    public List<ProblemReturnDto> searchProblemByTag(String tag){
+        List<ProblemReturnDto> returnList = new ArrayList<>();
+        List<ProblemSearchInterface> problemSearchList = problemRepository.findAllByTag(tag);
+    }
+
     @Override
     @Transactional
     public List<ProblemReturnDto> getProblemByTag(String ko) {
