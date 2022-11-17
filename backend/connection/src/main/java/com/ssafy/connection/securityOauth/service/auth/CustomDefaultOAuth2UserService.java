@@ -58,7 +58,8 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
 
 
-        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), map);
+//        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
 
 //        System.out.println("프로세스 오어스 시작 ==================");
 //        System.out.println(oAuth2UserRequest.getAccessToken().getTokenValue() + "유저리퀘스트 토큰밸류");
