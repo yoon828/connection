@@ -72,12 +72,19 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         if(!oAuth2UserInfo.getAttributes().isEmpty()){
             if(oAuth2UserInfo.getAttributes().containsKey("id")){
                 if(oAuth2UserInfo.getAttributes().get("id") != null && oAuth2UserInfo.getAttributes().get("id") != ""){
+                    System.out.println("여기다111!!!!");
                     DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
                 }
             }
-            else DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+            else {
+                System.out.println("여기다222!!!!");
+                DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+            }
         }
-        else DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+        else {
+            System.out.println("여기다333!!!!");
+            DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+        }
 
         Optional<User> userOptional = userRepository.findByGithubId(oAuth2UserInfo.getId());
         User user;
