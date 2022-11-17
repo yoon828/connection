@@ -46,45 +46,58 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
+        //깃허브 토큰 저장
+        Map<String,Object> map = new HashMap<>();
+        oAuth2User.getAttributes().forEach((key, value) -> {
+            map.put(key,value);
+        });
+        String token = oAuth2UserRequest.getAccessToken().getTokenValue();
+        map.put("githubtoken",token);
+
+        if(map.get("name") == null) map.put("name", map.get("login"));
+
+
+
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
 
-        System.out.println("프로세스 오어스 시작 ==================");
-        System.out.println(oAuth2UserRequest.getAccessToken().getTokenValue() + "유저리퀘스트 토큰밸류");
-        System.out.println(oAuth2UserRequest.getClientRegistration().toString() + "유저리퀘스트 클라이언트레지스트레시엿ㄴ");
-        System.out.println("유저리퀘스트어디셔널 파라미터 시작====");
-        oAuth2UserRequest.getAdditionalParameters().forEach((key, value) -> {
-            System.out.println(key + " : " + value);
-        });
-        System.out.println("파라미터끝");
-        System.out.println("오어스투 유저");
-        System.out.println("오어스투유저의 겟어트리뷰트");
-        oAuth2User.getAttributes().forEach((key, value) -> {
-            System.out.println(key + " : " + value);
-        });
-        System.out.println(oAuth2User.getName() + "오어스튜윺저 네임");
+//        System.out.println("프로세스 오어스 시작 ==================");
+//        System.out.println(oAuth2UserRequest.getAccessToken().getTokenValue() + "유저리퀘스트 토큰밸류");
+//        System.out.println(oAuth2UserRequest.getClientRegistration().toString() + "유저리퀘스트 클라이언트레지스트레시엿ㄴ");
+//        System.out.println("유저리퀘스트어디셔널 파라미터 시작====");
+//        oAuth2UserRequest.getAdditionalParameters().forEach((key, value) -> {
+//            System.out.println(key + " : " + value);
+//        });
+//        System.out.println("파라미터끝");
+//        System.out.println("오어스투 유저");
+//        System.out.println("오어스투유저의 겟어트리뷰트");
+//        oAuth2User.getAttributes().forEach((key, value) -> {
+//            System.out.println(key + " : " + value);
+//        });
+//        System.out.println(oAuth2User.getName() + "오어스튜윺저 네임");
+//
+//        System.out.println("유저인포~~~");
+//        oAuth2UserInfo.getAttributes().forEach((key, value) -> {
+//            System.out.println(key + " : " + value);
+//        });
+//        System.out.println("프로세스 오어스발견");
+//
+//        if(!oAuth2UserInfo.getAttributes().isEmpty()){
+//            if(oAuth2UserInfo.getAttributes().containsKey("id")){
+//                if(oAuth2UserInfo.getAttributes().get("id") == ""){
+//                    System.out.println("여기다111!!!!");
+//                    DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+//                }
+//            }
+//            else {
+//                System.out.println("여기다222!!!!");
+//                DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+//            }
+//        }
+//        else {
+//            System.out.println("여기다333!!!!");
+//        }
 
-        System.out.println("유저인포~~~");
-        oAuth2UserInfo.getAttributes().forEach((key, value) -> {
-            System.out.println(key + " : " + value);
-        });
-        System.out.println("프로세스 오어스발견");
-
-        if(!oAuth2UserInfo.getAttributes().isEmpty()){
-            if(oAuth2UserInfo.getAttributes().containsKey("id")){
-                if(oAuth2UserInfo.getAttributes().get("id") == ""){
-                    System.out.println("여기다111!!!!");
-                    DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
-                }
-            }
-            else {
-                System.out.println("여기다222!!!!");
-                DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
-            }
-        }
-        else {
-            System.out.println("여기다333!!!!");
-            DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
-        }
+        DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
 
         Optional<User> userOptional = userRepository.findByGithubId(oAuth2UserInfo.getId());
         User user;
@@ -102,14 +115,6 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                 System.out.println("초대오류" + e);
             }
         }
-
-        //깃허브 토큰 저장
-        Map<String,Object> map = new HashMap<>();
-        oAuth2User.getAttributes().forEach((key, value) -> {
-            map.put(key,value);
-        });
-        String token = oAuth2UserRequest.getAccessToken().getTokenValue();
-        map.put("githubtoken",token);
 
 
         return UserPrincipal.create(user, map);
