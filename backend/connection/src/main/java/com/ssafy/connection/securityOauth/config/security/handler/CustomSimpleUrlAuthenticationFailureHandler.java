@@ -25,6 +25,16 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
                 .map(Cookie::getValue)
                 .orElse(("/"));
 
+        System.out.println("\n\n\n");
+        System.out.println("여기 로그인 실패 ~~~~~~~~~~~~");
+        System.out.println(exception.getLocalizedMessage() + "*&^*$%^&$&%^*%^&%^&$%^$%*&%^&^%");
+        System.out.println(exception.getMessage() + "메세지");
+        System.out.println(exception.toString() + "투스트링");
+        System.out.println("부가정보");
+        System.out.println(request.getServerName());
+        System.out.println(request.getRequestURI());
+        System.out.println(request.getRequestURL());
+
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();
