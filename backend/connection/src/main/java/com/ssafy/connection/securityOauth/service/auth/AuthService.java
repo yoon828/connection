@@ -290,6 +290,7 @@ public class AuthService {
     public ResponseEntity<?> refresh(String refreshToken){
         //1차 검증
         boolean checkValid = valid(refreshToken);
+        System.out.println("refresh발견");
         DefaultAssert.isAuthentication(checkValid);
 
         Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
@@ -316,6 +317,7 @@ public class AuthService {
 
     public ResponseEntity<?> signout(RefreshTokenRequest tokenRefreshRequest){
         boolean checkValid = valid(tokenRefreshRequest.getRefreshToken());
+        System.out.println("signout발견");
         DefaultAssert.isAuthentication(checkValid);
 
         //4 token 정보를 삭제한다.

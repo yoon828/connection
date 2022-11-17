@@ -56,11 +56,14 @@ public class DefaultAssert extends Assert{
     }
 
     public static void isAuthentication(String message){
+        System.out.println("메세지 떴다" + message);
         throw new DefaultAuthenticationException(message);
     }
 
     public static void isAuthentication(boolean value){
+        System.out.println("메세지떴다 불리안");
         if(!value){
+            System.out.println("불리안 불리안~~");
             throw new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION);
         }
     }
