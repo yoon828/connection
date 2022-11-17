@@ -39,6 +39,7 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         try {
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
         } catch (Exception e) {
+            System.out.println("loaduser 발견" + e.getCause().toString() + "이거랑" + e.toString());
             DefaultAssert.isAuthentication(e.getMessage());
         }
         return null;
@@ -46,12 +47,14 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
+        System.out.println("프로세스 오어스발견");
         DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
 
         Optional<User> userOptional = userRepository.findByGithubId(oAuth2UserInfo.getId());
         User user;
         if(userOptional.isPresent()) {
             user = userOptional.get();
+            System.out.println("프로세스 오어스발견두번쨰!");
             DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
