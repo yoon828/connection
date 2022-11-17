@@ -71,7 +71,7 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 
         if(!oAuth2UserInfo.getAttributes().isEmpty()){
             if(oAuth2UserInfo.getAttributes().containsKey("id")){
-                if(oAuth2UserInfo.getAttributes().get("id") != null && oAuth2UserInfo.getAttributes().get("id") != ""){
+                if(oAuth2UserInfo.getAttributes().get("id") == ""){
                     System.out.println("여기다111!!!!");
                     DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
                 }
