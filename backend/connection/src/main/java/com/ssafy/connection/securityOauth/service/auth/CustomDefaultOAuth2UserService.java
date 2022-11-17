@@ -68,7 +68,16 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             System.out.println(key + " : " + value);
         });
         System.out.println("프로세스 오어스발견");
-        DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+
+        if(!oAuth2UserInfo.getAttributes().isEmpty()){
+            if(oAuth2UserInfo.getAttributes().containsKey("id")){
+                if(oAuth2UserInfo.getAttributes().get("id") != null && oAuth2UserInfo.getAttributes().get("id") != ""){
+                    DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+                }
+            }
+            else DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
+        }
+        else DefaultAssert.isAuthentication(!oAuth2UserInfo.getId().isEmpty());
 
         Optional<User> userOptional = userRepository.findByGithubId(oAuth2UserInfo.getId());
         User user;
