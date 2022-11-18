@@ -9,10 +9,15 @@ export interface GetRecommendRes {
   stat: Stat[];
 }
 
-export const getRecommend = async (): Promise<
-  AxiosResponse<GetRecommendRes, null>
-> => {
-  const res = await api.get("/problem/recommend");
+export const getRecommend = async (
+  level?: string,
+  tag?: string
+): Promise<AxiosResponse<GetRecommendRes, null>> => {
+  const res = await api.get(
+    `/problem/recommend?${level ? `level=${level}` : ""}&${
+      tag ? `tag=${tag}` : ""
+    }`
+  );
   return res;
 };
 
