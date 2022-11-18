@@ -45,9 +45,6 @@ function SearchModal({ isOpen, onClose, maxCnt = 0 }: SearchModalTypes) {
   useEffect(() => {
     fetch();
   }, [debouncedKeyword]);
-  useEffect(() => {
-    console.log(problemList);
-  }, [problemList]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="5xl">

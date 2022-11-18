@@ -47,7 +47,6 @@ function Management() {
 
   const getAndSetMembers = async () => {
     const res = await getMember();
-    console.log(res.data);
     setMembers(res.data);
   };
   useEffect(() => {
@@ -59,11 +58,9 @@ function Management() {
       async onConfirmHandler() {
         try {
           if (isBoss) {
-            const res = await deleteStudy();
-            console.log(res);
+            await deleteStudy();
           } else {
-            const res = await quitStudy();
-            console.log(res);
+            await quitStudy();
           }
           await dispatch(getUserInfo());
           navigate("/study/join");
@@ -84,8 +81,7 @@ function Management() {
       msg: `정말 ${name}님을 추방하시겠습니까?`,
       async onConfirmHandler() {
         try {
-          const res = await quitStudy(id);
-          console.log(res);
+          await quitStudy(id);
           getAndSetMembers();
         } catch (error) {
           toast({

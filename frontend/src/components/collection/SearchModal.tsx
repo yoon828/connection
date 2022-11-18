@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Grid,
   Icon,
@@ -23,7 +22,6 @@ import { Problem } from "../../@types/Problem";
 interface SearchModalTypes {
   isOpen: boolean;
   onClose: () => void;
-  maxCnt: number;
   workbook: Problem[];
   deleteProblem: (problemId: number) => void;
   addProblem: (problem: Problem) => void;
@@ -34,8 +32,7 @@ function SearchModal({
   onClose,
   workbook,
   deleteProblem,
-  addProblem,
-  maxCnt = 0
+  addProblem
 }: SearchModalTypes) {
   const [problemList, setProblemList] = useState<Problem[]>([]);
   const [keyword, setKeyword] = useState("");
@@ -44,7 +41,6 @@ function SearchModal({
   useEffect(() => {
     const fetch = async () => {
       const res = await searchProblem(debouncedKeyword);
-      console.log(res);
       setProblemList(res.data.slice(0, 10));
     };
     fetch();
@@ -95,7 +91,6 @@ function SearchModal({
                   problem={problem}
                   btnType={exist ? "delete" : "add"}
                   onBtnClick={() => {
-                    console.log(exist);
                     if (exist) deleteProblem(problem.problemInfo.problemId);
                     else addProblem(problem);
                   }}
