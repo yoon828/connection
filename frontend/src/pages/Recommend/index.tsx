@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Flex, keyframes, Spinner } from "@chakra-ui/react";
+import Filter from "components/recommend/Filter";
 import StudyLayout from "../../components/layout/StudyLayout";
 import SideComponent, {
   RECOMMEND_TAPS
@@ -16,10 +17,10 @@ function Recommend() {
   const [pending, setPending] = useState(false);
   const [selectedTap, setSelectedTap] = useState(0);
 
-  const getAndSetRecommend = async () => {
+  const getAndSetRecommend = async (level?: string, tag?: string) => {
     if (pending) return;
     setPending(true);
-    const res1 = await getRecommend();
+    const res1 = await getRecommend(level, tag);
     setRecommends(res1.data);
     setPending(false);
   };
@@ -52,12 +53,15 @@ function Recommend() {
       description={RECOMMEND_TAPS[selectedTap].msg}
     >
       <Style.StyledIcon
-        onClick={getAndSetRecommend}
+        onClick={() => getAndSetRecommend()}
         animation={pending ? `${animation} ease-in-out infinite 1s` : "none"}
         _hover={{ transform: pending ? "none" : "rotate(90deg)" }}
       />
       {RECOMMEND_TAPS[selectedTap].category === "weak" && (
         <Tooltip recommends={recommends} />
+      )}
+      {RECOMMEND_TAPS[selectedTap].category === "popular" && (
+        <Filter fetch={getAndSetRecommend} />
       )}
       {recommends ? (
         <ProblemList

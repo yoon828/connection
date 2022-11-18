@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@chakra-ui/react";
+import { Flex, Grid, Icon, Text } from "@chakra-ui/react";
 
 import useToast from "hooks/useToast";
+import { AiFillFolderOpen } from "react-icons/ai";
 import { addWorkbook, deleteWorkbook, getWorkbook } from "../../api/workbook";
 import { useAppSelector } from "../../store/hooks";
 import ProblemCard from "../common/ProblemCard";
@@ -62,7 +63,7 @@ function ProblemList({ problemList }: ProblemListProps) {
     );
   }, [myWorkbook]);
 
-  return (
+  return problemList.length ? (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
       {problemList.map((problem, idx) => (
         <ProblemCard
@@ -78,6 +79,19 @@ function ProblemList({ problemList }: ProblemListProps) {
         />
       ))}
     </Grid>
+  ) : (
+    <Flex
+      height="500px"
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      gap={4}
+      fontSize="2xl"
+      fontWeight="bold"
+    >
+      <Icon w="50px" h="50px" as={AiFillFolderOpen} />
+      <Text>검색 결과가 없어요</Text>
+    </Flex>
   );
 }
 
