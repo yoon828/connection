@@ -15,7 +15,6 @@ interface MemberTableProps {
 function MemberTable({ members, onBanBtnClick, isBoss }: MemberTableProps) {
   const auth = useAppSelector(state => state.auth);
   const chartOption = useChartOption();
-  console.log(members.map(member => ({ ...member, series: member.series })));
   return (
     <Grid templateColumns="repeat(2,1fr)" gap="32px">
       {members.map(member => (

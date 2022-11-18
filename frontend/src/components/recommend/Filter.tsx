@@ -42,7 +42,7 @@ function Filter({ fetch }: Iprops) {
       }
     );
     setTimeout(() => {
-      setOpen(prev => false);
+      setOpen(() => false);
     }, 300);
   };
   const openFilter = () => {
@@ -125,7 +125,7 @@ function Filter({ fetch }: Iprops) {
                   w="160px"
                 >
                   {Object.entries(DIFFICULTY)
-                    .filter(([idx, text]) => idx !== "0")
+                    .filter(([idx]) => idx !== "0")
                     .map(([idx, text]) => (
                       <option key={idx} value={idx}>
                         {text}

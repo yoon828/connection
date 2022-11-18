@@ -22,7 +22,7 @@ function Collection() {
   const toast = useToast();
 
   const deleteProblem = async (problemId: number) => {
-    const res = await deleteWorkbook(problemId);
+    await deleteWorkbook(problemId);
     setWorkbook(prevWorkbook =>
       prevWorkbook.filter(
         problem => problem.problemInfo.problemId !== problemId
@@ -37,7 +37,7 @@ function Collection() {
   };
 
   const addProblem = async (problem: Problem) => {
-    const res = await addWorkbook(problem.problemInfo.problemId);
+    await addWorkbook(problem.problemInfo.problemId);
     setWorkbook(prevWorkbook => [...prevWorkbook, problem]);
     toast({
       title: `${problem.problemInfo.problemId}번 문제를 추가했습니다.`,
@@ -94,7 +94,6 @@ function Collection() {
       <SearchModal
         isOpen={isOpen}
         onClose={onClose}
-        maxCnt={10}
         workbook={workbook}
         deleteProblem={deleteProblem}
         addProblem={addProblem}

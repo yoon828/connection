@@ -20,7 +20,7 @@ function ProblemList({ problemList }: ProblemListProps) {
   const toast = useToast();
 
   const addProblem = async (problemId: number, idx: number) => {
-    const res = await addWorkbook(problemId);
+    await addWorkbook(problemId);
     const newBtnTypes = [...btnTypes];
     newBtnTypes[idx] = "delete";
     setBtnTypes(newBtnTypes);
@@ -29,10 +29,9 @@ function ProblemList({ problemList }: ProblemListProps) {
       position: "top",
       isClosable: true
     });
-    console.log(problemId);
   };
   const deleteProblem = async (problemId: number, idx: number) => {
-    const res = await deleteWorkbook(problemId);
+    await deleteWorkbook(problemId);
     const newBtnTypes = [...btnTypes];
     newBtnTypes[idx] = "add";
     setBtnTypes(newBtnTypes);
@@ -42,7 +41,6 @@ function ProblemList({ problemList }: ProblemListProps) {
       position: "top",
       isClosable: true
     });
-    console.log(problemId);
   };
   useEffect(() => {
     const fetch = async () => {
