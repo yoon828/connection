@@ -18,7 +18,13 @@ function MainBox({ dir, data }: MainBoxProps) {
       data-aos={dir === "right" ? "fade-right" : "fade-left"}
     >
       <Box w="50%">
-        <Image src={TMP} alt="info_img" w="380px" />
+        <Image
+          src={data.img ? data.img : TMP}
+          alt="info_img"
+          w="380px"
+          boxShadow="md"
+          borderRadius="15px"
+        />
       </Box>
       <Box
         w="50%"

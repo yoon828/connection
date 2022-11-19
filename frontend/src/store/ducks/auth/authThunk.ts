@@ -5,7 +5,6 @@ import { UserInfoType } from "./auth.type";
 
 export const getUserInfo = createAsyncThunk("auth/getUserInfo", async () => {
   const { data } = await getUser();
-  console.log(data);
   return data;
 });
 

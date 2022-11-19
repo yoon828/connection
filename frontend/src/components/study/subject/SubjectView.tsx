@@ -35,12 +35,10 @@ function SubjectkView() {
     const {
       data: { inProgress, subjects, leader }
     } = await getSubject();
-    // console.log(inProgress);
 
     dispatch(updateUserInfo({ studyLeader: leader }));
     setIsProgress(inProgress);
     setSubjectList(subjects);
-    // console.log(inProgress ? subjects.length : subjects.length + 1);
     setLen(inProgress ? subjects.length : subjects.length + 1);
   };
 

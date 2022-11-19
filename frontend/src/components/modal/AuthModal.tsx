@@ -1,15 +1,22 @@
-import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Modal,
+  ModalContent,
+  ModalOverlay
+} from "@chakra-ui/react";
 import React from "react";
 
 import useToast from "hooks/useToast";
+import JoinStep from "./JoinStep";
 
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  content: React.ReactNode;
+  status: { content: React.ReactNode; percent: number } | null;
 };
 
-function AuthModal({ isOpen, onClose, content }: AuthModalProps) {
+function AuthModal({ isOpen, onClose, status }: AuthModalProps) {
   const toast = useToast();
   const overlayClick = () => {
     toast({
@@ -28,8 +35,11 @@ function AuthModal({ isOpen, onClose, content }: AuthModalProps) {
       closeOnEsc={false}
     >
       <ModalOverlay />
-      <ModalContent bg="dep_1" maxW={650}>
-        {content}
+      <ModalContent bg="dep_1" maxW={650} top="30px">
+        <Box position="relative" top="-50px" p="0 80px">
+          {status && <JoinStep percent={status.percent} />}
+        </Box>
+        {status && status.content}
       </ModalContent>
     </Modal>
   );

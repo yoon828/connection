@@ -13,7 +13,6 @@ export type PrivateRouteProps = {
 function PrivateRoute({ auth, outlet, study }: PrivateRouteProps) {
   const { check, extension, information } = auth;
   const toast = useToast();
-  const location = useLocation();
 
   // 로그인x, 백준연동x, 깃허브 ismember x, extension x
   if (

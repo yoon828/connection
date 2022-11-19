@@ -260,7 +260,7 @@ function Main() {
           <Image src={Airplane} position="absolute" w="200px" left="15%" />
         </Center>
         <Box as="footer" h="200px" display="flex">
-          <Box m="0 auto" w="800px">
+          <Box m="0 auto" w="1200px">
             <Box
               display="flex"
               flexDir="column"

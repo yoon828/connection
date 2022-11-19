@@ -1,8 +1,16 @@
 import React from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Button, Center, Flex, Link, ModalBody, Text } from "@chakra-ui/react";
-
+import {
+  Button,
+  Center,
+  Flex,
+  Image,
+  Link,
+  ModalBody,
+  Text
+} from "@chakra-ui/react";
 import useToast from "hooks/useToast";
+import ExtensionImg from "../../asset/img/extensionImg.png";
 import checkExtension from "../../utils/checkExtension";
 
 type ExtensionModalProps = {
@@ -40,16 +48,27 @@ function ExtensionModal({ onClose }: ExtensionModalProps) {
         Extension
       </Text>
       <Center p="50px 0 30px" flexDir="column">
+        <Image
+          src={ExtensionImg}
+          alt="extenstionImg"
+          w="400px"
+          borderRadius="10px"
+          mb="20px"
+        />
         <Text fontSize={20} textAlign="center">
           “connection” 확장 프로그램이 <br />
-          설치되지 않았거나 꺼져있어요😢 <br />
-          확장 프로그램을 실행해주세요!
+          설치되지 않았거나 비활성화 되어있어요😢 <br />
+          <Text as="span" color="main" display="inline" fontWeight="bold">
+            확장 프로그램
+          </Text>
+          을 실행해주세요!
         </Text>
         <Flex direction="column">
           <Link
             href="https://chrome.google.com/webstore/detail/connection/opbaphhnjcekebclmnflpeppggdpenej?hl=ko&authuser=0"
             isExternal
-            fontSize={12}
+            fontSize={14}
+            fontWeight="bold"
             display="flex"
             alignItems="center"
             m="30px 0"

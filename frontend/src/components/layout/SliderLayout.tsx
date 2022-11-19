@@ -41,25 +41,20 @@ function SliderLayout({ len, children }: SliderLayoutProps) {
       >
         {children}
       </Box>
-      <Box
-        w="100%"
-        display="flex"
-        position="absolute"
-        justifyContent="space-between"
-        top="50%"
-        transform="translateY(-50%)"
-      >
-        <SlideArrow
-          onClick={prevSlide}
-          isDisabled={currentIdx === 0}
-          Icon={ChevronLeftIcon}
-        />
-        <SlideArrow
-          onClick={nextSlide}
-          isDisabled={currentIdx === total}
-          Icon={ChevronRightIcon}
-        />
-      </Box>
+
+      <SlideArrow
+        type="left"
+        onClick={prevSlide}
+        isDisabled={currentIdx === 0}
+        Icon={ChevronLeftIcon}
+      />
+      <SlideArrow
+        type="right"
+        onClick={nextSlide}
+        isDisabled={currentIdx === total}
+        Icon={ChevronRightIcon}
+      />
+      {/* </Box> */}
     </Box>
   );
 }

@@ -1,5 +1,7 @@
 import Rank from "../img/rank.png";
 import Homework from "../img/homework.png";
+import StudyTotal from "../img/main/studyTotal.png";
+import StudyWith from "../img/main/studyWith.png";
 
 export const squares = [
   {
@@ -18,6 +20,7 @@ export const squares = [
 export interface BoxDataProp {
   category: string;
   title: string[];
+  img?: string;
   content: string[];
 }
 
@@ -25,6 +28,7 @@ export const studyInfos: BoxDataProp[] = [
   {
     category: "스터디 가입",
     title: ["혼자가 아닌", "같이 성장할 수 있도록"],
+    img: StudyTotal,
     content: [
       "스터디를 생성하면 스터디 코드와",
       "깃 레포지토리가 자동으로 생성돼요",
@@ -34,6 +38,7 @@ export const studyInfos: BoxDataProp[] = [
   {
     category: "문제 풀기",
     title: ["같은 문제를", "풀면서 같은 목표로"],
+    img: StudyWith,
     content: [
       "스터디원이 함께 선정한 문제를",
       "제한된 시간 안에 풀면서 함께 공부할 수 있어요",
