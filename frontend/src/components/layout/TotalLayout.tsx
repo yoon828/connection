@@ -1,4 +1,12 @@
-import { Box, Center, Container, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  color,
+  Container,
+  Flex,
+  Heading,
+  Text
+} from "@chakra-ui/react";
 import React, { ReactNode, useEffect } from "react";
 
 interface TotalLayoutProps {
@@ -31,7 +39,7 @@ function TotalLayout({
         <Text
           as="span"
           bg="white"
-          _dark={{ bg: "dep_2" }}
+          _dark={{ bg: "dep_2", color: "#52b5f9" }}
           p="8px 15px"
           borderRadius=" 10px"
           boxShadow="md"

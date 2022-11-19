@@ -33,8 +33,6 @@ function MyActivity() {
         }
       }
     } = await getMyActivity();
-    // console.log(totalSubject);
-    // console.log(totalStudyProblem);
     setSubject({ my: solvedSubject, total: totalSubject });
     setProblems({ my: solvedStudyProblem, total: totalStudyProblem });
   };
@@ -42,10 +40,6 @@ function MyActivity() {
   useEffect(() => {
     getMyActivityApi();
   }, []);
-
-  // useEffect(() => {
-  //   console.log(inInViewport);
-  // }, [inInViewport]);
 
   return (
     <Center w="100%" ref={ref}>

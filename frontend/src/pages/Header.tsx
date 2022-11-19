@@ -221,14 +221,17 @@ function Header() {
           <AuthModal
             isOpen={isOpen}
             onClose={onClose}
-            content={
-              !auth.information.backjoonId ? (
-                <BackjoonModal code={code} />
-              ) : !auth.information.ismember ? (
-                <GithubModal />
-              ) : !auth.extension ? (
-                <ExtensionModal onClose={onClose} />
-              ) : null
+            status={
+              !auth.information.backjoonId
+                ? { content: <BackjoonModal code={code} />, percent: 1 }
+                : !auth.information.ismember
+                ? { content: <GithubModal />, percent: 51 }
+                : !auth.extension
+                ? {
+                    content: <ExtensionModal onClose={onClose} />,
+                    percent: 101
+                  }
+                : null
             }
           />
           <AlertDialog
@@ -236,7 +239,6 @@ function Header() {
             leastDestructiveRef={cancelRef}
             onClose={quitAlert.onClose}
             isOpen={quitAlert.isOpen}
-            isCentered
           >
             <AlertDialogOverlay />
             <AlertDialogContent>

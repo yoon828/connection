@@ -1,6 +1,14 @@
 import React from "react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Button, Center, Flex, Link, ModalBody, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Link,
+  ModalBody,
+  Text
+} from "@chakra-ui/react";
 
 import useToast from "hooks/useToast";
 import { postGithubConfirm } from "../../api/auth";
@@ -12,7 +20,7 @@ function GithubModal() {
   const dispatch = useAppDispatch();
   const confirmGithub = async () => {
     try {
-      const { data } = await postGithubConfirm();
+      await postGithubConfirm();
       toast({
         title: "connection의 멤버가 된 걸 환영합니다😊",
         position: "top",
@@ -33,8 +41,13 @@ function GithubModal() {
 
   return (
     <ModalBody p="50px">
-      <Text fontSize="30px" fontWeight="bold">
+      <Heading fontSize="30px" fontWeight="bold">
         Github
+      </Heading>
+      <Text>
+        connection은 스터디의 Github Repository를 관리해주고 있어요!
+        <br /> 스터디를 생성하면 자동으로 Repository를 생성하고, <br /> 과제 및
+        문제풀이 시 제출한 코드를 Repository에 자동으로 업로드해주고 있어요😀
       </Text>
       <Center p="50px 0 30px" flexDir="column">
         <Text fontSize={20} mt="5px" textAlign="center">
@@ -50,7 +63,8 @@ function GithubModal() {
           <Link
             href="https://github.com/orgs/connection-official/invitation"
             isExternal
-            fontSize={12}
+            fontSize={14}
+            fontWeight="bold"
             display="flex"
             alignItems="center"
             m="30px 0"
