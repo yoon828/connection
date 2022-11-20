@@ -8,9 +8,8 @@ import {
 } from "../../../asset/data/socket.type";
 import { useAppSelector } from "../../../store/hooks";
 import getTime from "../../../utils/getTime";
-import NextBtn from "../NextBtn";
 import ViewTitle from "../ViewTitle";
-import ProblemBar, { ProblemBarProps } from "./ProblemBar";
+import ProblemBar from "./ProblemBar";
 
 type TimerProps = {
   initTime: number;
