@@ -10,6 +10,7 @@ import {
 } from "../../../asset/data/socket.type";
 import { useAppSelector } from "../../../store/hooks";
 import popper from "../../../utils/popper";
+import popSound from "../../../asset/sound/popper.mp3";
 
 type ResultViewProps = {
   onBtnClick: () => void;
@@ -22,6 +23,8 @@ function ResultView({ onBtnClick, socket }: ResultViewProps) {
   useEffect(() => {
     socket.emit("getResult", setResults);
     socket.on("newResult", setResults);
+    const sound = new Audio(popSound);
+    sound.play();
     popper();
   }, []);
   return (

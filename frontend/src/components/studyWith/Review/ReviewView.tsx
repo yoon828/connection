@@ -1,7 +1,5 @@
 import { Center } from "@chakra-ui/react";
-
 import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
 import axios from "axios";
 import NextBtn from "../NextBtn";
 import ReviewBar from "./ReviewBar";

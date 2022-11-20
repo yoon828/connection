@@ -124,7 +124,6 @@ const sortStudyInfoUsers = (studyId: string) => {
 app.post("/problem/submit", (req, res) => {
   const { userId, problemNo, submitNo, code, lang } = req.body;
   const problemId = +`${problemNo}`.trim();
-  console.log(userId, +problemNo, submitNo, lang, code);
   const userInfo = getUserInfo(userId);
   const { studyId, name } = userInfo;
   const problems = getStudyInfo(studyId).problems;
@@ -176,7 +175,7 @@ app.post("/problem/submit", (req, res) => {
             code,
             lang,
           }),
-        }).then(() => console.log("백에 전송 성공"));
+        });
       }
     });
   }
@@ -186,7 +185,6 @@ app.post("/problem/submit", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("enter", async (studyId, name, imageUrl, bojId, studyRole, cb) => {
-    console.log(`${studyId}방에 ${name}님이 입장하셨어 boj ${bojId}`);
     socket.data = { name, bojId, imageUrl, studyRole };
     userInfos.set(bojId, { studyId, name, imageUrl, studyRole });
     socket.join(studyId);
@@ -201,7 +199,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startStudy", async (studyId, problemList, time, callback) => {
-    console.log("startStudy", studyId, problemList, time);
     const loginedUser = await getUserList(studyId);
     studyInfos.set(studyId, {
       startTime: moment(),
@@ -233,7 +230,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("getSolvingInfo", (callback) => {
-    console.log("getSolvingInfo");
     const bojId = socket.data.bojId as string;
     const userInfo = getUserInfo(socket.data.bojId as string);
     const studyInfo = getStudyInfo(userInfo!.studyId);

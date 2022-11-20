@@ -1,5 +1,5 @@
 import { Button, Center, Flex } from "@chakra-ui/react";
-import React, { useMemo, useState } from "react";
+import React from "react";
 
 export interface ProblemBarProps {
   problemId: number;
