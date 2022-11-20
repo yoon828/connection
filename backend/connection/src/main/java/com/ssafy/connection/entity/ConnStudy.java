@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +22,20 @@ public class ConnStudy {
     @Column(name = "connStudy_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long connStudyId;
+
+    private String role;
+
+    @Column(name = "study_score", columnDefinition = "integer default 0")
+    private int studyScore;
+
+    @Column(name = "subject_score", columnDefinition = "integer default 0")
+    private int subjectScore;
+
+    @Column(name = "bonus_score", columnDefinition = "integer default 0")
+    private int bonusScore;
+
+    @Column(name = "joined_date")
+    private LocalDateTime joinedDate;
 
     /* 연관관계 매핑 */
     @OneToOne(fetch = FetchType.LAZY)

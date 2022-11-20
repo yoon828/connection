@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    tools { 
+      maven 'maven386'
+      jdk 'java11'
+    }
+    stages {
+        stage("build"){
+            steps {
+                script{
+                    try {
+                        sh 'docker stop backend'
+                        sh 'docker rm backend'
+                        sh 'docker rmi backend-image'
+                    } catch (e) {
+                        sh 'echo "fail to stop and remove container"'
+                    }
+                }
+                sh 'mvn clean package -f ./backend/connection/pom.xml'
+                sh 'docker build -t backend-image ./backend/connection'
+                echo 'Build image...'
+                sh 'docker run -d -p 8080:8080 --restart="always" --name backend backend-image'
+                echo 'docker run complete'
+            }
+        }    
+    }    
+}

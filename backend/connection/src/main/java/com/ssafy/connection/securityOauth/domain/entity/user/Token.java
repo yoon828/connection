@@ -15,11 +15,14 @@ import javax.persistence.Table;
 public class Token extends DefaultTime {
 
     @Id
-    @Column(name = "github_id", length = 1024 , nullable = false)
+    @Column(name = "github_id", length = 50 , nullable = false)
     private String githubId;
 
-    @Column(name = "refresh_token", length = 1024 , nullable = false)
+    @Column(name = "refresh_token", length = 200 , nullable = false)
     private String refreshToken;
+
+    @Column(name = "github_token", length = 200 , nullable = true)
+    private String githubToken;
 
     public Token(){}
 
@@ -29,8 +32,9 @@ public class Token extends DefaultTime {
     }
 
     @Builder
-    public Token(String githubId, String refreshToken) {
+    public Token(String githubId, String refreshToken, String githubToken) {
         this.githubId = githubId;
         this.refreshToken = refreshToken;
+        this.githubToken = githubToken;
     }
 }

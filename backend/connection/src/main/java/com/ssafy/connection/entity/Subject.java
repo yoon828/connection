@@ -22,6 +22,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long subjectId;
 
+    private LocalDateTime start;    // 시작일
     private LocalDateTime deadline; // 제출 기한
 
     /* 연관관계 매핑 */

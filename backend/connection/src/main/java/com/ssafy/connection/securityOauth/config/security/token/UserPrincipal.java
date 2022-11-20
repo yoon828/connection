@@ -40,6 +40,10 @@ public class UserPrincipal implements OAuth2User, UserDetails{
     }
 
     public static UserPrincipal create(User user, Map<String, Object> attributes) {
+//        attributes.forEach((key, value) -> {
+//            System.out.println(key + " : " + value);
+//        });
+
         UserPrincipal userPrincipal = UserPrincipal.create(user);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;

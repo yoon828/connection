@@ -27,6 +27,14 @@ public class ProblemDto {
 
     private String tries; // 평균 시도 횟수
 
+    public ProblemDto(long problemId, String title, long accepted, long level, String tries) {
+        this.problemId = problemId;
+        this.title = title;
+        this.accepted = accepted;
+        this.level = level;
+        this.tries = tries;
+    }
+
     public static ProblemDto of(Problem problemEntity) {
         ProblemDto problemDto = ModelMapperUtils.getModelMapper().map(problemEntity, ProblemDto.class);
         return problemDto;

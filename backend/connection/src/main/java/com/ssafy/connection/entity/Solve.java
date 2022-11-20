@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+//@NamedNativeQuery(name = "findByStudyStreak",query = "SELECT ", resultSetMapping = "solveStudyStatsDto")
+//@SqlResultSetMapping(name = "solveStudyStatsDto", classes = @ConstructorResult(targetClass = SolveStudyInterface.class, columns = {@ColumnResult(name = "date", type = Date.class), @ColumnResult(name = "cnt", type = Long.class)}))
 @Table(name = "Solve")
 public class Solve {
     @Id
@@ -27,6 +29,7 @@ public class Solve {
 
     private LocalDateTime time; // 문제 푼 시각
 
+
     /* 연관관계 매핑 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
@@ -35,6 +38,7 @@ public class Solve {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problemId")
     private Problem problem;
+
     ////////////////////////////////////////
 
     public static Solve of(SolveDto solveDto) {
@@ -42,4 +46,5 @@ public class Solve {
 
         return solveEntity;
     }
+
 }

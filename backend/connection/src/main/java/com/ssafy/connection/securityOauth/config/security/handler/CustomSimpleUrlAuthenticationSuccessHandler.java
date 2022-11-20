@@ -33,6 +33,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        System.out.println("onAuthenticationSuccess발견");
         DefaultAssert.isAuthentication(!response.isCommitted());
 
         String targetUrl = determineTargetUrl(request, response, authentication);
@@ -44,6 +45,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CustomCookie.getCookie(request, CustomAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
 
+        System.out.println("determinetargeturl발견");
         DefaultAssert.isAuthentication( !(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) );
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
@@ -51,7 +53,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
 
         Cookie refreshToken = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-        Cookie accessToken = new Cookie("accessToken", tokenMapping.getAccessToken());
+//        Cookie accessToken = new Cookie("accessToken", tokenMapping.getAccessToken());
         refreshToken.setMaxAge(30 * 24 * 60 * 60);
 
         // optional properties
@@ -59,17 +61,18 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         refreshToken.setHttpOnly(true);
         refreshToken.setPath("/");
 
-        accessToken.setSecure(true);
-        accessToken.setHttpOnly(true);
-        accessToken.setPath("/");
+//        accessToken.setSecure(true);
+//        accessToken.setHttpOnly(true);
+//        accessToken.setPath("/");
 
         // add cookie to response
         response.addCookie(refreshToken);
-        response.addCookie(accessToken);
+//        response.addCookie(accessToken);
 
         Token token = Token.builder()
                             .githubId(tokenMapping.getGithubId())
                             .refreshToken(tokenMapping.getRefreshToken())
+                            .githubToken((tokenMapping.getGithubToken()))
                             .build();
         tokenRepository.save(token);
 

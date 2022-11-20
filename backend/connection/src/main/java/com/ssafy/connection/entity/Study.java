@@ -29,6 +29,12 @@ public class Study {
     @Column(name = "study_name")
     private String studyName;
 
+    @Column(name = "study_repository")
+    private String studyRepository;
+
+    @Column(name = "study_personnel")
+    private int studyPersonnel;
+
     /* 연관관계 매핑 */
     @OneToOne(mappedBy = "study")
     private Workbook workbook;
@@ -45,4 +51,5 @@ public class Study {
 
         return studyEntity;
     }
+
 }
