@@ -47,7 +47,8 @@ function useChartOption() {
           style: {
             colors: [`${colorMode === "light" ? "#000" : "#fff"}`]
           }
-        }
+        },
+        max: 50
       },
       legend: {
         show: true,

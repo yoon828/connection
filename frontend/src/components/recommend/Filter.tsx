@@ -142,6 +142,7 @@ function Filter({ fetch }: Iprops) {
                 bg="dep_3"
                 onClick={() => {
                   fetch(selectedLevel, selectedTag);
+                  closeFilter();
                 }}
               >
                 적용
