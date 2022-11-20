@@ -30,16 +30,9 @@ api.interceptors.request.use((config: AxiosRequestConfig) => {
 //     // A) 토큰 만료 이슈인 경우
 //     if (error.response.data?.message.includes("만료")) {
 //       // a) 갱신 요청
-//       const { data, status } = await axios.get(
-//         baseURL + `/token/reissuance/${getRefreshToken()}`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${getAccessToken()}`
-//           }
-//         }
-//       );
+//       const { data, status } = await api.post("/auth/refresh", {});
 //       if (status === 201) {
-//         setAccessToken(data.accessToken);
+//         localStorage.setItem("token", data.accessToken);
 
 //         // 헤더 변경 후 다시 쏘기
 //         const originalRequest = error.config;
