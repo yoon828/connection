@@ -37,7 +37,10 @@ module.exports = {
     //   { props: true, ignorePropertyModificationsFor: ["state"] }
     // ]
     "no-param-reassign": 0,
-    "@typescript-eslint/no-empty-interface": 0
+    "@typescript-eslint/no-empty-interface": 0,
+    "no-nested-ternary": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/prop-types": 0
   },
   settings: {
     "import/resolver": {
