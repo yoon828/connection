@@ -11,7 +11,7 @@
 
 |Back-End|Back-End|Back-end|Front-End|Front-End|Front-End|
 |-|-|-|-|-|-|
-| <img src="/uploads/e2b9631cd6614ae5d0a7d13dc257349f/KakaoTalk_Photo_2022-11-21-11-29-09.jpeg" width="150" height="180"/> | <img src="/uploads/f9b17ea2f5607256188ab76521ea96f2/KakaoTalk_Photo_2022-11-21-11-28-13.jpeg" width="150" height="180"/> | <img src="/uploads/f8b437b9d8e8b4d0ffe461d4c3691a58/KakaoTalk_Photo_2022-11-21-11-28-43.jpeg" width="150" height="180"/> | <img src="/uploads/f495d5f65cfb523eeb7a63bd0ba7c76f/beauty_1662207811715.jpeg" width="150" height="180"/> | <img src="/uploads/ef6cfd61c241945e6e5aa826c81051ff/KakaoTalk_Photo_2022-11-21-11-28-54.png" width="150" height="180"/> | <img src="/uploads/777f6ea307713e5b2948cc25d23cf46f/KakaoTalk_Photo_2022-11-21-11-28-40.jpeg" width="150" height="180"/> 
+| <img src="https://user-images.githubusercontent.com/64458685/202967349-6bab65b6-6b49-4e8a-add0-150c74b6f229.jpeg" width="150" height="180"/> | <img src="https://user-images.githubusercontent.com/64458685/202967356-7570c92e-82cb-4f85-9098-19fb894ca904.jpeg" width="150" height="180"/> | <img src="https://user-images.githubusercontent.com/64458685/202967350-16ade6e5-8eda-4ca4-ae41-beb4cd63e664.jpeg" width="150" height="180"/> | <img src="https://user-images.githubusercontent.com/64458685/202967364-287d3fa3-805f-4936-af36-084dfbbfd72a.jpeg" width="150" height="180"/> | <img src="https://user-images.githubusercontent.com/64458685/202967332-f141eb20-a63d-46a4-a49d-f6dd5bc7289e.png" width="150" height="180"/> | <img src="https://user-images.githubusercontent.com/64458685/202967352-791c6a4c-9132-499a-b592-8226b550b7ca.jpeg" width="150" height="180"/> 
 | 김준우(팀장)|김우건(팀원)|이기영(팀원)|김윤민(팀원)|염진호(팀원)|최진합(팀원)|
 <br/>
 
@@ -76,7 +76,7 @@
 ```
 
 <br>
-<img src="/uploads/6388ab62c1461b33a8845249cc84b2e3/problemRecommend.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967742-d01c7fc6-0f25-4423-b1da-905a692a72ba.gif" width="80%">
 
 ### **스터디 참가 및 생성**
 
@@ -85,7 +85,7 @@
 ```
 
 <br>
-<img src="/uploads/03eacb3bb7685c3b0cd23f88fe7cdc53/studyCreate.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967745-16515bea-8788-4135-9946-575ccd2156de.gif" width="80%">
 
 
 ### **스터디 관리페이지**
@@ -95,7 +95,7 @@
 ```
 
 <br>
-<img src="/uploads/84beaf37bdafa8833cba1edcc8b62d00/studyTotal.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967750-82d48a1c-a2ae-4956-b47a-7ddaf4cd9162.gif" width="80%">
 
 ### **스터디 - 문제집 페이지**
 
@@ -104,7 +104,7 @@
 ```
 
 <br>
-<img src="/uploads/8d881d039e91c31eb21b3d1707cee266/studyNotes.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967725-f8aacdc0-a750-46fb-ab82-8c89a5559395.gif" width="80%">
 
 ### **스터디 - 챌린지**
 
@@ -113,7 +113,7 @@
 ```
 
 <br>
-<img src="/uploads/d3c39f852552deb0c5dfddf3b87d72cf/challenge.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967735-b1ddc3e3-6250-4cee-8a3d-70718b7b78c9.gif" width="80%">
 
 ### **문제풀기**
 
@@ -131,7 +131,7 @@
 ```
 
 <br>
-<img src="/uploads/ef0c9b60920fdd8926d28a0a83aab30b/review.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967737-ebb6d440-ed70-48a6-98df-fc5da086e0db.gif" width="80%">
 
 ### **Github 연동**
 
@@ -140,7 +140,7 @@ Github연동 기능이에요. 확장프로그램을 사용해서 자동으로 �
 ```
 
 <br>
-<img src="/uploads/4c4009d4d1be498e30f0deebff8f30bc/github.gif" width="80%">
+<img src="https://user-images.githubusercontent.com/64458685/202967739-df0c3a71-21ed-4431-8da7-bf847b053f59.gif" width="80%">
 
 ##  산출물
 
