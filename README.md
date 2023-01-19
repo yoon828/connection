@@ -40,10 +40,6 @@
 
 <br/>
 
-### 실제 설문조사 결과
-![image](/uploads/475fcf9da5abbcc4ed421a95998a5351/image.png)
-
-
 
 ## 프로젝트 소개
 
