@@ -131,7 +131,7 @@
 
 - 젠킨스 파이프라인 설정
     
-    ![back](/uploads/c90437bdd3cd76ee4601b76dff7cb94d/Untitled.png)
+    ![image](https://user-images.githubusercontent.com/64458685/223366173-7593c800-1e91-433e-8ea2-d22db9944a75.png)
     
 - 젠킨스파일(backend/connection/Jenkinsfile)
     
@@ -181,14 +181,12 @@
 
 - 젠킨스 파이프라인 설정
     
-    ![front](/uploads/5555a4b11908e4a0a2b6218cc9902222/Untitled_1.png)
+    ![image](https://user-images.githubusercontent.com/64458685/223366228-5282473e-886b-46e2-8be8-97f8fd8b21ef.png)
     
 - 젠킨스 환경변수 셋팅
-    
-    ![_E1_84_1](/uploads/4ba36d8ad788c3fab16ede3a702faa02/_E1_84_1.PNG)
-    
-    ![_E1_84_2](/uploads/619e3f325a2bb757c2a132f48da45eb6/_E1_84_2.PNG)
-    
+    ![image](https://user-images.githubusercontent.com/64458685/223366344-4092d8e9-e00c-4c6f-950e-df540ca52e2e.png)
+    ![image](https://user-images.githubusercontent.com/64458685/223366366-0f53586e-1e7a-434a-b78e-dab56fd906dd.png)
+
 
 - 프론트 및 소켓서버 빌드 젠킨스파일(frontend/Jenkinsfile)
     
@@ -308,8 +306,8 @@
 
 - 웹훅 설정
     
-    ![Untitled_2](/uploads/a9cd1cd9b9007de0d90631c3c8044e49/Untitled_2.png)
+    ![image](https://user-images.githubusercontent.com/64458685/223366433-a6101313-e09c-4676-893d-d03b71898eba.png)
     
 - oauth앱 접근 설정
     
-    ![Untitled_3](/uploads/20e64e28c86e80efea0219c1de3dabf9/Untitled_3.png)
+    ![image](https://user-images.githubusercontent.com/64458685/223366445-375bc0c0-c30d-4264-a2e7-5c2f7dfddcfa.png)
