@@ -18,13 +18,28 @@ function MainBox({ dir, data }: MainBoxProps) {
       data-aos={dir === "right" ? "fade-right" : "fade-left"}
     >
       <Box w="50%">
-        <Image
+        <Box
+          boxShadow="md"
+          borderRadius="15px"
+          w="380px"
+          position="relative"
+          overflow="hidden"
+        >
+          <video autoPlay loop muted playsInline>
+            <source
+              src={`/asset/img/main/${data.img}.webm`}
+              type="video/webm"
+            />
+            <source src={`/asset/img/main/${data.img}.mp4`} type="video/mp4" />
+          </video>
+        </Box>
+        {/* <Image
           src={data.img ? data.img : TMP}
           alt="info_img"
           w="380px"
           boxShadow="md"
           borderRadius="15px"
-        />
+        /> */}
       </Box>
       <Box
         w="50%"
