@@ -1,6 +1,6 @@
 import { useColorMode, Center, Box, Text } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ContentProps } from "./MyActivity";
 
@@ -62,6 +62,8 @@ function PercentChart({ title, content }: PercentChartProps) {
     labels: ["풀이율"]
   };
 
+  const opt = useMemo(() => options, [colorMode]);
+
   useEffect(() => {
     if (content) {
       setSeries(
@@ -79,7 +81,7 @@ function PercentChart({ title, content }: PercentChartProps) {
         type="radialBar"
         height={220}
         width={220}
-        options={options}
+        options={opt}
       />
       <Box flexDir="column" mr="20px">
         <Text>

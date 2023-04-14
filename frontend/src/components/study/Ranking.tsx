@@ -65,7 +65,6 @@ function Ranking() {
       alignItems="center"
       p="10px 0 10px"
       ref={parentRef}
-      // onScroll={get}
     >
       {ranks.map(study => {
         return (

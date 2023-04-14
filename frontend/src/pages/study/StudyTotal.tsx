@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import {
@@ -20,15 +20,27 @@ import { getMemberList } from "api/study";
 import { v4 } from "uuid";
 import { getUserInfo } from "store/ducks/auth/authThunk";
 import axios from "axios";
-import TotalLayout from "../../components/layout/TotalLayout";
-import Ranking from "../../components/study/Ranking";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import GithubL from "../../asset/img/githubL.svg";
 import GithubD from "../../asset/img/githubD.svg";
-import MyActivity from "../../components/study/MyActivity";
-import Challenge from "../../components/study/Challenge";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { UserInfoType } from "../../store/ducks/auth/auth.type";
-import SubjectView from "../../components/study/subject/SubjectView";
+// import Ranking from "../../components/study/Ranking";
+// import TotalLayout from "../../components/layout/TotalLayout";
+// import MyActivity from "../../components/study/MyActivity";
+// import Challenge from "../../components/study/Challenge";
+// import SubjectView from "../../components/study/subject/SubjectView";
+
+const Ranking = React.lazy(() => import("../../components/study/Ranking"));
+const TotalLayout = React.lazy(
+  () => import("../../components/layout/TotalLayout")
+);
+const MyActivity = React.lazy(
+  () => import("../../components/study/MyActivity")
+);
+const Challenge = React.lazy(() => import("../../components/study/Challenge"));
+const SubjectView = React.lazy(
+  () => import("../../components/study/subject/SubjectView")
+);
 
 export type UserListProps = Pick<
   UserInfoType,
@@ -62,7 +74,7 @@ function StudyTotal() {
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
 
-  function onCopyEvent() {
+  const onCopyEvent = useCallback(() => {
     onCopy();
     toast({
       title: "스터디 코드를 복사했습니다!",
@@ -70,7 +82,7 @@ function StudyTotal() {
       isClosable: true,
       position: "top"
     });
-  }
+  }, []);
 
   const getUserList = async () => {
     const res = await getMemberList();
