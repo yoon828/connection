@@ -63,8 +63,7 @@ function Header() {
 
   const menus: menuType[] = [
     { title: "문제 추천", link: "/recommend" },
-    { title: "스터디", link: "/study" },
-    { title: "문제 풀기", link: "/study-with" }
+    { title: "스터디", link: "/study" }
   ];
 
   useEffect(() => {
