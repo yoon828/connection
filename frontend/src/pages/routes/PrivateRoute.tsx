@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 import useToast from "hooks/useToast";
 import { InitialStateType } from "../../store/ducks/auth/auth.type";

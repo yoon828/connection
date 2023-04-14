@@ -23,7 +23,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/180828/Desktop/github/connection/backend/connection",
+    "last_opened_file_path": "/Users/yunmin/github/connection/backend",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -36,6 +36,7 @@
       <option name="presentableId" value="Default" />
       <updated>1681277830561</updated>
       <workItem from="1681277831622" duration="12000" />
+      <workItem from="1681469174870" duration="21000" />
     </task>
     <servers />
   </component>

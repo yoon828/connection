@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   Center,
   Flex,
@@ -12,14 +11,14 @@ import {
   useClipboard,
   Spinner,
   Heading,
-  Image
+  Box
 } from "@chakra-ui/react";
+import ImgLoad from "components/common/ImgLoad";
 import axios from "axios";
 import useToast from "hooks/useToast";
 import { getUserProblems, postBJConfirm, postBJSolved } from "../../api/auth";
 import { useAppDispatch } from "../../store/hooks";
 import { updateUserInfo } from "../../store/ducks/auth/authSlice";
-import BjDesc from "../../asset/img/bjDesc.png";
 
 type BackjoonModalProps = {
   code: string;
@@ -122,7 +121,6 @@ function BackjoonModal({ code }: BackjoonModalProps) {
         await postSolved();
       }
     } catch (error) {
-      console.log(error);
       setConfirmMsg("인증에 실패했습니다");
       setReady(false);
       setLoading(false);
@@ -144,7 +142,9 @@ function BackjoonModal({ code }: BackjoonModalProps) {
         쓰이고 있어요!
       </Text>
       <Center p="30px 0 0" flexDir="column">
-        <Image src={BjDesc} alt="bj" mb="20px" borderRadius="10px" />
+        <Box mb="20px" borderRadius="10px">
+          <ImgLoad name="bjDesc" />
+        </Box>
         <Flex w="350px" mb="10px">
           <Flex w="70px" h={10} fontSize="18px" alignItems="center">
             백준ID

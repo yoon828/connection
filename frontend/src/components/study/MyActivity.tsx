@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Center, Text, useColorMode } from "@chakra-ui/react";
-import ReactApexChart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
+import { Center } from "@chakra-ui/react";
 import { getMyActivity } from "../../api/study";
 import useIntersectionObsever from "../../hooks/useIntersectionObserver";
 import PercentChart from "./PercentChart";

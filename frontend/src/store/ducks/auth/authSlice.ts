@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserInfo, getUserMorInfo } from "./authThunk";
+import { getUserInfo } from "./authThunk";
 import { InitialStateType, UserInfoType } from "./auth.type";
 
 const initialState: InitialStateType = {

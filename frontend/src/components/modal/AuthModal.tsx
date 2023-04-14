@@ -1,10 +1,4 @@
-import {
-  Box,
-  Center,
-  Modal,
-  ModalContent,
-  ModalOverlay
-} from "@chakra-ui/react";
+import { Box, Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import React from "react";
 
 import useToast from "hooks/useToast";

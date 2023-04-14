@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, AlertIcon, Badge, Box, Center, Text } from "@chakra-ui/react";
+import { Alert, Badge, Center, Text } from "@chakra-ui/react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { UserProps } from "./SubjectView";
