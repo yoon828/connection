@@ -40,7 +40,9 @@ module.exports = {
     "@typescript-eslint/no-empty-interface": 0,
     "no-nested-ternary": 0,
     "react/jsx-props-no-spreading": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "react/jsx-no-useless-fragment": "warn", // 불필요한 fragment 금지
+    "react/no-unused-state": "warn"
   },
   settings: {
     "import/resolver": {

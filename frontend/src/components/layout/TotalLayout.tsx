@@ -1,13 +1,5 @@
-import {
-  Box,
-  Center,
-  color,
-  Container,
-  Flex,
-  Heading,
-  Text
-} from "@chakra-ui/react";
-import React, { ReactNode, useEffect } from "react";
+import { Box, Center, Heading, Text } from "@chakra-ui/react";
+import React, { ReactNode } from "react";
 
 interface TotalLayoutProps {
   children: ReactNode;

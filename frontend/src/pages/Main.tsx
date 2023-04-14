@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Link as ReactLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,21 +12,12 @@ import {
 import { v4 } from "uuid";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import C from "../asset/img/c.png";
-import Java from "../asset/img/java.png";
-import JS from "../asset/img/js.png";
-import Python from "../asset/img/python.png";
-import Kotlin from "../asset/img/kotlin.png";
-import Airplane from "../asset/img/airplane.png";
+import ImgLoad from "components/common/ImgLoad";
 import MainBox from "../components/common/MainBox";
 import { studyInfos, etcInfos, squares } from "../asset/data/main";
 import MainSquare from "../components/common/MainSquare";
 import LogoLight from "../asset/img/logo_light.svg";
 import LogoDark from "../asset/img/logo_dark.svg";
-import Codebox from "../asset/img/codebox.png";
-import Notebook from "../asset/img/notebook.png";
-import Wave from "../asset/img/wave.png";
-import MainImg from "../asset/img/main_img.png";
 import DownArrow from "../asset/img/downarrow.gif";
 
 function Main() {
@@ -34,7 +25,9 @@ function Main() {
   const navigate = useNavigate();
 
   const mainRef = useRef<HTMLDivElement>(null);
-  const imgs = [C, Java, JS, Python, Kotlin];
+  const imgs = ["c", "java", "js", "python", "kotlin"].map(item => (
+    <ImgLoad name={item} key={item} />
+  ));
 
   useEffect(() => {
     AOS.init();
@@ -88,7 +81,9 @@ function Main() {
             </Button>
           </Center>
           <Flex alignItems="center">
-            <Image src={MainImg} alt="main" w="430px" />
+            <Box w="430px">
+              <ImgLoad name="main_img" />
+            </Box>
           </Flex>
         </Flex>
         <Center flexDir="column">
@@ -100,8 +95,11 @@ function Main() {
                   data-aos-delay={idx * 300}
                   data-aos-duration="1500"
                   key={v4()}
+                  w="80px"
+                  mx="20px"
                 >
-                  <Image src={img} alt="language" w="80px" mx="20px" />
+                  {img}
+                  {/* <Image src={img} alt="language" w="80px" mx="20px" /> */}
                 </Box>
               );
             })}
@@ -116,15 +114,9 @@ function Main() {
             <Image src={DownArrow} w="50px" />
           </Button>
         </Center>
-        <Image
-          src={Wave}
-          alt="wave"
-          position="absolute"
-          bottom="0px"
-          zIndex="-1"
-          w="100%"
-          h="40%"
-        />
+        <Box position="absolute" bottom="0px" zIndex="-1" w="100%" h="40%">
+          <ImgLoad name="wave" />
+        </Box>
       </Center>
       <Box
         ref={mainRef}
@@ -154,8 +146,9 @@ function Main() {
               알고리즘 공부, 이제 그만 ✋ <br />
               같이하면 즐거움이 두 배
             </Box>
-
-            <Image src={Codebox} alt="code" w="200px" ml="50px" />
+            <Box w="200px" ml="50px">
+              <ImgLoad name="codebox" />
+            </Box>
           </Box>
           {studyInfos.slice(0, 3).map((info, idx) => {
             return (
@@ -197,7 +190,9 @@ function Main() {
             justifyContent="flex-end"
             data-aos="fade-up"
           >
-            <Image src={Notebook} alt="code" w="200px" mr="50px" />
+            <Box w="200px" mr="50px">
+              <ImgLoad name="notebook" />
+            </Box>
             <Box
               bg="gra"
               w="500px"
@@ -257,7 +252,10 @@ function Main() {
             />
             와 함께라면 더 높은 곳 까지 갈 수 있어요
           </Text>
-          <Image src={Airplane} position="absolute" w="200px" left="15%" />
+
+          <Box position="absolute" w="200px" left="15%">
+            <ImgLoad name="airplane" />
+          </Box>
         </Center>
         <Box as="footer" h="200px" display="flex">
           <Box m="0 auto" w="1200px">

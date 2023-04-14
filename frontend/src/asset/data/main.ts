@@ -1,23 +1,12 @@
-import Rank from "../img/rank.png";
-import Homework from "../img/homework.png";
-import StudyTotal from "../img/main/studyTotal.gif";
-import StudyWith from "../img/main/studyWith.gif";
-import Challenge from "../img/main/challenge.gif";
-import Github from "../img/main/github.gif";
-import ProblemRecommend from "../img/main/problemRecommend.gif";
-import Review from "../img/main/review.gif";
-import StudyCreate from "../img/main/studyCreate.gif";
-import StudyNotes from "../img/main/studyNotes.gif";
-
 export const squares = [
   {
-    src: Rank,
+    src: "rank",
     title: "스터디 랭킹",
     content:
       "챌린지, 문제풀이, 과제 등을 기반으로 선정된 점수로 랭킹을 보여줘요"
   },
   {
-    src: Homework,
+    src: "homework",
     title: "스터디 과제",
     content: "지정한 기간안에 정해진 문제들을 스터디원들과 같이 풀어보세요"
   }

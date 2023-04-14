@@ -4,15 +4,6 @@ import { useAppSelector } from "../../store/hooks";
 import PrivateRoute, { PrivateRouteProps } from "./PrivateRoute";
 import Main from "../Main";
 import Loading from "./Loading";
-// import Recommend from "../Recommend";
-// import StudyJoin from "../StudyJoin";
-// import Header from "../Header";
-// import StudyWith from "../StudyWith";
-// import Collection from "../study/Collection.tsx";
-// import StudyTotal from "../study/StudyTotal";
-// import Assignment from "../study/Assignment";
-// import Management from "../study/Management";
-// import Callback from "../Callback";
 
 const Recommend = React.lazy(() => import("../Recommend"));
 const StudyJoin = React.lazy(() => import("../StudyJoin"));
@@ -23,7 +14,6 @@ const StudyTotal = React.lazy(() => import("../study/StudyTotal"));
 const Assignment = React.lazy(() => import("../study/Assignment"));
 const Management = React.lazy(() => import("../study/Management"));
 const Callback = React.lazy(() => import("../Callback"));
-// const Main = React.lazy(() => import("../Main"));
 
 export default function Router() {
   const auth = useAppSelector(state => state.auth);

@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { v4 } from "uuid";
-import TMP from "../../asset/img/tmp.png";
 import { BoxDataProp } from "../../asset/data/main";
 
 interface MainBoxProps {

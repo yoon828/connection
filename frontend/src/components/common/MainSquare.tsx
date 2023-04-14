@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Center, Image, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box, Center, Text } from "@chakra-ui/react";
+import ImgLoad from "./ImgLoad";
 
 interface MainSquareProps {
   data: {
@@ -21,7 +22,9 @@ function MainSquare({ data, dir }: MainSquareProps) {
       p="12px"
       data-aos={dir}
     >
-      <Image src={data.src} alt="icon" w="80px" />
+      <Box w="80px">
+        <ImgLoad name={data.src} />
+      </Box>
       <Text fontSize="20px" fontWeight="bold">
         {data.title}
       </Text>

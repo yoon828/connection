@@ -1,7 +1,8 @@
-import { Accordion, Center, Image, useDisclosure } from "@chakra-ui/react";
+import { Accordion, Box, Center, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ImgLoad from "components/common/ImgLoad";
 
 import useToast from "hooks/useToast";
 import { dupliChkStudy, getStudyInfo, GetStudyInfoRes } from "../api/studyJoin";
@@ -10,7 +11,6 @@ import StudyInfoModal from "../components/modal/StudyInfoModal";
 import JoinAccordionItem from "../components/study/JoinAccordionItem";
 import { updateUserInfo } from "../store/ducks/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import Wave from "../asset/img/wave.png";
 
 type ErrorMsgType =
   | ""
@@ -125,15 +125,9 @@ function StudyJoin() {
         isOpen={createChkModalIsOpen}
         onClose={createChkModalOnClose}
       />
-      <Image
-        src={Wave}
-        alt="wave"
-        position="absolute"
-        bottom="0px"
-        zIndex="-1"
-        w="100%"
-        h="20%"
-      />
+      <Box position="absolute" bottom="0px" zIndex="-1" w="100%" h="20%">
+        <ImgLoad name="wave" />
+      </Box>
     </Center>
   );
 }

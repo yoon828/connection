@@ -1,6 +1,6 @@
 import { useColorMode, Center, Box, Text } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ContentProps } from "./MyActivity";
 

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Center, Flex, Link, Text } from "@chakra-ui/react";
+import React from "react";
+import { Button, Center, Link } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
 
 type NoSubjectProps = {
